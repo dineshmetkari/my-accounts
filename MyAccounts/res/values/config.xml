@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<array name="file_driver">
+		<item>org.amphiprion.myaccount.driver.file.qif.QifFileDriver</item>
+	</array>
+</resources>
