@@ -6,7 +6,7 @@
 	<string name="QIF">QIF</string>
 	
 	<!-- Account -->
-	<string name="account_name">Account Name</string>
-	<string name="account_balance">Balance</string>
-	<string name="account_total_balance">Total Accounts Balance</string>
+	<string name="account_name">Nom du Compte</string>
+	<string name="account_balance">Solde</string>
+	<string name="account_total_balance">Total des Soldes</string>
 </resources>

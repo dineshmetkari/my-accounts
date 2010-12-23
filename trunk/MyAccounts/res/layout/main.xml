@@ -4,9 +4,15 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
-<TextView  
-    android:layout_width="fill_parent" 
-    android:layout_height="wrap_content" 
-    android:text="@string/hello"
-    />
+	<LinearLayout android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+		<TextView android:layout_weight="3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/account_name"/>
+		<TextView android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/account_balance" android:gravity="right"/>
+	</LinearLayout>
+	<ScrollView android:layout_weight="1" android:layout_width="fill_parent" android:layout_height="wrap_content"
+	android:background="#FFFFFF">
+		<LinearLayout android:id="@+id/account_list" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content">
+
+		</LinearLayout>
+	</ScrollView>
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/account_total_balance" android:layout_gravity="right"/>
 </LinearLayout>
