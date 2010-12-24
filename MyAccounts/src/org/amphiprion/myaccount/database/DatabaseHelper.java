@@ -45,7 +45,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		try {
 			db.execSQL("create table ACCOUNT (" + Account.DbField.ID + " text primary key, " + Account.DbField.NAME
-					+ " text not null, " + Account.DbField.BALANCE + " double not null, "
+					+ " text not null, " + Account.DbField.CURRENCY + " text not null, " + Account.DbField.BALANCE
+					+ " double not null, " + Account.DbField.EXCLUDED + " int not null, "
 					+ Account.DbField.LAST_OPERATION + " date) ");
 			db.execSQL("create table OPERATION (" + Operation.DbField.ID + " text primary key, "
 					+ Operation.DbField.DATE + " date not null , " + Operation.DbField.AMOUNT + " double not null, "

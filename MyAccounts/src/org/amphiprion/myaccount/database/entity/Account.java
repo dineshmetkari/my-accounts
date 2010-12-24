@@ -36,7 +36,7 @@ public class Account implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum DbField {
-		ID, NAME, BALANCE, LAST_OPERATION
+		ID, NAME, BALANCE, LAST_OPERATION, CURRENCY, EXCLUDED
 	}
 
 	/** the uuid. */
@@ -47,6 +47,10 @@ public class Account implements Serializable {
 	private String name;
 	/** The last operation date. */
 	private Date lastOperation;
+	/** The currency. */
+	private String currency;
+	/** Excluded from total balance. */
+	private boolean excluded;
 
 	/**
 	 * Constructor for a new entity.
@@ -70,6 +74,36 @@ public class Account implements Serializable {
 	 */
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * @return the excluded
+	 */
+	public boolean isExcluded() {
+		return excluded;
+	}
+
+	/**
+	 * @param excluded
+	 *            the excluded to set
+	 */
+	public void setExcluded(boolean excluded) {
+		this.excluded = excluded;
+	}
+
+	/**
+	 * @return the currency
+	 */
+	public String getCurrency() {
+		return currency;
+	}
+
+	/**
+	 * @param currency
+	 *            the currency to set
+	 */
+	public void setCurrency(String currency) {
+		this.currency = currency;
 	}
 
 	/**
