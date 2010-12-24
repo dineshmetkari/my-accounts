@@ -19,17 +19,35 @@
  */
 package org.amphiprion.myaccount;
 
+import org.amphiprion.myaccount.util.CurrencyUtil;
+
+import android.content.Context;
+import android.widget.ArrayAdapter;
+
 /**
- * This interface hosts all application contants.
+ * This is the adapter for the Currency spinner.
  * 
  * @author amphiprion
  * 
  */
-public interface ApplicationConstants {
-	public final static String PACKAGE = "org.amphiprion.myaccount";
-	public final static String NAME = "MyAccounts";
-	public static final int MENU_ID_ADD_ACCOUNT = 1;
-	public static final int ACTIVITY_RETURN_CREATE_ACCOUNT = 1;
-	public static final int ACTIVITY_RETURN_EDIT_ACCOUNT = 2;
+public class CurrencyAdapter extends ArrayAdapter<String> {
+
+	/**
+	 * Default constructor.
+	 */
+	public CurrencyAdapter(Context context) {
+		super(context, android.R.layout.simple_spinner_item, CurrencyUtil.currencies);
+		setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.widget.Adapter#getItem(int)
+	 */
+	@Override
+	public String getItem(int arg0) {
+		return CurrencyUtil.currencies[arg0].substring(0, 3);
+	}
 
 }

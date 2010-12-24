@@ -3,4 +3,5 @@
 	<array name="file_driver">
 		<item>org.amphiprion.myaccount.driver.file.qif.QifFileDriver</item>
 	</array>
+	<string name="default_currency">USD</string>
 </resources>

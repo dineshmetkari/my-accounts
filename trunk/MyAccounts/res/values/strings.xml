@@ -8,5 +8,12 @@
 	<!-- Account -->
 	<string name="account_name">Account Name</string>
 	<string name="account_balance">Balance</string>
-	<string name="account_total_balance">Total Accounts Balance</string>
+	<string name="account_total_balance">Total Accounts Balance:</string>
+	<string name="add_account">Add</string>
+	<string name="currency">Currency</string>
+	<string name="exclude_from_total">Exclude from Total Balance</string>
+
+	<!-- Button -->
+	<string name="save">Save</string>
+	<string name="cancel">Cancel</string>
 </resources>

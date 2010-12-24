@@ -8,5 +8,12 @@
 	<!-- Account -->
 	<string name="account_name">Nom du Compte</string>
 	<string name="account_balance">Solde</string>
-	<string name="account_total_balance">Total des Soldes</string>
+	<string name="account_total_balance">Total des Soldes:</string>
+	<string name="add_account">Ajouter</string>
+	<string name="currency">Devise</string>
+	<string name="exclude_from_total">Exclure du Total des Soldes</string>
+
+	<!-- Button -->
+	<string name="save">Sauver</string>
+	<string name="cancel">Annuler</string>
 </resources>

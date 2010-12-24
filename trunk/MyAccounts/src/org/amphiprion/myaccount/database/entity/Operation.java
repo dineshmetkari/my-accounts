@@ -47,11 +47,11 @@ public class Operation {
 	/** The description. */
 	private String description;
 	/** The tag. */
-	private String tag;
+	private String tagId;
 	/** The icon. */
 	private String icon;
-	/** The owner account. */
-	private Account account;
+	/** The owner account uuid. */
+	private String accountId;
 
 	/**
 	 * Constructor for a new entity.
@@ -71,33 +71,33 @@ public class Operation {
 	}
 
 	/**
-	 * @return the tag
+	 * @return the tagId
 	 */
-	public String getTag() {
-		return tag;
+	public String getTagId() {
+		return tagId;
 	}
 
 	/**
-	 * @param tag
-	 *            the tag to set
+	 * @param tagId
+	 *            the tagId to set
 	 */
-	public void setTag(String tag) {
-		this.tag = tag;
+	public void setTagId(String tagId) {
+		this.tagId = tagId;
 	}
 
 	/**
-	 * @return the account
+	 * @return the accountId
 	 */
-	public Account getAccount() {
-		return account;
+	public String getAccountId() {
+		return accountId;
 	}
 
 	/**
-	 * @param account
-	 *            the account to set
+	 * @param accountId
+	 *            the accountId to set
 	 */
-	public void setAccount(Account account) {
-		this.account = account;
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	/**
