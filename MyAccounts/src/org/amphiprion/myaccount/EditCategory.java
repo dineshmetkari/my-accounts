@@ -19,9 +19,11 @@
  */
 package org.amphiprion.myaccount;
 
-import org.amphiprion.myaccount.adapter.CurrencyAdapter;
-import org.amphiprion.myaccount.database.entity.Account;
-import org.amphiprion.myaccount.util.CurrencyUtil;
+import java.util.List;
+
+import org.amphiprion.myaccount.adapter.CategoryAdapter;
+import org.amphiprion.myaccount.database.CategoryDao;
+import org.amphiprion.myaccount.database.entity.Category;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -29,18 +31,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 /**
- * The activity used to edit/create an account.
+ * The activity used to edit/create a category.
  * 
  * @author amphiprion
  * 
  */
-public class EditAccount extends Activity {
-	private Account account;
+public class EditCategory extends Activity {
+	private Category category;
 
 	/**
 	 * {@inheritDoc}
@@ -50,45 +51,43 @@ public class EditAccount extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.edit_account);
+		setContentView(R.layout.edit_category);
 
-		final Spinner cbCurrency = (Spinner) findViewById(R.id.cbCurrency);
-		final TextView txtName = (TextView) findViewById(R.id.txtAccountName);
-		final TextView txtBalance = (TextView) findViewById(R.id.txtBalance);
-		final CheckBox chkExclude = (CheckBox) findViewById(R.id.chkExclude);
+		final Spinner cbParentCategory = (Spinner) findViewById(R.id.cbParentCategory);
+		final TextView txtName = (TextView) findViewById(R.id.txtCategoryName);
 
-		String iso = getResources().getString(R.string.default_currency);
-		if (account == null) {
+		if (category == null) {
 			Intent intent = getIntent();
 			if (intent.getExtras() != null) {
-				account = (Account) intent.getExtras().getSerializable("ACCOUNT");
-				iso = account.getCurrency().substring(0, 3);
-				txtName.setText(account.getName());
-				txtBalance.setText("" + account.getBalance());
-				chkExclude.setChecked(account.isExcluded());
+				category = (Category) intent.getExtras().getSerializable("CATEGORY");
+				txtName.setText(category.getName());
 			}
 		}
-		int selectedIndex = CurrencyUtil.getCurrencyIndex(iso);
-		if (account == null) {
-			// its a creation
-			account = new Account();
-			account.setCurrency(CurrencyUtil.currencies[selectedIndex]);
-		}
 
-		cbCurrency.setAdapter(new CurrencyAdapter(this));
-		cbCurrency.setSelection(selectedIndex);
+		if (category == null) {
+			// its a creation
+			category = new Category();
+		}
+		List<Category> parents = CategoryDao.getInstance(this).getPossibleParentFor(category);
+		parents.add(0, new Category(""));
+		cbParentCategory.setAdapter(new CategoryAdapter(this, parents));
+		if (category.getParent() != null) {
+			cbParentCategory.setSelection(parents.indexOf(category.getParent()));
+		}
 
 		Button btSave = (Button) findViewById(R.id.btSave);
 		btSave.setOnClickListener(new ViewGroup.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				account.setName("" + txtName.getText());
-				account.setBalance(Double.parseDouble("" + txtBalance.getText()));
-				account.setCurrency(CurrencyUtil.currencies[cbCurrency.getSelectedItemPosition()]);
-				account.setExcluded(chkExclude.isChecked());
-
+				category.setName("" + txtName.getText());
+				Category parent = (Category) cbParentCategory.getSelectedItem();
+				if ("".equals(parent.getId())) {
+					category.setParent(null);
+				} else {
+					category.setParent(parent);
+				}
 				Intent i = new Intent();
-				i.putExtra("ACCOUNT", account);
+				i.putExtra("CATEGORY", category);
 				setResult(RESULT_OK, i);
 				finish();
 			}

@@ -17,25 +17,37 @@
  * You should have received a copy of the GNU General Public License
  * along with My Accounts.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.amphiprion.myaccount;
+package org.amphiprion.myaccount.adapter;
+
+import org.amphiprion.myaccount.util.CurrencyUtil;
+
+import android.content.Context;
+import android.widget.ArrayAdapter;
 
 /**
- * This interface hosts all application contants.
+ * This is the adapter for the Currency spinner.
  * 
  * @author amphiprion
  * 
  */
-public interface ApplicationConstants {
-	public final static String PACKAGE = "org.amphiprion.myaccount";
-	public final static String NAME = "MyAccounts";
-	public static final int MENU_ID_ADD_ACCOUNT = 1;
-	public static final int MENU_ID_ADD_CATEGORY = 2;
-	public static final int MENU_ID_EDIT_CATEGORY = 3;
-	public static final int MENU_ID_DELETE_CATEGORY = 4;
+public class CurrencyAdapter extends ArrayAdapter<String> {
 
-	public static final int ACTIVITY_RETURN_CREATE_ACCOUNT = 1;
-	public static final int ACTIVITY_RETURN_EDIT_ACCOUNT = 2;
-	public static final int ACTIVITY_RETURN_CREATE_CATEGORY = 3;
-	public static final int ACTIVITY_RETURN_EDIT_CATEGORY = 4;
+	/**
+	 * Default constructor.
+	 */
+	public CurrencyAdapter(Context context) {
+		super(context, android.R.layout.simple_spinner_item, CurrencyUtil.currencies);
+		setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.widget.Adapter#getItem(int)
+	 */
+	@Override
+	public String getItem(int arg0) {
+		return CurrencyUtil.currencies[arg0].substring(0, 3);
+	}
 
 }

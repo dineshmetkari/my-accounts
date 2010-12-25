@@ -25,6 +25,7 @@ import java.util.Date;
 
 import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.database.entity.Account;
+import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
 
 import android.content.Context;
@@ -48,11 +49,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ " text not null, " + Account.DbField.CURRENCY + " text not null, " + Account.DbField.BALANCE
 					+ " double not null, " + Account.DbField.EXCLUDED + " int not null, "
 					+ Account.DbField.LAST_OPERATION + " date) ");
+
 			db.execSQL("create table OPERATION (" + Operation.DbField.ID + " text primary key, "
 					+ Operation.DbField.DATE + " date not null , " + Operation.DbField.AMOUNT + " double not null, "
-					+ Operation.DbField.DESCRIPTION + " string not null, " + Operation.DbField.TAG + " text not null, "
-					+ Operation.DbField.ICON + " text, " + Operation.DbField.FK_ACCOUNT + " text not null) ");
+					+ Operation.DbField.DESCRIPTION + " string not null, " + Operation.DbField.FK_CATEGORY
+					+ " text not null, " + Operation.DbField.FK_ACCOUNT + " text not null) ");
 
+			db.execSQL("create table CATEGORY (" + Category.DbField.ID + " text primary key, " + Category.DbField.NAME
+					+ " text not null, " + Category.DbField.PARENT + " text)");
 		} catch (Throwable e) {
 			Log.e(ApplicationConstants.PACKAGE, "Can not create database.", e);
 		}

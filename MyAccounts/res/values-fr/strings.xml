@@ -5,7 +5,13 @@
 	<!-- File Driver Names -->
 	<string name="QIF">QIF</string>
 	
+	<!-- Tabs -->	
+	<string name="account_tab">Comptes</string>
+	<string name="category_tab">Categories</string>
+	<string name="report_tab">Rapports</string>
+
 	<!-- Account -->
+	<string name="edit_account_title">Editer Compte</string>
 	<string name="account_name">Nom du Compte</string>
 	<string name="account_balance">Solde</string>
 	<string name="account_total_balance">Total des Soldes:</string>
@@ -13,7 +19,20 @@
 	<string name="currency">Devise</string>
 	<string name="exclude_from_total">Exclure du Total des Soldes</string>
 
+	<!-- Operations -->
+	<string name="operations_title">Operations: </string>
+	
+	<!-- Categories -->
+	<string name="category_name">Nom de la Categorie</string>
+	<string name="category_parent">Categorie Parente</string>
+	<string name="category_rules">Règles</string>
+	<string name="add_category">Ajouter</string>
+	<string name="edit_category_title">Editer Categorie</string>
+	<string name="delete_category_title">Supprimer Categorie</string>
+
 	<!-- Button -->
 	<string name="save">Sauver</string>
 	<string name="cancel">Annuler</string>
+	
+	
 </resources>

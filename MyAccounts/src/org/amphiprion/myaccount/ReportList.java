@@ -19,35 +19,25 @@
  */
 package org.amphiprion.myaccount;
 
-import org.amphiprion.myaccount.util.CurrencyUtil;
-
-import android.content.Context;
-import android.widget.ArrayAdapter;
+import android.app.Activity;
+import android.os.Bundle;
 
 /**
- * This is the adapter for the Currency spinner.
+ * This activity manage the tags.
  * 
  * @author amphiprion
  * 
  */
-public class CurrencyAdapter extends ArrayAdapter<String> {
-
-	/**
-	 * Default constructor.
-	 */
-	public CurrencyAdapter(Context context) {
-		super(context, android.R.layout.simple_spinner_item, CurrencyUtil.currencies);
-		setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-	}
-
+public class ReportList extends Activity {
 	/**
 	 * {@inheritDoc}
 	 * 
-	 * @see android.widget.Adapter#getItem(int)
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
 	@Override
-	public String getItem(int arg0) {
-		return CurrencyUtil.currencies[arg0].substring(0, 3);
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.tag_list);
 	}
-
 }
