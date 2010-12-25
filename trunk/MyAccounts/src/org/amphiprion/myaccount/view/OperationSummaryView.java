@@ -20,7 +20,7 @@
 package org.amphiprion.myaccount.view;
 
 import org.amphiprion.myaccount.R;
-import org.amphiprion.myaccount.database.entity.Account;
+import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.util.DateUtil;
 
@@ -33,26 +33,33 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * View used to display an account in the account list.
+ * View used to display an account in the operation list.
  * 
  * @author amphiprion
  * 
  */
-public class AccountSummaryView extends LinearLayout {
-	/** the linked account. */
-	private Account account;
+public class OperationSummaryView extends LinearLayout {
+	/** the linked operation. */
+	private Operation operation;
+
+	/** the currency of the operation. */
+	private String currency;
 
 	/**
-	 * Construct an account view.
+	 * Construct an operation view.
 	 * 
 	 * @param context
 	 *            the context
-	 * @param account
-	 *            the account entity
+	 * @param operation
+	 *            the operation entity
+	 * @param currency
+	 *            the currency to use
 	 */
-	public AccountSummaryView(Context context, Account account) {
+	public OperationSummaryView(Context context, Operation operation, String currency) {
 		super(context);
-		this.account = account;
+		this.operation = operation;
+		this.currency = currency;
+
 		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		setLayoutParams(lp);
@@ -60,17 +67,17 @@ public class AccountSummaryView extends LinearLayout {
 
 		addView(createIcon());
 
-		addView(createAccountLayout());
+		addView(createOperationLayout());
 
 		addView(createBalance());
 		addView(createCurrency());
 	}
 
 	/**
-	 * @return the account
+	 * @return the operation
 	 */
-	public Account getAccount() {
-		return account;
+	public Operation getOperation() {
+		return operation;
 	}
 
 	/**
@@ -95,7 +102,7 @@ public class AccountSummaryView extends LinearLayout {
 	 * 
 	 * @return the view
 	 */
-	private View createAccountLayout() {
+	private View createOperationLayout() {
 		LinearLayout accountLayout = new LinearLayout(getContext());
 		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 3);
@@ -106,16 +113,14 @@ public class AccountSummaryView extends LinearLayout {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 
 		t.setLayoutParams(tlp);
-		t.setText(account.getName());
+		t.setText(operation.getDescription());
 		t.setTextSize(16);
 		t.setTypeface(Typeface.DEFAULT_BOLD);
 		t.setTextColor(getContext().getResources().getColor(R.color.black));
 		accountLayout.addView(t);
 
 		TextView desc = new TextView(getContext());
-		if (account.getLastOperation() != null) {
-			desc.setText("" + DateUtil.format(account.getLastOperation()));
-		}
+		desc.setText("" + DateUtil.format(operation.getDate()));
 		accountLayout.addView(desc);
 		return accountLayout;
 	}
@@ -131,10 +136,10 @@ public class AccountSummaryView extends LinearLayout {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1);
 		balance.setGravity(Gravity.RIGHT);
 		balance.setLayoutParams(blp);
-		balance.setText("" + account.getBalance());
+		balance.setText("" + operation.getAmount());
 		balance.setTextSize(16);
 		balance.setTypeface(Typeface.DEFAULT_BOLD);
-		if (account.getBalance() < 0) {
+		if (operation.getAmount() < 0) {
 			balance.setTextColor(getContext().getResources().getColor(R.color.negative));
 		} else {
 			balance.setTextColor(getContext().getResources().getColor(R.color.positive));
@@ -154,15 +159,15 @@ public class AccountSummaryView extends LinearLayout {
 		blp.leftMargin = 5;
 		t.setLayoutParams(blp);
 
-		if (account.getCurrency().length() > 3) {
-			t.setText(account.getCurrency().substring(3));
+		if (currency.length() > 3) {
+			t.setText(currency.substring(3));
 		} else {
-			t.setText(account.getCurrency());
+			t.setText(currency);
 		}
 		t.setTextSize(16);
 		Typeface font = CurrencyUtil.currencyFace;
 		t.setTypeface(font);
-		if (account.getBalance() < 0) {
+		if (operation.getAmount() < 0) {
 			t.setTextColor(getContext().getResources().getColor(R.color.negative));
 		} else {
 			t.setTextColor(getContext().getResources().getColor(R.color.positive));

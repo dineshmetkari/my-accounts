@@ -1,3 +1,22 @@
+/*
+ * @copyright 2010 Gerald Jacobson
+ * @license GNU General Public License
+ * 
+ * This file is part of My Accounts.
+ *
+ * My Accounts is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * My Accounts is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with My Accounts.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.amphiprion.myaccount.database;
 
 import java.util.ArrayList;
@@ -8,13 +27,33 @@ import org.amphiprion.myaccount.database.entity.Account;
 import android.content.Context;
 import android.database.Cursor;
 
+/**
+ * This class is responsable of all database account access.
+ * 
+ * @author amphiprion
+ * 
+ */
 public class AccountDao extends AbstractDao {
+	/** The singleton. */
 	private static AccountDao instance;
 
+	/**
+	 * Hidden constructor.
+	 * 
+	 * @param context
+	 *            the application context
+	 */
 	private AccountDao(Context context) {
 		super(context);
 	}
 
+	/**
+	 * Return the singleton.
+	 * 
+	 * @param context
+	 *            the application context
+	 * @return the singleton
+	 */
 	public static AccountDao getInstance(Context context) {
 		if (instance == null) {
 			instance = new AccountDao(context);
@@ -22,6 +61,11 @@ public class AccountDao extends AbstractDao {
 		return instance;
 	}
 
+	/**
+	 * Return all existing accounts.
+	 * 
+	 * @return the account list
+	 */
 	public List<Account> getAccounts() {
 		String sql = "SELECT " + Account.DbField.ID + "," + Account.DbField.NAME + "," + Account.DbField.CURRENCY + ","
 				+ Account.DbField.BALANCE + "," + Account.DbField.LAST_OPERATION + "," + Account.DbField.EXCLUDED
@@ -43,6 +87,12 @@ public class AccountDao extends AbstractDao {
 		return result;
 	}
 
+	/**
+	 * Persist a new account.
+	 * 
+	 * @param account
+	 *            the new account
+	 */
 	public void createAccount(Account account) {
 		getDatabase().beginTransaction();
 		try {
@@ -59,5 +109,21 @@ public class AccountDao extends AbstractDao {
 		} finally {
 			getDatabase().endTransaction();
 		}
+	}
+
+	/**
+	 * Update an existing account
+	 * 
+	 * @param account
+	 *            the accoun to update
+	 */
+	public void updateAccount(Account account) {
+		String sql = "update ACCOUNT set " + Account.DbField.NAME + "='" + encodeString(account.getName()) + "',"
+				+ Account.DbField.CURRENCY + "='" + encodeString(account.getCurrency()) + "',"
+				+ Account.DbField.BALANCE + "=" + account.getBalance() + "," + Account.DbField.EXCLUDED + "="
+				+ (account.isExcluded() ? "1" : "0") + " WHERE " + Account.DbField.ID + "='"
+				+ encodeString(account.getId()) + "'";
+
+		execSQL(sql);
 	}
 }

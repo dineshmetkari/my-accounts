@@ -35,7 +35,7 @@ public class Operation {
 	private static final long serialVersionUID = 1L;
 
 	public enum DbField {
-		ID, AMOUNT, DATE, DESCRIPTION, TAG, FK_ACCOUNT, ICON
+		ID, AMOUNT, DATE, DESCRIPTION, FK_CATEGORY, FK_ACCOUNT
 	}
 
 	/** The uuid. */
@@ -46,10 +46,9 @@ public class Operation {
 	private Date date;
 	/** The description. */
 	private String description;
-	/** The tag. */
-	private String tagId;
-	/** The icon. */
-	private String icon;
+	/** The category. */
+	private Category category;
+
 	/** The owner account uuid. */
 	private String accountId;
 
@@ -71,18 +70,18 @@ public class Operation {
 	}
 
 	/**
-	 * @return the tagId
+	 * @return the category
 	 */
-	public String getTagId() {
-		return tagId;
+	public Category getCategory() {
+		return category;
 	}
 
 	/**
-	 * @param tagId
-	 *            the tagId to set
+	 * @param category
+	 *            the category to set
 	 */
-	public void setTagId(String tagId) {
-		this.tagId = tagId;
+	public void setCategory(Category category) {
+		this.category = category;
 	}
 
 	/**
@@ -98,21 +97,6 @@ public class Operation {
 	 */
 	public void setAccountId(String accountId) {
 		this.accountId = accountId;
-	}
-
-	/**
-	 * @return the icon
-	 */
-	public String getIcon() {
-		return icon;
-	}
-
-	/**
-	 * @param icon
-	 *            the icon to set
-	 */
-	public void setIcon(String icon) {
-		this.icon = icon;
 	}
 
 	/**
