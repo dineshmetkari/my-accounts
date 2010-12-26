@@ -19,9 +19,9 @@
  */
 package org.amphiprion.myaccount.driver.file;
 
-import java.io.InputStream;
 import java.util.List;
 
+import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Operation;
 
 /**
@@ -35,10 +35,12 @@ public interface FileDriver {
 	/**
 	 * Return the list of parameters for this driver.
 	 * 
+	 * @param account
+	 *            the account used for pre-init
 	 * @return the list of parameter
 	 */
 	@SuppressWarnings("unchecked")
-	List<Parameter> getParameters();
+	List<Parameter> getParameters(Account account);
 
 	/**
 	 * Return the file driver unique name. Used also as string key to display
@@ -49,12 +51,10 @@ public interface FileDriver {
 	/**
 	 * Parse the given stream and return the parsed operations.
 	 * 
-	 * @param data
-	 *            the stream to parse
 	 * @param parameters
 	 *            the parameters applied to the parser
 	 * @return the parsed operations
 	 */
 	@SuppressWarnings("unchecked")
-	List<Operation> parse(InputStream data, List<Parameter> parameters);
+	List<Operation> parse(List<Parameter> parameters);
 }

@@ -39,6 +39,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class AccountList extends Activity {
+	/** The current category for context menu. */
+	private Account current;
 
 	/** The list of existing accounts. */
 	private List<Account> accounts;
@@ -59,20 +61,6 @@ public class AccountList extends Activity {
 
 		LinearLayout ln = (LinearLayout) findViewById(R.id.account_list);
 		ln.removeAllViews();
-		//
-		// Account account = new Account();
-		// account.setName("BNP Compte Join");
-		// account.setBalance(3021.25);
-		// account.setLastOperation(new Date());
-		// account.setCurrency("EUR\u20ac");
-		// accounts.add(account);
-		//
-		// account = new Account();
-		// account.setName("Livret A");
-		// account.setBalance(10000);
-		// account.setCurrency("EUR\u20ac");
-		// accounts.add(account);
-		//
 		accounts.addAll(AccountDao.getInstance(this).getAccounts());
 
 		TextView lblTotalCurrency = (TextView) findViewById(R.id.lblTotalCurrency);
@@ -153,12 +141,40 @@ public class AccountList extends Activity {
 	 */
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		menu.clear();
 		if (v instanceof AccountSummaryView) {
-			Account account = ((AccountSummaryView) v).getAccount();
-			Intent i = new Intent(this, EditAccount.class);
-			i.putExtra("ACCOUNT", account);
-			startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_EDIT_ACCOUNT);
+			current = ((AccountSummaryView) v).getAccount();
+			menu.add(1, ApplicationConstants.MENU_ID_EDIT_ACCOUNT, 0, R.string.edit_account_title);
+			menu.add(1, ApplicationConstants.MENU_ID_DELETE_ACCOUNT, 1, R.string.delete_account_title);
 		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		if (item.getItemId() == ApplicationConstants.MENU_ID_EDIT_ACCOUNT) {
+			edit(current);
+		} else if (item.getItemId() == ApplicationConstants.MENU_ID_DELETE_ACCOUNT) {
+			AccountDao.getInstance(this).delete(current);
+			buildAccountList();
+		}
+		return true;
+	}
+
+	/**
+	 * Edit the given account.
+	 * 
+	 * @param account
+	 *            the account to edit
+	 */
+	private void edit(Account account) {
+		Intent i = new Intent(this, EditAccount.class);
+		i.putExtra("ACCOUNT", account);
+		startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_EDIT_ACCOUNT);
 	}
 
 	/**

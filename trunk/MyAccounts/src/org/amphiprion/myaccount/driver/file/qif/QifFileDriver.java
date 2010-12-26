@@ -20,15 +20,18 @@
 package org.amphiprion.myaccount.driver.file.qif;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 import org.amphiprion.myaccount.ApplicationConstants;
+import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.driver.file.FileDriver;
 import org.amphiprion.myaccount.driver.file.Parameter;
@@ -69,7 +72,6 @@ public class QifFileDriver implements FileDriver {
 	public QifFileDriver() {
 		dateFormat = new Parameter<String>(DATE_FORMAT_NAME, Type.DATE_FORMAT, "dd/MM/yy");
 		decimalSeparator = new Parameter<String>(DECIMAL_SEPARATOR_NAME, Type.DECIMAL_SEPARATOR, ".");
-		dateFormat = new Parameter<String>(DATE_FORMAT_NAME, Type.DATE_FORMAT, "dd/MM/yy");
 		from = new Parameter<Date>(FROM_NAME, Type.DATE_PICKER);
 		to = new Parameter<Date>(TO_NAME, Type.DATE_PICKER);
 		file = new Parameter<URI>(FILE_NAME, Type.FILE_URI);
@@ -88,7 +90,20 @@ public class QifFileDriver implements FileDriver {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Parameter> getParameters() {
+	public List<Parameter> getParameters(Account account) {
+		long fromValue = 0;
+		if (account.getLastOperation() == null) {
+			Calendar c = Calendar.getInstance();
+			c.setTimeInMillis(System.currentTimeMillis());
+			c.add(Calendar.MONTH, -1);
+			fromValue = c.getTimeInMillis();
+		} else {
+			Calendar c = Calendar.getInstance();
+			c.setTimeInMillis(account.getLastOperation().getTime());
+			c.add(Calendar.DAY_OF_MONTH, +1);
+			fromValue = c.getTimeInMillis();
+		}
+		from.setValue(new Date(fromValue));
 		return parameters;
 	}
 
@@ -110,12 +125,13 @@ public class QifFileDriver implements FileDriver {
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public List<Operation> parse(InputStream data, List<Parameter> parameters) {
+	public List<Operation> parse(List<Parameter> parameters) {
+
 		List<Operation> operations = new ArrayList<Operation>();
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat.getValue());
-			// to.setValue(sdf.parse("17/12/10"));
-			BufferedReader br = new BufferedReader(new InputStreamReader(data));
+			FileInputStream fis = new FileInputStream(new File(file.getValue()));
+			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
 
 			String ligne;
 			Operation op = new Operation();
@@ -144,6 +160,7 @@ public class QifFileDriver implements FileDriver {
 			}
 		} catch (Exception e) {
 			Log.e(ApplicationConstants.PACKAGE, "Error parsing QIF", e);
+			operations.clear();
 		}
 		return operations;
 	}
