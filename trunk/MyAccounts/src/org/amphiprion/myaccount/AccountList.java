@@ -91,7 +91,7 @@ public class AccountList extends Activity {
 						Account account = ((AccountSummaryView) v).getAccount();
 						Intent i = new Intent(AccountList.this, OperationList.class);
 						i.putExtra("ACCOUNT", account);
-						startActivity(i);
+						startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_VIEW_OPERATION_LIST);
 					}
 				}
 			});
@@ -194,6 +194,9 @@ public class AccountList extends Activity {
 				AccountDao.getInstance(this).updateAccount(account);
 				buildAccountList();
 			}
+		}
+		if (requestCode == ApplicationConstants.ACTIVITY_RETURN_VIEW_OPERATION_LIST) {
+			buildAccountList();
 		}
 	}
 }
