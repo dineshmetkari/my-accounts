@@ -20,53 +20,56 @@
 package org.amphiprion.myaccount.database.entity;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.UUID;
 
 /**
- * The category entity.
+ * The rule entity.
  * 
  * @author amphiprion
  * 
  */
-public class Category implements Serializable {
+public class Rule implements Serializable {
 
 	/**
-	 * Serial UID.
+	 * Serial UUID.
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public enum DbField {
-		ID, NAME, PARENT
+	public enum DbState {
+		CREATE, UPDATE, DELETE
 	}
 
-	/** The uuid. */
+	public enum DbField {
+		ID, FILTER, FK_CATEGORY
+	}
+
+	/** The UUID. */
 	private String id;
 
-	/** The name. */
-	private String name;
-
-	/** The parent category. */
-	private Category parent;
-
-	/** The rules. */
-	private List<Rule> rules;
+	/** The filter. */
+	private String filter;
+	/** the category id. */
+	private String categoryId;
+	/** The db state. */
+	private DbState state;
 
 	/**
 	 * Default constructor.
 	 */
-	public Category() {
+	public Rule() {
 		id = UUID.randomUUID().toString();
+		state = DbState.CREATE;
 	}
 
 	/**
-	 * Default constructor.
+	 * Default constructor for an existing rule.
 	 * 
 	 * @param id
 	 *            the uuid
 	 */
-	public Category(String id) {
+	public Rule(String id) {
 		this.id = id;
+		state = DbState.UPDATE;
 	}
 
 	/**
@@ -77,47 +80,18 @@ public class Category implements Serializable {
 	}
 
 	/**
-	 * @return the name
+	 * @return the filter
 	 */
-	public String getName() {
-		return name;
+	public String getFilter() {
+		return filter;
 	}
 
 	/**
-	 * @param name
-	 *            the name to set
+	 * @param filter
+	 *            the filter to set
 	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
-	 * @return the parent
-	 */
-	public Category getParent() {
-		return parent;
-	}
-
-	/**
-	 * @param parent
-	 *            the parent to set
-	 */
-	public void setParent(Category parent) {
-		this.parent = parent;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see java.lang.Object#toString()
-	 */
-	@Override
-	public String toString() {
-		if (getParent() == null) {
-			return getName();
-		} else {
-			return getName() + " [" + getParent().getName() + "]";
-		}
+	public void setFilter(String filter) {
+		this.filter = filter;
 	}
 
 	/**
@@ -149,7 +123,7 @@ public class Category implements Serializable {
 		if (getClass() != obj.getClass()) {
 			return false;
 		}
-		Category other = (Category) obj;
+		Rule other = (Rule) obj;
 		if (id == null) {
 			if (other.id != null) {
 				return false;
@@ -161,17 +135,32 @@ public class Category implements Serializable {
 	}
 
 	/**
-	 * @return the rules
+	 * @return the categoryId
 	 */
-	public List<Rule> getRules() {
-		return rules;
+	public String getCategoryId() {
+		return categoryId;
 	}
 
 	/**
-	 * @param rules
-	 *            the rules to set
+	 * @param categoryId
+	 *            the categoryId to set
 	 */
-	public void setRules(List<Rule> rules) {
-		this.rules = rules;
+	public void setCategoryId(String categoryId) {
+		this.categoryId = categoryId;
+	}
+
+	/**
+	 * @param state
+	 *            the state to set
+	 */
+	public void setState(DbState state) {
+		this.state = state;
+	}
+
+	/**
+	 * @return the state
+	 */
+	public DbState getState() {
+		return state;
 	}
 }

@@ -27,6 +27,7 @@ import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
+import org.amphiprion.myaccount.database.entity.Rule;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -52,11 +53,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 			db.execSQL("create table OPERATION (" + Operation.DbField.ID + " text primary key, "
 					+ Operation.DbField.DATE + " date not null , " + Operation.DbField.AMOUNT + " double not null, "
-					+ Operation.DbField.DESCRIPTION + " string not null, " + Operation.DbField.FK_CATEGORY
-					+ " text not null, " + Operation.DbField.FK_ACCOUNT + " text not null) ");
+					+ Operation.DbField.DESCRIPTION + " string not null, " + Operation.DbField.FK_CATEGORY + " text , "
+					+ Operation.DbField.FK_ACCOUNT + " text not null) ");
 
 			db.execSQL("create table CATEGORY (" + Category.DbField.ID + " text primary key, " + Category.DbField.NAME
 					+ " text not null, " + Category.DbField.PARENT + " text)");
+
+			db.execSQL("create table RULE (" + Rule.DbField.ID + " text primary key, " + Rule.DbField.FILTER
+					+ " text not null, " + Rule.DbField.FK_CATEGORY + " text not null)");
 		} catch (Throwable e) {
 			Log.e(ApplicationConstants.PACKAGE, "Can not create database.", e);
 		}
@@ -64,7 +68,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-		// TODO Auto-generated method stub
 	}
 
 	/**

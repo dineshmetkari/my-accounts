@@ -30,12 +30,13 @@ public class Parameter<T> {
 	 * List of possible parameter types.
 	 */
 	public enum Type {
-		DATE_FORMAT, DECIMAL_SEPARATOR, DATE_PICKER
+		DATE_FORMAT, DECIMAL_SEPARATOR, DATE_PICKER, FILE_URI
 	}
 
 	private String name;
 	private T value;
 	private Type type;
+	private boolean nullable;
 
 	/**
 	 * Construct a new parameter.
@@ -62,9 +63,34 @@ public class Parameter<T> {
 	 *            the default value
 	 */
 	public Parameter(String name, Type type, T value) {
+		this(name, type, value, false);
+	}
+
+	/**
+	 * Construct a new parameter with a default value.
+	 * 
+	 * @param name
+	 *            the name (unique key, it is also used as property key for
+	 *            displaying label)
+	 * @param type
+	 *            the parameter type
+	 * @param value
+	 *            the default value
+	 * @param nullable
+	 *            true if nullable
+	 */
+	public Parameter(String name, Type type, T value, boolean nullable) {
 		this.name = name;
 		this.type = type;
 		this.value = value;
+		this.nullable = nullable;
+	}
+
+	/**
+	 * @return the nullable
+	 */
+	public boolean isNullable() {
+		return nullable;
 	}
 
 	/**

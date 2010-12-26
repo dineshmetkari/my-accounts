@@ -20,37 +20,45 @@
 package org.amphiprion.myaccount.view;
 
 import org.amphiprion.myaccount.R;
-import org.amphiprion.myaccount.database.entity.Category;
+import org.amphiprion.myaccount.database.entity.Rule;
 
 import android.content.Context;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 /**
- * View used to display a category in the category list.
+ * View used to display a rule in the rule list.
  * 
  * @author amphiprion
  * 
  */
-public class CategorySummaryView extends LinearLayout {
-	/** the linked category. */
-	private Category category;
+public class RuleView extends LinearLayout {
+	/** the linked rule. */
+	private Rule rule;
+	/** The rule clicked listener. */
+	private OnRuleClickedListener ruleClickedListener;
+
+	/** The imageview. */
+	private ImageView img;
+	/** The edit text. */
+	private EditText txt;
 
 	/**
-	 * Construct an category view.
+	 * Construct a rule view.
 	 * 
 	 * @param context
 	 *            the context
-	 * @param category
-	 *            the category entity
+	 * @param rule
+	 *            the rule entity
 	 */
-	public CategorySummaryView(Context context, Category category) {
+	public RuleView(Context context, Rule rule, OnRuleClickedListener ruleClickedListener) {
 		super(context);
-		this.category = category;
+		this.rule = rule;
+		this.ruleClickedListener = ruleClickedListener;
 
 		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -63,10 +71,10 @@ public class CategorySummaryView extends LinearLayout {
 	}
 
 	/**
-	 * @return the category
+	 * @return the rule
 	 */
-	public Category getCategory() {
-		return category;
+	public Rule getRule() {
+		return rule;
 	}
 
 	/**
@@ -82,7 +90,18 @@ public class CategorySummaryView extends LinearLayout {
 		imglp.rightMargin = 5;
 		img.setLayoutParams(imglp);
 
-		img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.account));
+		if (rule == null) {
+			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.add));
+		} else {
+			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.remove));
+		}
+		img.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				ruleClickedListener.ruleClicked(RuleView.this);
+			}
+		});
+		this.img = img;
 		return img;
 	}
 
@@ -93,25 +112,57 @@ public class CategorySummaryView extends LinearLayout {
 	 */
 	private View createCategoryLayout() {
 		LinearLayout accountLayout = new LinearLayout(getContext());
-		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 3);
 		accountLayout.setOrientation(VERTICAL);
 		accountLayout.setLayoutParams(aclp);
-		TextView t = new TextView(getContext());
+		EditText t = new EditText(getContext());
 		LayoutParams tlp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 
 		t.setLayoutParams(tlp);
-		t.setText(category.toString());
+		if (rule != null) {
+			t.setText(rule.getFilter());
+		} else {
+			t.setText("");
+			t.setVisibility(INVISIBLE);
+		}
 		t.setTextSize(16);
 		t.setTypeface(Typeface.DEFAULT_BOLD);
 		t.setTextColor(getContext().getResources().getColor(R.color.black));
 		accountLayout.addView(t);
 
+		txt = t;
 		// TextView desc = new TextView(getContext());
 		// desc.setText("" + DateUtil.format(operation.getDate()));
 		// accountLayout.addView(desc);
 		return accountLayout;
 	}
 
+	public interface OnRuleClickedListener {
+		void ruleClicked(RuleView view);
+	}
+
+	/**
+	 * Set the new rule. Call this method only if the current rule is null.
+	 * 
+	 * @param rule
+	 *            the new rule
+	 */
+	public void setRule(Rule rule) {
+		if (this.rule == null) {
+			this.rule = rule;
+			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.remove));
+			txt.setVisibility(VISIBLE);
+		}
+	}
+
+	/**
+	 * Update the filter of the rule entity.
+	 */
+	public void updateRuleFilter() {
+		if (rule != null) {
+			rule.setFilter(txt.getText().toString());
+		}
+	}
 }
