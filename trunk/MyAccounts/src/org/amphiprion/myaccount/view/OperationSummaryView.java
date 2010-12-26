@@ -33,7 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * View used to display an account in the operation list.
+ * View used to display an operation in the operation list.
  * 
  * @author amphiprion
  * 

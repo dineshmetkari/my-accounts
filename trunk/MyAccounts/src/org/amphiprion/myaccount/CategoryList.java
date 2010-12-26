@@ -122,6 +122,13 @@ public class CategoryList extends Activity {
 
 		for (Category c : categories) {
 			CategorySummaryView view = new CategorySummaryView(this, c);
+			view.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					edit(((CategorySummaryView) v).getCategory());
+				}
+			});
+
 			view.setOnLongClickListener(new View.OnLongClickListener() {
 				@Override
 				public boolean onLongClick(View v) {
@@ -160,13 +167,23 @@ public class CategoryList extends Activity {
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		if (item.getItemId() == ApplicationConstants.MENU_ID_EDIT_CATEGORY) {
-			Intent i = new Intent(this, EditCategory.class);
-			i.putExtra("CATEGORY", current);
-			startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_EDIT_CATEGORY);
+			edit(current);
 		} else if (item.getItemId() == ApplicationConstants.MENU_ID_DELETE_CATEGORY) {
 			CategoryDao.getInstance(this).delete(current);
 			buildCategoryList();
 		}
 		return true;
+	}
+
+	/**
+	 * Edit the given category.
+	 * 
+	 * @param category
+	 *            the category to edit
+	 */
+	private void edit(Category category) {
+		Intent i = new Intent(this, EditCategory.class);
+		i.putExtra("CATEGORY", category);
+		startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_EDIT_CATEGORY);
 	}
 }

@@ -47,18 +47,6 @@ public class Home extends TabActivity {
 			DateUtil.init(this);
 		}
 
-		// String path = Environment.getExternalStorageDirectory() + "/" +
-		// ApplicationConstants.NAME;
-		// path += "/" + "E3567945.qif";
-		// FileInputStream fis = null;
-		// try {
-		// fis = new FileInputStream(path);
-		// } catch (FileNotFoundException e) {
-		// e.printStackTrace();
-		// }
-		// FileDriver driver = FileDriverManager.getDrivers().get(0);
-		// driver.parse(fis, driver.getParameters());
-
 		setContentView(R.layout.main);
 
 		Resources res = getResources(); // Resource object to get Drawables

@@ -21,6 +21,7 @@
 
 	<!-- Operations -->
 	<string name="operations_title">Transactions: </string>
+	<string name="import_operation">Import from File</string>
 	
 	<!-- Categories -->
 	<string name="category_name">Category Name</string>
@@ -33,4 +34,17 @@
 	<!-- Button -->
 	<string name="save">Save</string>
 	<string name="cancel">Cancel</string>
+	<string name="imports">Import</string>
+
+	<!-- File drivers -->
+	<string name="file_import_choice_title">Choose a file driver</string>
+	<string name="file_import_title">Define import parameters</string>
+	<string name="nb_imported_operation">%1$d operation(s) have been imported.</string>
+
+	<string name="DATE_FORMAT">Date Format</string>
+	<string name="DECIMAL">Decimal Separator</string>
+	<string name="FROM">From</string>
+	<string name="TO">To</string>
+	<string name="FILE">File to Import</string>
+	<string name="mandatory_field">\'%1$s\' is mandatory.</string>
 </resources>

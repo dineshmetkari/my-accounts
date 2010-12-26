@@ -17,26 +17,29 @@
  * You should have received a copy of the GNU General Public License
  * along with My Accounts.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.amphiprion.myaccount;
+package org.amphiprion.myaccount.adapter;
 
-import android.app.Activity;
-import android.os.Bundle;
+import java.util.List;
+
+import org.amphiprion.myaccount.driver.file.FileDriver;
+
+import android.content.Context;
+import android.widget.ArrayAdapter;
 
 /**
- * This activity manage the tags.
+ * This is the adapter for the File driver chooser.
  * 
  * @author amphiprion
  * 
  */
-public class ReportList extends Activity {
+public class FileDriverAdapter extends ArrayAdapter<FileDriver> {
+
 	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 * Default constructor.
 	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.report_list);
+	public FileDriverAdapter(Context context, List<FileDriver> drivers) {
+		super(context, android.R.layout.simple_spinner_item, drivers);
+		setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	}
+
 }

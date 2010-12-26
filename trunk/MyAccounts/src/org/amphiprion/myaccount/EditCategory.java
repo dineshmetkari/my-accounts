@@ -23,7 +23,10 @@ import java.util.List;
 
 import org.amphiprion.myaccount.adapter.CategoryAdapter;
 import org.amphiprion.myaccount.database.CategoryDao;
+import org.amphiprion.myaccount.database.RuleDao;
 import org.amphiprion.myaccount.database.entity.Category;
+import org.amphiprion.myaccount.database.entity.Rule;
+import org.amphiprion.myaccount.view.RuleView;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -31,6 +34,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,8 +44,11 @@ import android.widget.TextView;
  * @author amphiprion
  * 
  */
-public class EditCategory extends Activity {
+public class EditCategory extends Activity implements RuleView.OnRuleClickedListener {
 	private Category category;
+
+	/** The rules of the category. */
+	private List<Rule> rules;
 
 	/**
 	 * {@inheritDoc}
@@ -86,6 +93,9 @@ public class EditCategory extends Activity {
 				} else {
 					category.setParent(parent);
 				}
+				updateRuleFilters();
+				category.setRules(rules);
+
 				Intent i = new Intent();
 				i.putExtra("CATEGORY", category);
 				setResult(RESULT_OK, i);
@@ -101,5 +111,52 @@ public class EditCategory extends Activity {
 				finish();
 			}
 		});
+
+		buildRuleList();
+	}
+
+	private void buildRuleList() {
+		rules = RuleDao.getInstance(this).getRules(category);
+
+		LinearLayout ln = (LinearLayout) findViewById(R.id.rule_list);
+		ln.removeAllViews();
+		for (Rule rule : rules) {
+			ln.addView(new RuleView(this, rule, this));
+		}
+		ln.addView(new RuleView(this, null, this));
+	}
+
+	/**
+	 * Ask the rule views to update its underlying rule.
+	 */
+	private void updateRuleFilters() {
+		LinearLayout ln = (LinearLayout) findViewById(R.id.rule_list);
+		for (int i = 0; i < ln.getChildCount(); i++) {
+			RuleView v = (RuleView) ln.getChildAt(i);
+			v.updateRuleFilter();
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.amphiprion.myaccount.view.RuleView.OnRuleClickedListener#ruleClicked(org.amphiprion.myaccount.view.RuleView)
+	 */
+	@Override
+	public void ruleClicked(RuleView view) {
+		LinearLayout ln = (LinearLayout) findViewById(R.id.rule_list);
+		if (view.getRule() == null) {
+			ln.addView(new RuleView(this, null, this));
+			Rule rule = new Rule();
+			rule.setCategoryId(category.getId());
+			view.setRule(rule);
+			rules.add(rule);
+		} else if (view.getRule().getState() == Rule.DbState.CREATE) {
+			ln.removeView(view);
+			rules.remove(view.getRule());
+		} else {
+			view.getRule().setState(Rule.DbState.DELETE);
+			ln.removeView(view);
+		}
 	}
 }

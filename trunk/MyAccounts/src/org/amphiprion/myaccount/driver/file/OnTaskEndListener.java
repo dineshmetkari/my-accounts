@@ -17,26 +17,15 @@
  * You should have received a copy of the GNU General Public License
  * along with My Accounts.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.amphiprion.myaccount;
-
-import android.app.Activity;
-import android.os.Bundle;
+package org.amphiprion.myaccount.driver.file;
 
 /**
- * This activity manage the tags.
+ * The listener to be informed when the task end.
  * 
  * @author amphiprion
  * 
  */
-public class ReportList extends Activity {
-	/**
-	 * {@inheritDoc}
-	 * 
-	 * @see android.app.Activity#onCreate(android.os.Bundle)
-	 */
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.report_list);
-	}
+public interface OnTaskEndListener {
+
+	void taskEnded(FileImportTask task);
 }

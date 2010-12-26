@@ -21,6 +21,7 @@
 
 	<!-- Operations -->
 	<string name="operations_title">Operations: </string>
+	<string name="import_operation">Importer un fichier</string>
 	
 	<!-- Categories -->
 	<string name="category_name">Nom de la Categorie</string>
@@ -33,6 +34,18 @@
 	<!-- Button -->
 	<string name="save">Sauver</string>
 	<string name="cancel">Annuler</string>
+	<string name="imports">Importer</string>
 	
+	<!-- File drivers -->
+	<string name="file_import_choice_title">Choisir un pilote de fichier</string>
+	<string name="file_import_title">Definition de paramètres d\'import</string>
+	<string name="nb_imported_operation">%1$d operation(s) ont été importé.</string>
+	
+	<string name="DATE_FORMAT">Format de la date</string>
+	<string name="DECIMAL">Separateur Décimal</string>
+	<string name="FROM">Date de Début</string>
+	<string name="TO">Date de Fin</string>
+	<string name="FILE">Fichier à Importer</string>
+	<string name="mandatory_field">\'%1$s\' est obligatoire.</string>
 	
 </resources>

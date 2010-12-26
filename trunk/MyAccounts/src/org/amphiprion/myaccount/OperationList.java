@@ -19,15 +19,23 @@
  */
 package org.amphiprion.myaccount;
 
-import java.util.Date;
+import java.util.List;
 
+import org.amphiprion.myaccount.adapter.FileDriverAdapter;
+import org.amphiprion.myaccount.database.OperationDao;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Operation;
+import org.amphiprion.myaccount.driver.file.FileDriverManager;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.view.OperationSummaryView;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -38,6 +46,8 @@ import android.widget.TextView;
  * 
  */
 public class OperationList extends Activity {
+	private Account account;
+
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -47,10 +57,14 @@ public class OperationList extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		Account account = (Account) getIntent().getSerializableExtra("ACCOUNT");
+		account = (Account) getIntent().getSerializableExtra("ACCOUNT");
 		setTitle(getResources().getText(R.string.operations_title) + " " + account.getName());
 		setContentView(R.layout.operation_list);
 
+		buildOperationList(account);
+	}
+
+	private void buildOperationList(Account account) {
 		TextView lblTotalCurrency = (TextView) findViewById(R.id.lblTotalCurrency);
 		lblTotalCurrency.setTypeface(CurrencyUtil.currencyFace);
 		TextView lblTotalBalance = (TextView) findViewById(R.id.lblTotalBalance);
@@ -62,20 +76,70 @@ public class OperationList extends Activity {
 		}
 		lblTotalCurrency.setText(tmpCurrency);
 
-		buildOperationList(account);
-	}
-
-	private void buildOperationList(Account account) {
-		// List<Operation> operations = new ArrayList<Operation>();
-		Operation op = new Operation();
-		op.setAccountId(account.getId());
-		op.setAmount(-25.23);
-		op.setDate(new Date());
-		op.setDescription("coucou");
+		List<Operation> operations = OperationDao.getInstance(this).getOperations(account);
 
 		LinearLayout ln = (LinearLayout) findViewById(R.id.operation_list);
 		ln.removeAllViews();
+		for (Operation op : operations) {
+			ln.addView(new OperationSummaryView(this, op, account.getCurrency()));
+		}
+	}
 
-		ln.addView(new OperationSummaryView(this, op, account.getCurrency()));
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.app.Activity#onPrepareOptionsMenu(android.view.Menu)
+	 */
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.clear();
+
+		MenuItem addAccount = menu.add(0, ApplicationConstants.MENU_ID_IMPORT_OPERATION, 1, R.string.import_operation);
+		addAccount.setIcon(android.R.drawable.ic_menu_recent_history);
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == ApplicationConstants.MENU_ID_IMPORT_OPERATION) {
+
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(getResources().getString(R.string.file_import_choice_title));
+			builder.setSingleChoiceItems(new FileDriverAdapter(OperationList.this, FileDriverManager.getDrivers()), -1,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int item) {
+							dialog.dismiss();
+							Intent i = new Intent(OperationList.this, DefineImportParameter.class);
+							i.putExtra("ACCOUNT", account);
+							i.putExtra("FILE_DRIVER_INDEX", item);
+							startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_IMPORT_OPERATION);
+						}
+					});
+			AlertDialog alert = builder.create();
+			alert.show();
+		}
+		return true;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.app.Activity#onActivityResult(int, int,
+	 *      android.content.Intent)
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_OK) {
+			if (requestCode == ApplicationConstants.ACTIVITY_RETURN_IMPORT_OPERATION) {
+				account = (Account) data.getSerializableExtra("ACCOUNT");
+				buildOperationList(account);
+			}
+		}
+
 	}
 }

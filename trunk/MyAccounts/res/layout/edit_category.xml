@@ -18,7 +18,7 @@
 
 
 
-<LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/rule_list"></LinearLayout>
+<LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/rule_list" android:layout_width="fill_parent"></LinearLayout>
 </ScrollView><LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
 <Button android:text="@string/save" android:id="@+id/btSave" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
 <Button android:text="@string/cancel" android:id="@+id/btCancel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>

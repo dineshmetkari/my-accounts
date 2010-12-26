@@ -22,6 +22,7 @@ package org.amphiprion.myaccount.driver.file.qif;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -50,11 +51,14 @@ public class QifFileDriver implements FileDriver {
 	private static final String FROM_NAME = "FROM";
 	/** The to parameter name. */
 	private static final String TO_NAME = "TO";
+	/** The to parameter file name. */
+	private static final String FILE_NAME = "FILE";
 
 	private Parameter<String> dateFormat;
 	private Parameter<String> decimalSeparator;
 	private Parameter<Date> from;
 	private Parameter<Date> to;
+	private Parameter<URI> file;
 	/**
 	 * The parameter list.
 	 */
@@ -68,12 +72,13 @@ public class QifFileDriver implements FileDriver {
 		dateFormat = new Parameter<String>(DATE_FORMAT_NAME, Type.DATE_FORMAT, "dd/MM/yy");
 		from = new Parameter<Date>(FROM_NAME, Type.DATE_PICKER);
 		to = new Parameter<Date>(TO_NAME, Type.DATE_PICKER);
-
+		file = new Parameter<URI>(FILE_NAME, Type.FILE_URI);
 		parameters = new ArrayList<Parameter>();
 		parameters.add(dateFormat);
 		parameters.add(decimalSeparator);
 		parameters.add(from);
 		parameters.add(to);
+		parameters.add(file);
 	}
 
 	/**
@@ -120,7 +125,6 @@ public class QifFileDriver implements FileDriver {
 						if ((to.getValue() == null || !op.getDate().after(to.getValue()))
 								&& (from.getValue() == null || !op.getDate().before(from.getValue()))) {
 							operations.add(op);
-							Log.d(ApplicationConstants.PACKAGE, op.toString());
 						}
 					}
 					op = new Operation();
@@ -143,4 +147,15 @@ public class QifFileDriver implements FileDriver {
 		}
 		return operations;
 	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return getName();
+	}
+
 }

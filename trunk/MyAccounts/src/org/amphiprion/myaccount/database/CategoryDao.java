@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.amphiprion.myaccount.database.entity.Category;
+import org.amphiprion.myaccount.database.entity.Rule;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -97,12 +98,24 @@ public class CategoryDao extends AbstractDao {
 	 *            the new category
 	 */
 	public void createCategory(Category category) {
-		String sql = "insert into CATEGORY (" + Category.DbField.ID + "," + Category.DbField.NAME + ","
-				+ Category.DbField.PARENT + ") values ('" + category.getId() + "','" + encodeString(category.getName())
-				+ "'," + (category.getParent() != null ? "'" + encodeString(category.getParent().getId()) + "'" : null)
-				+ ")";
+		getDatabase().beginTransaction();
+		try {
 
-		execSQL(sql);
+			String sql = "insert into CATEGORY (" + Category.DbField.ID + "," + Category.DbField.NAME + ","
+					+ Category.DbField.PARENT + ") values ('" + category.getId() + "','"
+					+ encodeString(category.getName()) + "',"
+					+ (category.getParent() != null ? "'" + encodeString(category.getParent().getId()) + "'" : null)
+					+ ")";
+
+			execSQL(sql);
+			RuleDao ruleDao = RuleDao.getInstance(getContext());
+			for (Rule rule : category.getRules()) {
+				ruleDao.create(rule);
+			}
+			getDatabase().setTransactionSuccessful();
+		} finally {
+			getDatabase().endTransaction();
+		}
 	}
 
 	/**
@@ -112,12 +125,31 @@ public class CategoryDao extends AbstractDao {
 	 *            the category to update
 	 */
 	public void updateCategory(Category category) {
-		String sql = "update CATEGORY set " + Category.DbField.NAME + "='" + encodeString(category.getName()) + "',"
-				+ Category.DbField.PARENT + "="
-				+ (category.getParent() != null ? "'" + encodeString(category.getParent().getId()) + "'" : null)
-				+ " WHERE " + Category.DbField.ID + "='" + encodeString(category.getId()) + "'";
+		getDatabase().beginTransaction();
+		try {
 
-		execSQL(sql);
+			String sql = "update CATEGORY set " + Category.DbField.NAME + "='" + encodeString(category.getName())
+					+ "'," + Category.DbField.PARENT + "="
+					+ (category.getParent() != null ? "'" + encodeString(category.getParent().getId()) + "'" : null)
+					+ " WHERE " + Category.DbField.ID + "='" + encodeString(category.getId()) + "'";
+
+			execSQL(sql);
+
+			RuleDao ruleDao = RuleDao.getInstance(getContext());
+			for (Rule rule : category.getRules()) {
+				if (rule.getState() == Rule.DbState.CREATE) {
+					ruleDao.create(rule);
+				} else if (rule.getState() == Rule.DbState.UPDATE) {
+					ruleDao.update(rule);
+				} else {
+					ruleDao.delete(rule);
+				}
+			}
+
+			getDatabase().setTransactionSuccessful();
+		} finally {
+			getDatabase().endTransaction();
+		}
 	}
 
 	public List<Category> getPossibleParentFor(Category category) {

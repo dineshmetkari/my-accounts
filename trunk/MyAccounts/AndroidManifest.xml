@@ -30,6 +30,9 @@
         <activity android:name=".EditCategory" 
                   android:label="@string/edit_category_title">
         </activity>
+        <activity android:name=".DefineImportParameter" 
+                  android:label="@string/file_import_title">
+        </activity>
     </application>
     <uses-sdk android:minSdkVersion="8" />
 

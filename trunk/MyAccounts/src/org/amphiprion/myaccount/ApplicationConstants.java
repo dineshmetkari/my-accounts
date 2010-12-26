@@ -32,10 +32,13 @@ public interface ApplicationConstants {
 	public static final int MENU_ID_ADD_CATEGORY = 2;
 	public static final int MENU_ID_EDIT_CATEGORY = 3;
 	public static final int MENU_ID_DELETE_CATEGORY = 4;
+	public static final int MENU_ID_IMPORT_OPERATION = 5;
 
 	public static final int ACTIVITY_RETURN_CREATE_ACCOUNT = 1;
 	public static final int ACTIVITY_RETURN_EDIT_ACCOUNT = 2;
 	public static final int ACTIVITY_RETURN_CREATE_CATEGORY = 3;
 	public static final int ACTIVITY_RETURN_EDIT_CATEGORY = 4;
+	public static final int ACTIVITY_RETURN_IMPORT_OPERATION = 5;
+	public static final int ACTIVITY_RETURN_CHOOSE_FILE = 6;
 
 }
