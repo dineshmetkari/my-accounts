@@ -40,5 +40,6 @@ public interface ApplicationConstants {
 	public static final int ACTIVITY_RETURN_EDIT_CATEGORY = 4;
 	public static final int ACTIVITY_RETURN_IMPORT_OPERATION = 5;
 	public static final int ACTIVITY_RETURN_CHOOSE_FILE = 6;
+	public static final int ACTIVITY_RETURN_VIEW_OPERATION_LIST = 7;
 
 }

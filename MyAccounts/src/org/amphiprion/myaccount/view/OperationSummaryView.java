@@ -133,7 +133,7 @@ public class OperationSummaryView extends LinearLayout {
 	private View createBalance() {
 		TextView balance = new TextView(getContext());
 		LayoutParams blp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 1);
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		balance.setGravity(Gravity.RIGHT);
 		balance.setLayoutParams(blp);
 		balance.setText("" + operation.getAmount());
