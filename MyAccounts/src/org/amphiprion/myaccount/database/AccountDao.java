@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.amphiprion.myaccount.database.entity.Account;
+import org.amphiprion.myaccount.database.entity.Operation;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -96,12 +97,31 @@ public class AccountDao extends AbstractDao {
 	public void createAccount(Account account) {
 		getDatabase().beginTransaction();
 		try {
-			String sql = "insert into ACCOUNT (" + Account.DbField.ID + "," + Account.DbField.NAME + ","
-					+ Account.DbField.CURRENCY + "," + Account.DbField.BALANCE + "," + Account.DbField.EXCLUDED + ","
-					+ Account.DbField.LAST_OPERATION + ") values ('" + account.getId() + "','"
-					+ encodeString(account.getName()) + "','" + encodeString(account.getCurrency()) + "',"
-					+ account.getBalance() + "," + (account.isExcluded() ? "1" : "0") + ",'"
-					+ encodeString(DatabaseHelper.dateToString(account.getLastOperation())) + "')";
+			String sql = "insert into ACCOUNT ("
+					+ Account.DbField.ID
+					+ ","
+					+ Account.DbField.NAME
+					+ ","
+					+ Account.DbField.CURRENCY
+					+ ","
+					+ Account.DbField.BALANCE
+					+ ","
+					+ Account.DbField.EXCLUDED
+					+ ","
+					+ Account.DbField.LAST_OPERATION
+					+ ") values ('"
+					+ account.getId()
+					+ "','"
+					+ encodeString(account.getName())
+					+ "','"
+					+ encodeString(account.getCurrency())
+					+ "',"
+					+ account.getBalance()
+					+ ","
+					+ (account.isExcluded() ? "1" : "0")
+					+ ","
+					+ (account.getLastOperation() == null ? "null" : "'"
+							+ encodeString(DatabaseHelper.dateToString(account.getLastOperation())) + "'") + ")";
 
 			execSQL(sql);
 
@@ -118,12 +138,50 @@ public class AccountDao extends AbstractDao {
 	 *            the accoun to update
 	 */
 	public void updateAccount(Account account) {
-		String sql = "update ACCOUNT set " + Account.DbField.NAME + "='" + encodeString(account.getName()) + "',"
-				+ Account.DbField.CURRENCY + "='" + encodeString(account.getCurrency()) + "',"
-				+ Account.DbField.BALANCE + "=" + account.getBalance() + "," + Account.DbField.EXCLUDED + "="
-				+ (account.isExcluded() ? "1" : "0") + " WHERE " + Account.DbField.ID + "='"
-				+ encodeString(account.getId()) + "'";
+		String sql = "update ACCOUNT set "
+				+ Account.DbField.NAME
+				+ "='"
+				+ encodeString(account.getName())
+				+ "',"
+				+ Account.DbField.CURRENCY
+				+ "='"
+				+ encodeString(account.getCurrency())
+				+ "',"
+				+ Account.DbField.BALANCE
+				+ "="
+				+ account.getBalance()
+				+ ","
+				+ Account.DbField.EXCLUDED
+				+ "="
+				+ (account.isExcluded() ? "1" : "0")
+				+ ","
+				+ Account.DbField.LAST_OPERATION
+				+ "="
+				+ (account.getLastOperation() == null ? "null" : "'"
+						+ encodeString(DatabaseHelper.dateToString(account.getLastOperation())) + "'") + " WHERE "
+				+ Account.DbField.ID + "='" + encodeString(account.getId()) + "'";
 
 		execSQL(sql);
+	}
+
+	/**
+	 * Delete the given account.
+	 * 
+	 * @param account
+	 *            the account
+	 */
+	public void delete(Account account) {
+		getDatabase().beginTransaction();
+		try {
+			String sql = "DELETE FROM OPERATION WHERE " + Operation.DbField.FK_ACCOUNT + "='" + account.getId() + "'";
+			execSQL(sql);
+
+			sql = "DELETE FROM ACCOUNT WHERE " + Account.DbField.ID + "='" + account.getId() + "'";
+			execSQL(sql);
+
+			getDatabase().setTransactionSuccessful();
+		} finally {
+			getDatabase().endTransaction();
+		}
 	}
 }

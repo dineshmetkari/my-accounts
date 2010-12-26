@@ -12,6 +12,7 @@
 
 	<!-- Account -->
 	<string name="edit_account_title">Editer Compte</string>
+	<string name="delete_account_title">Supprimer le Compte</string>
 	<string name="account_name">Nom du Compte</string>
 	<string name="account_balance">Solde</string>
 	<string name="account_total_balance">Total des Soldes:</string>

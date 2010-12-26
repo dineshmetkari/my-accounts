@@ -19,16 +19,12 @@
  */
 package org.amphiprion.myaccount.driver.file;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.List;
 
-import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.database.entity.Operation;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
-import android.os.Environment;
 
 /**
  * @author amphiprion
@@ -39,12 +35,14 @@ public class FileImportTask extends AsyncTask<List<Parameter>, Void, List<Operat
 
 	private ProgressDialog dialog;// = new ProgressDialog(this);
 	private OnTaskEndListener taskEndListener;
+	private FileDriver driver;
 
 	/**
 	 * 
 	 */
-	public FileImportTask(ProgressDialog dialog) {
+	public FileImportTask(FileDriver driver, ProgressDialog dialog) {
 		this.dialog = dialog;
+		this.driver = driver;
 	}
 
 	@Override
@@ -60,16 +58,7 @@ public class FileImportTask extends AsyncTask<List<Parameter>, Void, List<Operat
 
 	@Override
 	protected List<Operation> doInBackground(List<Parameter>... params) {
-		String path = Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME;
-		path += "/" + "E3567945.qif";
-		FileInputStream fis = null;
-		try {
-			fis = new FileInputStream(path);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-		FileDriver driver = FileDriverManager.getDrivers().get(0);
-		List<Operation> operations = driver.parse(fis, driver.getParameters());
+		List<Operation> operations = driver.parse(params[0]);
 		return operations;
 	}
 

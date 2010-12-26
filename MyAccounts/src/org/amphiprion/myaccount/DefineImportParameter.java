@@ -87,9 +87,9 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 			public void onClick(View v) {
 				boolean canImport = collectInputs();
 				if (canImport) {
-					FileImportTask task = new FileImportTask(new ProgressDialog(DefineImportParameter.this));
+					FileImportTask task = new FileImportTask(driver, new ProgressDialog(DefineImportParameter.this));
 					task.setOnTaskEnd(DefineImportParameter.this);
-					task.execute(driver.getParameters());
+					task.execute(parameters);
 				}
 			}
 		});
@@ -113,7 +113,7 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 	@SuppressWarnings("unchecked")
 	private void buildHMI(FileDriver driver) {
 		LinearLayout root = (LinearLayout) findViewById(R.id.root);
-		parameters = driver.getParameters();
+		parameters = driver.getParameters(account);
 		for (Parameter param : parameters) {
 			TextView tv = new TextView(this);
 			LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
@@ -127,6 +127,10 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 			switch (param.getType()) {
 			case DATE_PICKER:
 				editView = new DatePicker(this);
+				if (param.getValue() != null) {
+					Date date = (Date) param.getValue();
+					((DatePicker) editView).init(date.getYear() + 1900, date.getMonth(), date.getDate(), null);
+				}
 				break;
 			case DECIMAL_SEPARATOR:
 				editView = new Spinner(this);
