@@ -31,6 +31,8 @@
 	<string name="add_category">Ajouter</string>
 	<string name="edit_category_title">Editer Categorie</string>
 	<string name="delete_category_title">Supprimer Categorie</string>
+	<string name="icon">Icone</string>	
+	<string name="choose_icon">Choisir un Icone</string>	
 
 	<!-- Button -->
 	<string name="save">Sauver</string>

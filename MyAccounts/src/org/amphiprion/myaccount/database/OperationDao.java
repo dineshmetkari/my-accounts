@@ -74,7 +74,7 @@ public class OperationDao extends AbstractDao {
 	public List<Operation> getOperations(Account account) {
 		String sql = "SELECT o." + Operation.DbField.ID + ", o." + Operation.DbField.AMOUNT + ", o."
 				+ Operation.DbField.DESCRIPTION + ", o." + Operation.DbField.DATE + ", o."
-				+ Operation.DbField.FK_CATEGORY + ", c." + Category.DbField.NAME
+				+ Operation.DbField.FK_CATEGORY + ", c." + Category.DbField.NAME + ", c." + Category.DbField.IMAGE_NAME
 				+ " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
 				+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='"
 				+ encodeString(account.getId()) + "'  order by o." + Operation.DbField.DATE + " desc";
@@ -91,6 +91,7 @@ public class OperationDao extends AbstractDao {
 				if (cId != null) {
 					Category c = new Category(cId);
 					c.setName(cursor.getString(5));
+					c.setImage(cursor.getString(6));
 					a.setCategory(c);
 				}
 				result.add(a);

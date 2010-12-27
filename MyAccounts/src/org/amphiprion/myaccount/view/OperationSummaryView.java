@@ -19,6 +19,7 @@
  */
 package org.amphiprion.myaccount.view;
 
+import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.util.CurrencyUtil;
@@ -91,18 +92,35 @@ public class OperationSummaryView extends LinearLayout {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		leftLayout.setOrientation(VERTICAL);
 		leftLayout.setLayoutParams(aclp);
-		ImageView img = new ImageView(getContext());
-		LayoutParams imglp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-		imglp.gravity = Gravity.CENTER_VERTICAL;
-		imglp.rightMargin = 5;
-		img.setLayoutParams(imglp);
 
-		img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.account));
-		leftLayout.addView(img);
+		if (operation.getCategory() != null) {
+			ImageView img = new ImageView(getContext());
+			LayoutParams imglp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+					android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+			imglp.gravity = Gravity.CENTER_VERTICAL;
+			imglp.rightMargin = 5;
+			imglp.topMargin = 5;
+			imglp.gravity = Gravity.CENTER;
+			img.setLayoutParams(imglp);
+
+			String image = operation.getCategory().getImage();
+			if (image != null) {
+				if (image.startsWith("#")) {
+					img
+							.setBackgroundDrawable(getContext().getResources().getDrawable(
+									getResources().getIdentifier(image.substring(1), "drawable",
+											ApplicationConstants.PACKAGE)));
+				}
+			} else {
+				img.setImageResource(R.drawable.none);
+			}
+			leftLayout.addView(img);
+		}
 
 		TextView desc = new TextView(getContext());
 		LayoutParams datelp = new LayoutParams(60, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		datelp.rightMargin = 5;
+		datelp.topMargin = 5;
 		desc.setLayoutParams(datelp);
 		desc.setText(DateUtil.defaultOperationDateFormat.format(operation.getDate()));
 		leftLayout.addView(desc);
@@ -122,17 +140,18 @@ public class OperationSummaryView extends LinearLayout {
 		accountLayout.setOrientation(VERTICAL);
 		accountLayout.setLayoutParams(aclp);
 
-		TextView cat = new TextView(getContext());
-		LayoutParams clp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
-				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		if (operation.getCategory() != null) {
+			TextView cat = new TextView(getContext());
+			LayoutParams clp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
+					android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 
-		cat.setLayoutParams(clp);
-		cat.setText("" + operation.getCategory());
-		cat.setTextSize(16);
-		cat.setTypeface(Typeface.DEFAULT_BOLD);
-		cat.setTextColor(getContext().getResources().getColor(R.color.black));
-		accountLayout.addView(cat);
-
+			cat.setLayoutParams(clp);
+			cat.setText("" + operation.getCategory());
+			cat.setTextSize(16);
+			cat.setTypeface(Typeface.DEFAULT_BOLD);
+			cat.setTextColor(getContext().getResources().getColor(R.color.black));
+			accountLayout.addView(cat);
+		}
 		TextView t = new TextView(getContext());
 		LayoutParams tlp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -141,7 +160,7 @@ public class OperationSummaryView extends LinearLayout {
 		t.setText(operation.getDescription());
 		t.setTextSize(16);
 		t.setTypeface(Typeface.DEFAULT_BOLD);
-		t.setTextColor(getContext().getResources().getColor(R.color.darkGrey));
+		t.setTextColor(getContext().getResources().getColor(R.color.grey));
 		accountLayout.addView(t);
 
 		return accountLayout;

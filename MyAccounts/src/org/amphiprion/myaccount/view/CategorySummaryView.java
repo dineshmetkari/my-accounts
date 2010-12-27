@@ -19,6 +19,7 @@
  */
 package org.amphiprion.myaccount.view;
 
+import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Category;
 
@@ -82,7 +83,13 @@ public class CategorySummaryView extends LinearLayout {
 		imglp.rightMargin = 5;
 		img.setLayoutParams(imglp);
 
-		img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.account));
+		String image = category.getImage();
+		if (image == null) {
+			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.none));
+		} else if (image.startsWith("#")) {
+			img.setImageResource(getResources().getIdentifier(image.substring(1), "drawable",
+					ApplicationConstants.PACKAGE));
+		}
 		return img;
 	}
 

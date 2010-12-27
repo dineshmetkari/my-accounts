@@ -37,7 +37,7 @@ public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum DbField {
-		ID, NAME, PARENT
+		ID, NAME, PARENT, IMAGE_NAME
 	}
 
 	/** The uuid. */
@@ -51,6 +51,9 @@ public class Category implements Serializable {
 
 	/** The rules. */
 	private List<Rule> rules;
+
+	/** The image name. */
+	private String image;
 
 	/**
 	 * Default constructor.
@@ -104,6 +107,21 @@ public class Category implements Serializable {
 	 */
 	public void setParent(Category parent) {
 		this.parent = parent;
+	}
+
+	/**
+	 * @return the image
+	 */
+	public String getImage() {
+		return image;
+	}
+
+	/**
+	 * @param image
+	 *            the image to set
+	 */
+	public void setImage(String image) {
+		this.image = image;
 	}
 
 	/**
@@ -174,4 +192,5 @@ public class Category implements Serializable {
 	public void setRules(List<Rule> rules) {
 		this.rules = rules;
 	}
+
 }

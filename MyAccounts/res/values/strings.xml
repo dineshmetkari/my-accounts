@@ -31,7 +31,9 @@
 	<string name="add_category">Add</string>
 	<string name="edit_category_title">Edit Category</string>
 	<string name="delete_category_title">Delete Category</string>
-	
+	<string name="icon">Icon</string>	
+	<string name="choose_icon">Choose an Icon</string>	
+
 	<!-- Button -->
 	<string name="save">Save</string>
 	<string name="cancel">Cancel</string>

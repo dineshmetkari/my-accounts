@@ -7,4 +7,5 @@
 <color name="darkGrey">#333333</color>
 <color name="positive">#006600</color>
 <color name="negative">#990000</color>
+<color name="grey">#999999</color>
 </resources>
