@@ -108,6 +108,18 @@ public class OperationSummaryView extends LinearLayout {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 3);
 		accountLayout.setOrientation(VERTICAL);
 		accountLayout.setLayoutParams(aclp);
+
+		TextView cat = new TextView(getContext());
+		LayoutParams clp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+
+		cat.setLayoutParams(clp);
+		cat.setText("" + operation.getCategory());
+		cat.setTextSize(16);
+		cat.setTypeface(Typeface.DEFAULT_BOLD);
+		cat.setTextColor(getContext().getResources().getColor(R.color.black));
+		accountLayout.addView(cat);
+
 		TextView t = new TextView(getContext());
 		LayoutParams tlp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -116,7 +128,7 @@ public class OperationSummaryView extends LinearLayout {
 		t.setText(operation.getDescription());
 		t.setTextSize(16);
 		t.setTypeface(Typeface.DEFAULT_BOLD);
-		t.setTextColor(getContext().getResources().getColor(R.color.black));
+		t.setTextColor(getContext().getResources().getColor(R.color.darkGrey));
 		accountLayout.addView(t);
 
 		TextView desc = new TextView(getContext());
