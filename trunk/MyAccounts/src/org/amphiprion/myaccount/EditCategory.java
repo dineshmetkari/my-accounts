@@ -33,7 +33,6 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -76,7 +75,6 @@ public class EditCategory extends Activity implements RuleView.OnRuleClickedList
 				category = (Category) intent.getExtras().getSerializable("CATEGORY");
 				txtName.setText(category.getName());
 				defineImage(category.getImage());
-				Log.d(ApplicationConstants.PACKAGE, "img=" + category.getImage());
 			}
 		}
 
