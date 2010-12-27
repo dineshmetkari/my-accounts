@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.amphiprion.myaccount.database.entity.Category;
+import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.database.entity.Rule;
 
 import android.content.Context;
@@ -97,6 +98,11 @@ public class RuleDao extends AbstractDao {
 				+ encodeString(rule.getFilter()) + "','" + encodeString(rule.getCategoryId()) + "')";
 
 		execSQL(sql);
+
+		sql = "update OPERATION set " + Operation.DbField.FK_CATEGORY + "='" + rule.getCategoryId() + "' WHERE "
+				+ Operation.DbField.FK_CATEGORY + " is null AND upper(" + Operation.DbField.DESCRIPTION + ") like '%"
+				+ encodeString(rule.getFilter().toUpperCase()) + "%'";
+		execSQL(sql);
 	}
 
 	/**
@@ -110,6 +116,11 @@ public class RuleDao extends AbstractDao {
 				+ Rule.DbField.ID + "='" + encodeString(rule.getId()) + "'";
 
 		execSQL(sql);
+
+		sql = "update OPERATION set " + Operation.DbField.FK_CATEGORY + "='" + rule.getCategoryId() + "' WHERE "
+				+ Operation.DbField.FK_CATEGORY + " is null AND upper(" + Operation.DbField.DESCRIPTION + ") like '%"
+				+ encodeString(rule.getFilter().toUpperCase()) + "%'";
+		execSQL(sql);
 	}
 
 	/**
@@ -121,5 +132,27 @@ public class RuleDao extends AbstractDao {
 	public void delete(Rule rule) {
 		String sql = "DELETE FROM RULE WHERE " + Rule.DbField.ID + "='" + encodeString(rule.getId()) + "'";
 		execSQL(sql);
+	}
+
+	/**
+	 * Return all existing rules (not sorted).
+	 * 
+	 * @return the list of rule
+	 */
+	public List<Rule> getRules() {
+		String sql = "SELECT " + Rule.DbField.ID + ", " + Rule.DbField.FILTER + ", " + Rule.DbField.FK_CATEGORY
+				+ " from RULE";
+		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+		ArrayList<Rule> result = new ArrayList<Rule>();
+		if (cursor.moveToFirst()) {
+			do {
+				Rule a = new Rule(cursor.getString(0));
+				a.setFilter(cursor.getString(1));
+				a.setCategoryId(cursor.getString(2));
+				result.add(a);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return result;
 	}
 }

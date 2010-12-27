@@ -35,7 +35,6 @@ import org.amphiprion.myaccount.driver.file.OnTaskEndListener;
 import org.amphiprion.myaccount.driver.file.Parameter;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,7 +86,7 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 			public void onClick(View v) {
 				boolean canImport = collectInputs();
 				if (canImport) {
-					FileImportTask task = new FileImportTask(driver, new ProgressDialog(DefineImportParameter.this));
+					FileImportTask task = new FileImportTask(DefineImportParameter.this, driver);
 					task.setOnTaskEnd(DefineImportParameter.this);
 					task.execute(parameters);
 				}

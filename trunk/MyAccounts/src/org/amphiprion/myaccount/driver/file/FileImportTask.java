@@ -21,9 +21,13 @@ package org.amphiprion.myaccount.driver.file;
 
 import java.util.List;
 
+import org.amphiprion.myaccount.database.RuleDao;
+import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
+import org.amphiprion.myaccount.database.entity.Rule;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 
 /**
@@ -36,13 +40,15 @@ public class FileImportTask extends AsyncTask<List<Parameter>, Void, List<Operat
 	private ProgressDialog dialog;// = new ProgressDialog(this);
 	private OnTaskEndListener taskEndListener;
 	private FileDriver driver;
+	private Context context;
 
 	/**
 	 * 
 	 */
-	public FileImportTask(FileDriver driver, ProgressDialog dialog) {
-		this.dialog = dialog;
+	public FileImportTask(Context context, FileDriver driver) {
+		dialog = new ProgressDialog(context);
 		this.driver = driver;
+		this.context = context;
 	}
 
 	@Override
@@ -58,7 +64,39 @@ public class FileImportTask extends AsyncTask<List<Parameter>, Void, List<Operat
 
 	@Override
 	protected List<Operation> doInBackground(List<Parameter>... params) {
+		List<Rule> rules = RuleDao.getInstance(context).getRules();
 		List<Operation> operations = driver.parse(params[0]);
+
+		for (Operation op : operations) {
+			boolean finded = false;
+			String categoryId = null;
+			for (Rule rule : rules) {
+				String desc = op.getDescription().toUpperCase();
+				String[] filters = rule.getFilter().toUpperCase().split("\\%");
+				int pos = -1;
+				for (String filter : filters) {
+					pos = desc.indexOf(filter, pos);
+					if (pos == -1) {
+						break;
+					}
+				}
+				if (pos != -1) {
+					if (categoryId == null) {
+						categoryId = rule.getCategoryId();
+						finded = true;
+					} else if (!categoryId.equals(rule.getCategoryId())) {
+						// another category match (several categories not
+						// supported)
+						categoryId = null;
+						finded = false;
+						break;
+					}
+				}
+			}
+			if (finded) {
+				op.setCategory(new Category(categoryId));
+			}
+		}
 		return operations;
 	}
 
