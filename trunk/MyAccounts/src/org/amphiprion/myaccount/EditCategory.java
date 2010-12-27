@@ -22,6 +22,7 @@ package org.amphiprion.myaccount;
 import java.util.List;
 
 import org.amphiprion.myaccount.adapter.CategoryAdapter;
+import org.amphiprion.myaccount.adapter.StandardCategoryImageAdapter;
 import org.amphiprion.myaccount.database.CategoryDao;
 import org.amphiprion.myaccount.database.RuleDao;
 import org.amphiprion.myaccount.database.entity.Category;
@@ -29,14 +30,20 @@ import org.amphiprion.myaccount.database.entity.Rule;
 import org.amphiprion.myaccount.view.RuleView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 
 /**
  * The activity used to edit/create a category.
@@ -68,6 +75,8 @@ public class EditCategory extends Activity implements RuleView.OnRuleClickedList
 			if (intent.getExtras() != null) {
 				category = (Category) intent.getExtras().getSerializable("CATEGORY");
 				txtName.setText(category.getName());
+				defineImage(category.getImage());
+				Log.d(ApplicationConstants.PACKAGE, "img=" + category.getImage());
 			}
 		}
 
@@ -113,6 +122,60 @@ public class EditCategory extends Activity implements RuleView.OnRuleClickedList
 		});
 
 		buildRuleList();
+
+		ImageButton btImage = (ImageButton) findViewById(R.id.btImageCategory);
+		btImage.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showImageChooser();
+			}
+		});
+	}
+
+	/**
+	 * Show the image chooser.
+	 */
+	private void showImageChooser() {
+		final Dialog dialog = new Dialog(this);
+
+		dialog.setContentView(R.layout.standard_category_images);
+		dialog.setTitle(getResources().getString(R.string.choose_icon));
+
+		GridView grid = (GridView) dialog.findViewById(R.id.grid_image);
+		final StandardCategoryImageAdapter adapter = new StandardCategoryImageAdapter(this);
+		grid.setAdapter(adapter);
+		grid.setOnItemClickListener(new OnItemClickListener() {
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+				imageChoosen((String) adapter.getItem(position));
+				dialog.dismiss();
+			}
+		});
+
+		dialog.show();
+	}
+
+	/**
+	 * An image have been chosen.
+	 * 
+	 * @param image
+	 *            the image name
+	 */
+	private void imageChoosen(String image) {
+		if ("#none".equals(image)) {
+			image = null;
+		}
+		category.setImage(image);
+		defineImage(image);
+	}
+
+	private void defineImage(String image) {
+		ImageButton btImage = (ImageButton) findViewById(R.id.btImageCategory);
+		if (image == null) {
+			btImage.setImageResource(R.drawable.none);
+		} else if (image.startsWith("#")) {
+			btImage.setImageResource(getResources().getIdentifier(image.substring(1), "drawable",
+					ApplicationConstants.PACKAGE));
+		}
 	}
 
 	private void buildRuleList() {

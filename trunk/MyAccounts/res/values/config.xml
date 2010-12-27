@@ -3,6 +3,20 @@
 	<array name="file_driver">
 		<item>org.amphiprion.myaccount.driver.file.qif.QifFileDriver</item>
 	</array>
+	<array name="category_images">
+		<item>none</item>
+		<item>boardgame</item>
+		<item>book</item>
+		<item>car</item>
+		<item>energy</item>
+		<item>house</item>
+		<item>internet</item>
+		<item>phone</item>
+		<item>salary</item>
+		<item>shopcart</item>
+		<item>tools</item>
+		<item>video_game</item>
+	</array>
 
 	<string name="default_currency">USD</string>
 	<string name="default_date_format">MM/dd/yyyy</string>

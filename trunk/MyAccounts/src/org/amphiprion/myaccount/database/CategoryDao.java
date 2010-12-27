@@ -68,20 +68,21 @@ public class CategoryDao extends AbstractDao {
 	 * @return the category list
 	 */
 	public List<Category> getCategories() {
-		String sql = "SELECT c." + Category.DbField.ID + ",c." + Category.DbField.NAME + ",p." + Category.DbField.ID
-				+ ",p." + Category.DbField.NAME + " from CATEGORY c left outer join CATEGORY p on c."
-				+ Category.DbField.PARENT + "=p." + Category.DbField.ID + " order by c." + Category.DbField.NAME
-				+ " asc";
+		String sql = "SELECT c." + Category.DbField.ID + ",c." + Category.DbField.NAME + ",c."
+				+ Category.DbField.IMAGE_NAME + ",p." + Category.DbField.ID + ",p." + Category.DbField.NAME
+				+ " from CATEGORY c left outer join CATEGORY p on c." + Category.DbField.PARENT + "=p."
+				+ Category.DbField.ID + " order by c." + Category.DbField.NAME + " asc";
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		ArrayList<Category> result = new ArrayList<Category>();
 		if (cursor.moveToFirst()) {
 			do {
 				Category a = new Category(cursor.getString(0));
 				a.setName(cursor.getString(1));
-				String pId = cursor.getString(2);
+				a.setImage(cursor.getString(2));
+				String pId = cursor.getString(3);
 				if (pId != null) {
 					Category p = new Category(pId);
-					p.setName(cursor.getString(3));
+					p.setName(cursor.getString(4));
 					a.setParent(p);
 				}
 				result.add(a);
@@ -102,8 +103,9 @@ public class CategoryDao extends AbstractDao {
 		try {
 
 			String sql = "insert into CATEGORY (" + Category.DbField.ID + "," + Category.DbField.NAME + ","
-					+ Category.DbField.PARENT + ") values ('" + category.getId() + "','"
-					+ encodeString(category.getName()) + "',"
+					+ Category.DbField.IMAGE_NAME + "," + Category.DbField.PARENT + ") values ('" + category.getId()
+					+ "','" + encodeString(category.getName()) + "',"
+					+ (category.getImage() == null ? "null" : "'" + encodeString(category.getImage()) + "'") + ","
 					+ (category.getParent() != null ? "'" + encodeString(category.getParent().getId()) + "'" : null)
 					+ ")";
 
@@ -129,7 +131,9 @@ public class CategoryDao extends AbstractDao {
 		try {
 
 			String sql = "update CATEGORY set " + Category.DbField.NAME + "='" + encodeString(category.getName())
-					+ "'," + Category.DbField.PARENT + "="
+					+ "'," + Category.DbField.IMAGE_NAME + "="
+					+ (category.getImage() == null ? "null" : "'" + encodeString(category.getImage()) + "'") + ","
+					+ Category.DbField.PARENT + "="
 					+ (category.getParent() != null ? "'" + encodeString(category.getParent().getId()) + "'" : null)
 					+ " WHERE " + Category.DbField.ID + "='" + encodeString(category.getId()) + "'";
 

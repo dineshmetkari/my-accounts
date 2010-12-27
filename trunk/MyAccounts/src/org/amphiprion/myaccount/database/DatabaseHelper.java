@@ -36,7 +36,7 @@ import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "amphiprion_myaccount";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	private static SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DatabaseHelper(Context context) {
@@ -68,6 +68,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		if (oldVersion == 1) {
+			db.execSQL("ALTER TABLE CATEGORY ADD " + Category.DbField.IMAGE_NAME + " text");
+			oldVersion++;
+		}
 	}
 
 	/**
