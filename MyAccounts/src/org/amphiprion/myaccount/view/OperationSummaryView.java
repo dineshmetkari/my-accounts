@@ -86,6 +86,11 @@ public class OperationSummaryView extends LinearLayout {
 	 * @return the view
 	 */
 	private View createIcon() {
+		LinearLayout leftLayout = new LinearLayout(getContext());
+		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		leftLayout.setOrientation(VERTICAL);
+		leftLayout.setLayoutParams(aclp);
 		ImageView img = new ImageView(getContext());
 		LayoutParams imglp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -94,7 +99,15 @@ public class OperationSummaryView extends LinearLayout {
 		img.setLayoutParams(imglp);
 
 		img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.account));
-		return img;
+		leftLayout.addView(img);
+
+		TextView desc = new TextView(getContext());
+		LayoutParams datelp = new LayoutParams(60, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		desc.setLayoutParams(datelp);
+		desc.setText(DateUtil.defaultOperationDateFormat.format(operation.getDate()));
+		leftLayout.addView(desc);
+
+		return leftLayout;
 	}
 
 	/**
@@ -131,9 +144,6 @@ public class OperationSummaryView extends LinearLayout {
 		t.setTextColor(getContext().getResources().getColor(R.color.darkGrey));
 		accountLayout.addView(t);
 
-		TextView desc = new TextView(getContext());
-		desc.setText("" + DateUtil.format(operation.getDate()));
-		accountLayout.addView(desc);
 		return accountLayout;
 	}
 

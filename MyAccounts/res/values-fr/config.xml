@@ -2,4 +2,5 @@
 <resources>
 	<string name="default_currency">EUR</string>
 	<string name="default_date_format">dd/MM/yyyy</string>
+	<string name="default_operation_date_format">dd/MM</string>
 </resources>
