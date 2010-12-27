@@ -6,4 +6,5 @@
 
 	<string name="default_currency">USD</string>
 	<string name="default_date_format">MM/dd/yyyy</string>
+	<string name="default_operation_date_format">MM/dd</string>
 </resources>

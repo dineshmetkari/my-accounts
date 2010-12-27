@@ -20,7 +20,6 @@
 package org.amphiprion.myaccount.util;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.amphiprion.myaccount.R;
 
@@ -34,7 +33,9 @@ import android.content.Context;
  */
 public class DateUtil {
 	/** The default date format. */
-	private static SimpleDateFormat defaultDateFormat;
+	public static SimpleDateFormat defaultDateFormat;
+	/** The default operation date format. */
+	public static SimpleDateFormat defaultOperationDateFormat;
 
 	/**
 	 * Initialize the currency utility.
@@ -46,18 +47,9 @@ public class DateUtil {
 		if (defaultDateFormat == null) {
 			String format = context.getResources().getString(R.string.default_date_format);
 			defaultDateFormat = new SimpleDateFormat(format);
+			String opFormat = context.getResources().getString(R.string.default_operation_date_format);
+			defaultOperationDateFormat = new SimpleDateFormat(opFormat);
 		}
 	}
 
-	/**
-	 * Return the string representation of this date using the default date
-	 * format.
-	 * 
-	 * @param date
-	 *            the date to format
-	 * @return the formatted date
-	 */
-	public static String format(Date date) {
-		return defaultDateFormat.format(date);
-	}
 }

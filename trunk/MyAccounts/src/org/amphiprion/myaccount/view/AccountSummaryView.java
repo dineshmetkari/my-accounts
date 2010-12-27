@@ -114,7 +114,7 @@ public class AccountSummaryView extends LinearLayout {
 
 		TextView desc = new TextView(getContext());
 		if (account.getLastOperation() != null) {
-			desc.setText("" + DateUtil.format(account.getLastOperation()));
+			desc.setText("" + DateUtil.defaultDateFormat.format(account.getLastOperation()));
 		}
 		accountLayout.addView(desc);
 		return accountLayout;
