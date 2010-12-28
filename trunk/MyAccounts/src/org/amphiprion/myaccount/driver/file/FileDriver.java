@@ -49,6 +49,13 @@ public interface FileDriver {
 	String getName();
 
 	/**
+	 * Return the name of the sub directory if needed.
+	 * 
+	 * @return the sub directory or null
+	 */
+	String getSubDirectory();
+
+	/**
 	 * Parse the given stream and return the parsed operations.
 	 * 
 	 * @param parameters

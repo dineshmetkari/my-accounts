@@ -35,15 +35,19 @@
 	<string name="choose_icon">Choose an Icon</string>	
 
 	<!-- Button -->
+	<string name="ok">Ok</string>
 	<string name="save">Save</string>
 	<string name="cancel">Cancel</string>
 	<string name="imports">Import</string>
 
 	<!-- File drivers -->
+	<string name="install_file_chooser_title">Need an Application.</string>
+	<string name="install_file_chooser_message">To be able to select a file, you need to install for example ES File Explorer. Click OK to install it, or Cancel.</string>
 	<string name="file_import_choice_title">Choose a file driver</string>
 	<string name="file_import_title">Define import parameters</string>
 	<string name="nb_imported_operation">%1$d operation(s) have been imported.</string>
 
+	<string name="FIELD">Field Separator</string>
 	<string name="DATE_FORMAT">Date Format</string>
 	<string name="DECIMAL">Decimal Separator</string>
 	<string name="FROM">From</string>

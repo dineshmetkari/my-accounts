@@ -117,13 +117,13 @@ public class OperationSummaryView extends LinearLayout {
 			leftLayout.addView(img);
 		}
 
-		TextView desc = new TextView(getContext());
+		TextView datev = new TextView(getContext());
 		LayoutParams datelp = new LayoutParams(60, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		datelp.rightMargin = 5;
 		datelp.topMargin = 5;
-		desc.setLayoutParams(datelp);
-		desc.setText(DateUtil.defaultOperationDateFormat.format(operation.getDate()));
-		leftLayout.addView(desc);
+		datev.setLayoutParams(datelp);
+		datev.setText(DateUtil.defaultOperationDateFormat.format(operation.getDate()));
+		leftLayout.addView(datev);
 
 		return leftLayout;
 	}
@@ -158,8 +158,6 @@ public class OperationSummaryView extends LinearLayout {
 
 		t.setLayoutParams(tlp);
 		t.setText(operation.getDescription());
-		t.setTextSize(16);
-		t.setTypeface(Typeface.DEFAULT_BOLD);
 		t.setTextColor(getContext().getResources().getColor(R.color.grey));
 		accountLayout.addView(t);
 

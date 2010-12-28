@@ -19,23 +19,42 @@
  */
 package org.amphiprion.myaccount.adapter;
 
+import java.util.Date;
+
+import org.amphiprion.myaccount.util.DateUtil;
+
 import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
 /**
- * This is the adapter for the File driver decimal format chooser.
+ * This is the adapter for the File driver date format chooser.
  * 
  * @author amphiprion
  * 
  */
-public class DecimalSepatorAdapter extends ArrayAdapter<String> {
+public class DateAdapter extends ArrayAdapter<Date> {
 
 	/**
 	 * Default constructor.
 	 */
-	public DecimalSepatorAdapter(Context context) {
-		super(context, android.R.layout.simple_spinner_item, new String[] { ".", "," });
+	public DateAdapter(Context context) {
+		super(context, android.R.layout.simple_spinner_item);
 		setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 	}
 
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.widget.ArrayAdapter#getView(int, android.view.View,
+	 *      android.view.ViewGroup)
+	 */
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent) {
+		View view = super.getView(position, convertView, parent);
+		((TextView) view).setText(DateUtil.defaultDateFormat.format(getItem(position)));
+		return view;
+	}
 }
