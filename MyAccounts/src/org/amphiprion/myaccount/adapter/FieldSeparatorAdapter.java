@@ -23,19 +23,37 @@ import android.content.Context;
 import android.widget.ArrayAdapter;
 
 /**
- * This is the adapter for the File driver decimal format chooser.
+ * This is the adapter for the File driver date format chooser.
  * 
  * @author amphiprion
  * 
  */
-public class DecimalSepatorAdapter extends ArrayAdapter<String> {
+public class FieldSeparatorAdapter extends ArrayAdapter<String> {
+
+	private static String[] items = new String[] { ",", ";", "|", "Tab" };
 
 	/**
 	 * Default constructor.
 	 */
-	public DecimalSepatorAdapter(Context context) {
-		super(context, android.R.layout.simple_spinner_item, new String[] { ".", "," });
+	public FieldSeparatorAdapter(Context context) {
+		super(context, android.R.layout.simple_spinner_item, items);
 		setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+	}
+
+	/**
+	 * Return the index of the given format
+	 * 
+	 * @param format
+	 *            the format to search
+	 * @return index of the format or -1 if not found
+	 */
+	public static int getIndexInList(String format) {
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].equals(format)) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }

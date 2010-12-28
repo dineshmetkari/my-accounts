@@ -19,11 +19,13 @@
  */
 package org.amphiprion.myaccount.driver.file;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.amphiprion.myaccount.ApplicationConstants;
 
+import android.os.Environment;
 import android.util.Log;
 
 /**
@@ -44,11 +46,20 @@ public class FileDriverManager {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void init(String[] drivers) {
+		File file = new File(Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/"
+				+ ApplicationConstants.IMPORT_DRIRECTORY);
+		file.mkdirs();
+
 		for (String clazz : drivers) {
 			Class<FileDriver> cls;
 			try {
 				cls = (Class<FileDriver>) Class.forName(clazz);
-				register(cls.newInstance());
+				FileDriver o = cls.newInstance();
+				if (o.getSubDirectory() != null) {
+					File sub = new File(file, o.getSubDirectory());
+					sub.mkdirs();
+				}
+				register(o);
 			} catch (Exception e) {
 				Log.e(ApplicationConstants.PACKAGE, "Unable to register file driver " + clazz, e);
 			}

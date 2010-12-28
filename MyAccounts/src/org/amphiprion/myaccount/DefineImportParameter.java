@@ -24,7 +24,10 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 
+import org.amphiprion.myaccount.adapter.DateAdapter;
+import org.amphiprion.myaccount.adapter.DateFormatAdapter;
 import org.amphiprion.myaccount.adapter.DecimalSepatorAdapter;
+import org.amphiprion.myaccount.adapter.FieldSeparatorAdapter;
 import org.amphiprion.myaccount.database.OperationDao;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Operation;
@@ -33,16 +36,20 @@ import org.amphiprion.myaccount.driver.file.FileDriverManager;
 import org.amphiprion.myaccount.driver.file.FileImportTask;
 import org.amphiprion.myaccount.driver.file.OnTaskEndListener;
 import org.amphiprion.myaccount.driver.file.Parameter;
+import org.amphiprion.myaccount.view.DatePickerSpinner;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -62,6 +69,7 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 	@SuppressWarnings("unchecked")
 	private List<Parameter> parameters;
 	private Account account;
+	private FileDriver driver;
 
 	/**
 	 * {@inheritDoc}
@@ -75,7 +83,7 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 
 		account = (Account) getIntent().getSerializableExtra("ACCOUNT");
 		int index = getIntent().getIntExtra("FILE_DRIVER_INDEX", -1);
-		final FileDriver driver = FileDriverManager.getDrivers().get(index);
+		driver = FileDriverManager.getDrivers().get(index);
 
 		buildHMI(driver);
 
@@ -125,10 +133,30 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 			View editView = null;
 			switch (param.getType()) {
 			case DATE_PICKER:
-				editView = new DatePicker(this);
+				// editView = new DatePicker(this);
+				// if (param.getValue() != null) {
+				// Date date = (Date) param.getValue();
+				// ((DatePicker) editView).init(date.getYear() + 1900,
+				// date.getMonth(), date.getDate(), null);
+				// }
+				// break;
+				editView = new DatePickerSpinner(this);
+				DateAdapter dateAdapter = new DateAdapter(this);
+				((Spinner) editView).setAdapter(dateAdapter);
 				if (param.getValue() != null) {
 					Date date = (Date) param.getValue();
-					((DatePicker) editView).init(date.getYear() + 1900, date.getMonth(), date.getDate(), null);
+					dateAdapter.add(date);
+				} else {
+					dateAdapter.add(new Date());
+				}
+				break;
+
+			case FIELD_SEPARATOR:
+				editView = new Spinner(this);
+				((Spinner) editView).setAdapter(new FieldSeparatorAdapter(this));
+				int indexf = FieldSeparatorAdapter.getIndexInList("" + param.getValue());
+				if (indexf != -1) {
+					((Spinner) editView).setSelection(indexf);
 				}
 				break;
 			case DECIMAL_SEPARATOR:
@@ -136,8 +164,12 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 				((Spinner) editView).setAdapter(new DecimalSepatorAdapter(this));
 				break;
 			case DATE_FORMAT:
-				editView = new EditText(this);
-				((EditText) editView).setText("" + param.getValue());
+				editView = new Spinner(this);
+				((Spinner) editView).setAdapter(new DateFormatAdapter(this));
+				int index = DateFormatAdapter.getIndexInList("" + param.getValue());
+				if (index != -1) {
+					((Spinner) editView).setSelection(index);
+				}
 				break;
 			case FILE_URI:
 				fileUril = new Button(this);
@@ -147,8 +179,20 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 					public void onClick(View v) {
 						Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 						intent.addCategory(Intent.CATEGORY_OPENABLE);
-						intent.setType("application/qif");
-						startActivityForResult(intent, ApplicationConstants.ACTIVITY_RETURN_CHOOSE_FILE);
+						File file = new File(Environment.getExternalStorageDirectory() + "/"
+								+ ApplicationConstants.NAME + "/" + ApplicationConstants.IMPORT_DRIRECTORY);
+						if (DefineImportParameter.this.driver.getSubDirectory() != null) {
+							file = new File(file, DefineImportParameter.this.driver.getSubDirectory());
+						}
+						intent.setDataAndType(Uri.parse(file.toString()), "text/qif");
+
+						try {
+							startActivityForResult(intent, ApplicationConstants.ACTIVITY_RETURN_CHOOSE_FILE);
+						} catch (ActivityNotFoundException e) {
+							// No activity to handle this mime type.
+							// Download for exemple ES File Manager
+							askToDownloadFileManager();
+						}
 					}
 				});
 				break;
@@ -159,12 +203,35 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 			root.addView(editView);
 
 			tv = new TextView(this);
+			tv.setTextSize(5);
 			lp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 					android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-			tv.setBackgroundDrawable(getResources().getDrawable(R.drawable.list_item_background));
 			root.addView(tv);
 
 		}
+
+	}
+
+	public void askToDownloadFileManager() {
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.install_file_chooser_message)
+				.create();
+		alertDialog.setTitle(R.string.install_file_chooser_title);
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton(getResources().getText(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri
+						.parse("market://details?id=com.estrongs.android.pop"));
+				startActivity(marketIntent);
+				return;
+			}
+		});
+		alertDialog.setButton2(getResources().getText(R.string.cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				// do nothing
+			}
+		});
+		alertDialog.show();
+		return;
 
 	}
 
@@ -197,16 +264,20 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 
 			switch (param.getType()) {
 			case DATE_PICKER:
-				DatePicker dp = (DatePicker) root.getChildAt(indexView);
-				param.setValue(new Date(dp.getYear() - 1900, dp.getMonth(), dp.getDayOfMonth()));
+				Spinner dp = (Spinner) root.getChildAt(indexView);
+				param.setValue(dp.getSelectedItem());
+				break;
+			case FIELD_SEPARATOR:
+				Spinner spf = (Spinner) root.getChildAt(indexView);
+				param.setValue(spf.getSelectedItem());
 				break;
 			case DECIMAL_SEPARATOR:
 				Spinner sp = (Spinner) root.getChildAt(indexView);
 				param.setValue(sp.getSelectedItem());
 				break;
 			case DATE_FORMAT:
-				EditText et = (EditText) root.getChildAt(indexView);
-				param.setValue(et.getText().toString());
+				Spinner spd = (Spinner) root.getChildAt(indexView);
+				param.setValue(spd.getSelectedItem());
 				break;
 			case FILE_URI:
 				Button bt = (Button) root.getChildAt(indexView);

@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with My Accounts.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.amphiprion.myaccount.driver.file.qif;
+package org.amphiprion.myaccount.driver.file;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,8 +33,6 @@ import java.util.List;
 import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Operation;
-import org.amphiprion.myaccount.driver.file.FileDriver;
-import org.amphiprion.myaccount.driver.file.Parameter;
 import org.amphiprion.myaccount.driver.file.Parameter.Type;
 
 import android.util.Log;
@@ -45,11 +43,13 @@ import android.util.Log;
  * @author amphiprion
  * 
  */
-public class QifFileDriver implements FileDriver {
+public class CsvFileDriver implements FileDriver {
 	/** The date format parameter name. */
 	private static final String DATE_FORMAT_NAME = "DATE_FORMAT";
 	/** The decimal separator parameter name. */
 	private static final String DECIMAL_SEPARATOR_NAME = "DECIMAL";
+	/** The decimal separator parameter name. */
+	private static final String FIELD_SEPARATOR_NAME = "FIELD";
 	/** The from parameter name. */
 	private static final String FROM_NAME = "FROM";
 	/** The to parameter name. */
@@ -59,6 +59,7 @@ public class QifFileDriver implements FileDriver {
 
 	private Parameter<String> dateFormat;
 	private Parameter<String> decimalSeparator;
+	private Parameter<String> fieldSeparator;
 	private Parameter<Date> from;
 	private Parameter<Date> to;
 	private Parameter<URI> file;
@@ -69,13 +70,15 @@ public class QifFileDriver implements FileDriver {
 	private List<Parameter> parameters;
 
 	@SuppressWarnings("unchecked")
-	public QifFileDriver() {
+	public CsvFileDriver() {
+		fieldSeparator = new Parameter<String>(FIELD_SEPARATOR_NAME, Type.FIELD_SEPARATOR, "Tab");
 		dateFormat = new Parameter<String>(DATE_FORMAT_NAME, Type.DATE_FORMAT, "dd/MM/yy");
 		decimalSeparator = new Parameter<String>(DECIMAL_SEPARATOR_NAME, Type.DECIMAL_SEPARATOR, ".");
 		from = new Parameter<Date>(FROM_NAME, Type.DATE_PICKER);
 		to = new Parameter<Date>(TO_NAME, Type.DATE_PICKER);
 		file = new Parameter<URI>(FILE_NAME, Type.FILE_URI);
 		parameters = new ArrayList<Parameter>();
+		parameters.add(fieldSeparator);
 		parameters.add(dateFormat);
 		parameters.add(decimalSeparator);
 		parameters.add(from);
@@ -114,7 +117,7 @@ public class QifFileDriver implements FileDriver {
 	 */
 	@Override
 	public String getName() {
-		return "QIF";
+		return "CSV";
 	}
 
 	/**
@@ -128,6 +131,9 @@ public class QifFileDriver implements FileDriver {
 	public List<Operation> parse(List<Parameter> parameters) {
 
 		List<Operation> operations = new ArrayList<Operation>();
+		if (true) {
+			return operations;
+		}
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat.getValue());
 			FileInputStream fis = new FileInputStream(new File(file.getValue()));
@@ -173,6 +179,16 @@ public class QifFileDriver implements FileDriver {
 	@Override
 	public String toString() {
 		return getName();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see org.amphiprion.myaccount.driver.file.FileDriver#getSubDirectory()
+	 */
+	@Override
+	public String getSubDirectory() {
+		return "csv";
 	}
 
 }

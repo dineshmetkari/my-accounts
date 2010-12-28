@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<array name="file_driver">
-		<item>org.amphiprion.myaccount.driver.file.qif.QifFileDriver</item>
+		<item>org.amphiprion.myaccount.driver.file.QifFileDriver</item>
+		<item>org.amphiprion.myaccount.driver.file.CsvFileDriver</item>
 	</array>
 	<array name="category_images">
 		<item>none</item>
