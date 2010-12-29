@@ -23,8 +23,11 @@
 	<!-- Operations -->
 	<string name="operations_title">Operations: </string>
 	<string name="import_operation">Importer un fichier</string>
+	<string name="period_change">Changer la Période</string>
+	<string name="instant_chart">Graphe Instantané</string>
 	
 	<!-- Categories -->
+	<string name="category_unknown">Autre</string>
 	<string name="category_name">Nom de la Categorie</string>
 	<string name="category_parent">Categorie Parente</string>
 	<string name="category_rules">Règles</string>
@@ -56,7 +59,6 @@
 	<string name="mandatory_field">\'%1$s\' est obligatoire.</string>
 	
 	<!-- Period -->
-	<string name="period_change">Changer la Période</string>
 	<string name="period_this_month">Ce Mois - %1$s</string>
 	<string name="period_last_month">Le Mois Dernier - %1$s</string>
 	<string name="period_custom">Interval Personnalisé</string>

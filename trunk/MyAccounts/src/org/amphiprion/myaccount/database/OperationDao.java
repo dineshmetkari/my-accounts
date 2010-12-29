@@ -23,12 +23,18 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.droidsolutions.droidcharts.core.data.DefaultPieDataset;
+import net.droidsolutions.droidcharts.core.data.PieDataset;
+
+import org.amphiprion.myaccount.ApplicationConstants;
+import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 
 /**
  * This class is responsible of all database operation access.
@@ -101,6 +107,41 @@ public class OperationDao extends AbstractDao {
 		}
 		cursor.close();
 		return result;
+	}
+
+	public PieDataset getPieDataset(Account account, Date from, Date to, boolean income) {
+		String sql = "select res.sum, cat." + Category.DbField.NAME + " from (";
+
+		sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, ";
+		sql += "ifnull(c." + Category.DbField.PARENT + ", c." + Category.DbField.ID + ") as catId";
+		sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
+				+ Category.DbField.ID + " WHERE o." + Operation.DbField.AMOUNT;
+		if (income) {
+			sql += ">=0";
+		} else {
+			sql += "<0";
+		}
+		sql += " AND o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(account.getId()) + "' and "
+				+ Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+				+ DatabaseHelper.dateToString(to) + "' group by 2";
+
+		sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by cat."
+				+ Category.DbField.NAME;
+		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		if (cursor.moveToFirst()) {
+			do {
+				String name = cursor.getString(1);
+				double value = Math.abs(cursor.getDouble(0));
+				if (name == null) {
+					name = getContext().getResources().getString(R.string.category_unknown);
+				}
+				dataset.setValue(name, value);
+				Log.d(ApplicationConstants.PACKAGE, ">" + name + "=" + value);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return dataset;
 	}
 
 	/**

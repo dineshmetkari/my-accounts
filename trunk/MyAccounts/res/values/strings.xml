@@ -23,8 +23,11 @@
 	<!-- Operations -->
 	<string name="operations_title">Transactions: </string>
 	<string name="import_operation">Import from File</string>
+	<string name="period_change">Change Period</string>
+	<string name="instant_chart">Instant Chart</string>
 	
 	<!-- Categories -->
+	<string name="category_unknown">Other</string>
 	<string name="category_name">Category Name</string>
 	<string name="category_parent">Parent Category</string>
 	<string name="category_rules">Rules</string>
@@ -56,7 +59,6 @@
 	<string name="mandatory_field">\'%1$s\' is mandatory.</string>
 
 	<!-- Period -->
-	<string name="period_change">Change Period</string>
 	<string name="period_this_month">This Month - %1$s</string>
 	<string name="period_last_month">Last Month - %1$s</string>
 	<string name="period_custom">Custom Date Range</string>
