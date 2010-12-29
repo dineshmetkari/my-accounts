@@ -26,6 +26,7 @@ import org.amphiprion.myaccount.adapter.DateAdapter;
 import android.app.DatePickerDialog;
 import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.Context;
+import android.util.AttributeSet;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 
@@ -40,6 +41,15 @@ public class DatePickerSpinner extends Spinner {
 	 */
 	public DatePickerSpinner(Context context) {
 		super(context);
+	}
+
+	/**
+	 * 
+	 * @param context
+	 * @param set
+	 */
+	public DatePickerSpinner(Context context, AttributeSet set) {
+		super(context, set);
 	}
 
 	/**

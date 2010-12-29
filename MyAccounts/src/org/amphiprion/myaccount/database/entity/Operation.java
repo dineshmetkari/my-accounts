@@ -19,6 +19,7 @@
  */
 package org.amphiprion.myaccount.database.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,7 +29,7 @@ import java.util.UUID;
  * @author amphiprion
  * 
  */
-public class Operation {
+public class Operation implements Serializable {
 	/**
 	 * Serial UID.
 	 */

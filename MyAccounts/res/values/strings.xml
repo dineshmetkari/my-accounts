@@ -21,10 +21,14 @@
 	<string name="exclude_from_total">Exclude from Total Balance</string>
 
 	<!-- Operations -->
+	<string name="edit_operation_title">Edit Operation </string>
 	<string name="operations_title">Transactions: </string>
 	<string name="import_operation">Import from File</string>
 	<string name="period_change">Change Period</string>
 	<string name="instant_chart">Instant Chart</string>
+	<string name="operation_name">Name</string>
+	<string name="operation_amount">Amount</string>
+	<string name="operation_date">Date</string>
 	
 	<!-- Categories -->
 	<string name="category_unknown">Other</string>

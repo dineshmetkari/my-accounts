@@ -39,6 +39,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ import android.widget.TextView;
  */
 public class OperationList extends Activity {
 	private Account account;
+	double originalOperationAmout;
 	private Date[] period;
 
 	enum PeriodType {
@@ -107,7 +109,20 @@ public class OperationList extends Activity {
 		LinearLayout ln = (LinearLayout) findViewById(R.id.operation_list);
 		ln.removeAllViews();
 		for (Operation op : operations) {
-			ln.addView(new OperationSummaryView(this, op, account.getCurrency()));
+			OperationSummaryView view = new OperationSummaryView(this, op, account.getCurrency());
+			view.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					if (v instanceof OperationSummaryView) {
+						Operation operation = ((OperationSummaryView) v).getOperation();
+						originalOperationAmout = operation.getAmount();
+						Intent i = new Intent(OperationList.this, EditOperation.class);
+						i.putExtra("OPERATION", operation);
+						startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_EDIT_OPERATION);
+					}
+				}
+			});
+			ln.addView(view);
 		}
 	}
 
@@ -234,6 +249,14 @@ public class OperationList extends Activity {
 		if (resultCode == RESULT_OK) {
 			if (requestCode == ApplicationConstants.ACTIVITY_RETURN_IMPORT_OPERATION) {
 				account = (Account) data.getSerializableExtra("ACCOUNT");
+				buildOperationList(account);
+			} else if (requestCode == ApplicationConstants.ACTIVITY_RETURN_EDIT_OPERATION) {
+				Operation operation = (Operation) data.getSerializableExtra("OPERATION");
+
+				double newBalance = Math
+						.round((account.getBalance() + operation.getAmount() - originalOperationAmout) * 100.0) / 100.0;
+				OperationDao.getInstance(this).update(operation, newBalance);
+				account.setBalance(newBalance);
 				buildOperationList(account);
 			}
 		}
