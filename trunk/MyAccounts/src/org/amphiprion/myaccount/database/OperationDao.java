@@ -26,7 +26,6 @@ import java.util.List;
 import net.droidsolutions.droidcharts.core.data.DefaultPieDataset;
 import net.droidsolutions.droidcharts.core.data.PieDataset;
 
-import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Category;
@@ -34,7 +33,6 @@ import org.amphiprion.myaccount.database.entity.Operation;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
 /**
  * This class is responsible of all database operation access.
@@ -137,7 +135,6 @@ public class OperationDao extends AbstractDao {
 					name = getContext().getResources().getString(R.string.category_unknown);
 				}
 				dataset.setValue(name, value);
-				Log.d(ApplicationConstants.PACKAGE, ">" + name + "=" + value);
 			} while (cursor.moveToNext());
 		}
 		cursor.close();
@@ -185,16 +182,30 @@ public class OperationDao extends AbstractDao {
 	 * 
 	 * @param operation
 	 *            the operation to update
+	 * @return newBalance use to update the account balance
 	 */
-	public void update(Operation operation) {
-		String sql = "update OPERATION set " + Operation.DbField.AMOUNT + "=" + operation.getAmount() + ","
-				+ Operation.DbField.DATE + "='" + DatabaseHelper.dateToString(operation.getDate()) + "',"
-				+ Operation.DbField.DESCRIPTION + "='" + encodeString(operation.getDescription()) + "',"
-				+ Operation.DbField.FK_ACCOUNT + "='" + encodeString(operation.getAccountId()) + "',"
-				+ Operation.DbField.FK_CATEGORY + "='" + encodeString(operation.getCategory().getId()) + "' WHERE "
-				+ Operation.DbField.ID + "='" + encodeString(operation.getId()) + "'";
+	public void update(Operation operation, double newBalance) {
+		getDatabase().beginTransaction();
+		try {
 
-		execSQL(sql);
+			String sql = "update OPERATION set " + Operation.DbField.AMOUNT + "=" + operation.getAmount() + ","
+					+ Operation.DbField.DATE + "='" + DatabaseHelper.dateToString(operation.getDate()) + "',"
+					+ Operation.DbField.DESCRIPTION + "='" + encodeString(operation.getDescription()) + "',"
+					+ Operation.DbField.FK_ACCOUNT + "='" + encodeString(operation.getAccountId()) + "',"
+					+ Operation.DbField.FK_CATEGORY + "='" + encodeString(operation.getCategory().getId()) + "' WHERE "
+					+ Operation.DbField.ID + "='" + encodeString(operation.getId()) + "'";
+
+			execSQL(sql);
+
+			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "=" + newBalance + " WHERE " + Account.DbField.ID
+					+ "='" + encodeString(operation.getAccountId()) + "'";
+			execSQL(sql);
+
+			getDatabase().setTransactionSuccessful();
+		} finally {
+			getDatabase().endTransaction();
+		}
+
 	}
 
 	/**

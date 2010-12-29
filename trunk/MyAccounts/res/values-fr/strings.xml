@@ -11,7 +11,7 @@
 	<string name="report_tab">Rapports</string>
 
 	<!-- Account -->
-	<string name="edit_account_title">Editer Compte</string>
+	<string name="edit_account_title">Editer le Compte</string>
 	<string name="delete_account_title">Supprimer le Compte</string>
 	<string name="account_name">Nom du Compte</string>
 	<string name="account_balance">Solde</string>
@@ -21,10 +21,14 @@
 	<string name="exclude_from_total">Exclure du Total des Soldes</string>
 
 	<!-- Operations -->
+	<string name="edit_operation_title">Editer l\'Operation </string>
 	<string name="operations_title">Operations: </string>
 	<string name="import_operation">Importer un fichier</string>
 	<string name="period_change">Changer la Période</string>
 	<string name="instant_chart">Graphe Instantané</string>
+	<string name="operation_name">Nom</string>
+	<string name="operation_amount">Montant</string>
+	<string name="operation_date">Date</string>
 	
 	<!-- Categories -->
 	<string name="category_unknown">Autre</string>
