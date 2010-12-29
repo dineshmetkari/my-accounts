@@ -195,4 +195,5 @@ public class CategoryDao extends AbstractDao {
 			getDatabase().endTransaction();
 		}
 	}
+
 }

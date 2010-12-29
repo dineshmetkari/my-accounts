@@ -38,6 +38,7 @@ public interface ApplicationConstants {
 	public static final int MENU_ID_EDIT_ACCOUNT = 6;
 	public static final int MENU_ID_DELETE_ACCOUNT = 7;
 	public static final int MENU_ID_CHANGE_PERIOD_OPERATION = 8;
+	public static final int MENU_ID_INSTANT_CHART_OPERATION = 9;
 
 	public static final int ACTIVITY_RETURN_CREATE_ACCOUNT = 1;
 	public static final int ACTIVITY_RETURN_EDIT_ACCOUNT = 2;
@@ -46,5 +47,6 @@ public interface ApplicationConstants {
 	public static final int ACTIVITY_RETURN_IMPORT_OPERATION = 5;
 	public static final int ACTIVITY_RETURN_CHOOSE_FILE = 6;
 	public static final int ACTIVITY_RETURN_VIEW_OPERATION_LIST = 7;
+	public static final int ACTIVITY_RETURN_INSTANT_CHART = 8;
 
 }

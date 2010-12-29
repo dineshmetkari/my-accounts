@@ -126,6 +126,11 @@ public class OperationList extends Activity {
 		MenuItem changePeriod = menu.add(1, ApplicationConstants.MENU_ID_CHANGE_PERIOD_OPERATION, 1,
 				R.string.period_change);
 		changePeriod.setIcon(android.R.drawable.ic_menu_my_calendar);
+
+		MenuItem instantChart = menu.add(2, ApplicationConstants.MENU_ID_INSTANT_CHART_OPERATION, 1,
+				R.string.instant_chart);
+		instantChart.setIcon(android.R.drawable.ic_menu_slideshow);
+
 		return true;
 	}
 
@@ -178,6 +183,13 @@ public class OperationList extends Activity {
 			});
 			AlertDialog alert = builder.create();
 			alert.show();
+		} else if (item.getItemId() == ApplicationConstants.MENU_ID_INSTANT_CHART_OPERATION) {
+			Intent i = new Intent(OperationList.this, Chart.class);
+			i.putExtra("ACCOUNT", account);
+			i.putExtra("FROM", period[0]);
+			i.putExtra("TO", period[1]);
+			startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_INSTANT_CHART);
+
 		}
 		return true;
 	}
