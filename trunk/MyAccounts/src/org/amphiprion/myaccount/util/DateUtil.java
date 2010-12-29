@@ -38,6 +38,8 @@ public class DateUtil {
 	public static SimpleDateFormat defaultDateFormat;
 	/** The default operation date format. */
 	public static SimpleDateFormat defaultOperationDateFormat;
+	/** The default month format. */
+	public static SimpleDateFormat monthFormat;
 
 	/**
 	 * Initialize the currency utility.
@@ -51,6 +53,7 @@ public class DateUtil {
 			defaultDateFormat = new SimpleDateFormat(format);
 			String opFormat = context.getResources().getString(R.string.default_operation_date_format);
 			defaultOperationDateFormat = new SimpleDateFormat(opFormat);
+			monthFormat = new SimpleDateFormat("MMMM");
 		}
 	}
 
@@ -92,5 +95,18 @@ public class DateUtil {
 		cTo.add(Calendar.DAY_OF_MONTH, -1);
 
 		return new Date[] { cFrom.getTime(), cTo.getTime() };
+	}
+
+	public static String getThisMonth() {
+		String s = monthFormat.format(new Date());
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
+	}
+
+	public static String getLastMonth() {
+		Calendar cFrom = Calendar.getInstance();
+		cFrom.set(Calendar.DAY_OF_MONTH, 1);
+		cFrom.add(Calendar.MONTH, -1);
+		String s = monthFormat.format(cFrom.getTime());
+		return s.substring(0, 1).toUpperCase() + s.substring(1);
 	}
 }

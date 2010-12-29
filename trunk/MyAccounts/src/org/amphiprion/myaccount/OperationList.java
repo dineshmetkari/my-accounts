@@ -19,7 +19,6 @@
  */
 package org.amphiprion.myaccount;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -34,11 +33,13 @@ import org.amphiprion.myaccount.view.OperationSummaryView;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -79,14 +80,13 @@ public class OperationList extends Activity {
 		TextView tvPeriod = (TextView) findViewById(R.id.lblPeriod);
 		if (periodType == PeriodType.THIS_MONTH) {
 			period = DateUtil.getThisMonthRange();
-			tvPeriod.setText(getResources().getString(R.string.period_this_month,
-					new SimpleDateFormat("MMMM").format(period[0])));
+			tvPeriod.setText(getResources().getString(R.string.period_this_month, DateUtil.getThisMonth()));
 		} else if (periodType == PeriodType.LAST_MONTH) {
 			period = DateUtil.getLastMonthRange();
-			tvPeriod.setText(getResources().getString(R.string.period_last_month,
-					new SimpleDateFormat("MMMM").format(period[0])));
+			tvPeriod.setText(getResources().getString(R.string.period_last_month, DateUtil.getLastMonth()));
 		} else {
-			tvPeriod.setText("Custom a faire !! ");
+			tvPeriod.setText(getResources().getString(R.string.period_custom_label,
+					DateUtil.defaultDateFormat.format(period[0]), DateUtil.defaultDateFormat.format(period[1])));
 		}
 
 		TextView lblTotalCurrency = (TextView) findViewById(R.id.lblTotalCurrency);
@@ -155,10 +155,8 @@ public class OperationList extends Activity {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getResources().getString(R.string.period_change));
 			String[] items = new String[3];
-			items[0] = getResources().getString(R.string.period_this_month,
-					new SimpleDateFormat("MMMM").format(DateUtil.getThisMonthRange()[0]));
-			items[1] = getResources().getString(R.string.period_last_month,
-					new SimpleDateFormat("MMMM").format(DateUtil.getLastMonthRange()[0]));
+			items[0] = getResources().getString(R.string.period_this_month, DateUtil.getThisMonth());
+			items[1] = getResources().getString(R.string.period_last_month, DateUtil.getLastMonth());
 			items[2] = getResources().getString(R.string.period_custom);
 			builder.setItems(items, new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int item) {
@@ -172,19 +170,45 @@ public class OperationList extends Activity {
 						periodType = PeriodType.LAST_MONTH;
 						buildOperationList(account);
 						break;
+					case CUSTOM:
+						chooseStartCustomRange();
+						break;
 					}
-					// Intent i = new Intent(OperationList.this,
-					// DefineImportParameter.class);
-					// i.putExtra("ACCOUNT", account);
-					// i.putExtra("FILE_DRIVER_INDEX", item);
-					// startActivityForResult(i,
-					// ApplicationConstants.ACTIVITY_RETURN_IMPORT_OPERATION);
 				}
 			});
 			AlertDialog alert = builder.create();
 			alert.show();
 		}
 		return true;
+	}
+
+	private void chooseStartCustomRange() {
+		Date date = new Date();
+		DatePickerDialog dlg = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+			@Override
+			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+				Date start = new Date(year - 1900, monthOfYear, dayOfMonth);
+				chooseEndCustomRange(start);
+			}
+		}, date.getYear() + 1900, date.getMonth(), date.getDate());
+		dlg.setTitle(R.string.period_start_date);
+		dlg.show();
+	}
+
+	private void chooseEndCustomRange(final Date start) {
+		Date date = new Date();
+		DatePickerDialog dlg = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
+			@Override
+			public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+				Date end = new Date(year - 1900, monthOfYear, dayOfMonth);
+				period[0] = start;
+				period[1] = end;
+				periodType = PeriodType.CUSTOM;
+				buildOperationList(account);
+			}
+		}, date.getYear() + 1900, date.getMonth(), date.getDate());
+		dlg.setTitle(R.string.period_end_date);
+		dlg.show();
 	}
 
 	/**
