@@ -19,6 +19,8 @@
  */
 package org.amphiprion.myaccount;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import org.amphiprion.myaccount.adapter.FileDriverAdapter;
@@ -27,6 +29,7 @@ import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.driver.file.FileDriverManager;
 import org.amphiprion.myaccount.util.CurrencyUtil;
+import org.amphiprion.myaccount.util.DateUtil;
 import org.amphiprion.myaccount.view.OperationSummaryView;
 
 import android.app.Activity;
@@ -47,6 +50,13 @@ import android.widget.TextView;
  */
 public class OperationList extends Activity {
 	private Account account;
+	private Date[] period;
+
+	enum PeriodType {
+		THIS_MONTH, LAST_MONTH, CUSTOM
+	}
+
+	private PeriodType periodType = PeriodType.THIS_MONTH;
 
 	/**
 	 * {@inheritDoc}
@@ -65,6 +75,20 @@ public class OperationList extends Activity {
 	}
 
 	private void buildOperationList(Account account) {
+
+		TextView tvPeriod = (TextView) findViewById(R.id.lblPeriod);
+		if (periodType == PeriodType.THIS_MONTH) {
+			period = DateUtil.getThisMonthRange();
+			tvPeriod.setText(getResources().getString(R.string.period_this_month,
+					new SimpleDateFormat("MMMM").format(period[0])));
+		} else if (periodType == PeriodType.LAST_MONTH) {
+			period = DateUtil.getLastMonthRange();
+			tvPeriod.setText(getResources().getString(R.string.period_last_month,
+					new SimpleDateFormat("MMMM").format(period[0])));
+		} else {
+			tvPeriod.setText("Custom a faire !! ");
+		}
+
 		TextView lblTotalCurrency = (TextView) findViewById(R.id.lblTotalCurrency);
 		lblTotalCurrency.setTypeface(CurrencyUtil.currencyFace);
 		TextView lblTotalBalance = (TextView) findViewById(R.id.lblTotalBalance);
@@ -76,7 +100,9 @@ public class OperationList extends Activity {
 		}
 		lblTotalCurrency.setText(tmpCurrency);
 
-		List<Operation> operations = OperationDao.getInstance(this).getOperations(account);
+		List<Operation> operations = OperationDao.getInstance(this).getOperations(account, period[0], period[1]);
+		TextView tvNbRecord = (TextView) findViewById(R.id.lblNbRecord);
+		tvNbRecord.setText(getResources().getString(R.string.nb_record, operations.size()));
 
 		LinearLayout ln = (LinearLayout) findViewById(R.id.operation_list);
 		ln.removeAllViews();
@@ -94,8 +120,12 @@ public class OperationList extends Activity {
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		menu.clear();
 
-		MenuItem addAccount = menu.add(0, ApplicationConstants.MENU_ID_IMPORT_OPERATION, 1, R.string.import_operation);
-		addAccount.setIcon(android.R.drawable.ic_menu_recent_history);
+		MenuItem importOp = menu.add(0, ApplicationConstants.MENU_ID_IMPORT_OPERATION, 1, R.string.import_operation);
+		importOp.setIcon(android.R.drawable.ic_menu_recent_history);
+
+		MenuItem changePeriod = menu.add(1, ApplicationConstants.MENU_ID_CHANGE_PERIOD_OPERATION, 1,
+				R.string.period_change);
+		changePeriod.setIcon(android.R.drawable.ic_menu_my_calendar);
 		return true;
 	}
 
@@ -107,7 +137,6 @@ public class OperationList extends Activity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == ApplicationConstants.MENU_ID_IMPORT_OPERATION) {
-
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getResources().getString(R.string.file_import_choice_title));
 			builder.setSingleChoiceItems(new FileDriverAdapter(OperationList.this, FileDriverManager.getDrivers()), -1,
@@ -120,6 +149,38 @@ public class OperationList extends Activity {
 							startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_IMPORT_OPERATION);
 						}
 					});
+			AlertDialog alert = builder.create();
+			alert.show();
+		} else if (item.getItemId() == ApplicationConstants.MENU_ID_CHANGE_PERIOD_OPERATION) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle(getResources().getString(R.string.period_change));
+			String[] items = new String[3];
+			items[0] = getResources().getString(R.string.period_this_month,
+					new SimpleDateFormat("MMMM").format(DateUtil.getThisMonthRange()[0]));
+			items[1] = getResources().getString(R.string.period_last_month,
+					new SimpleDateFormat("MMMM").format(DateUtil.getLastMonthRange()[0]));
+			items[2] = getResources().getString(R.string.period_custom);
+			builder.setItems(items, new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int item) {
+					dialog.dismiss();
+					switch (PeriodType.values()[item]) {
+					case THIS_MONTH:
+						periodType = PeriodType.THIS_MONTH;
+						buildOperationList(account);
+						break;
+					case LAST_MONTH:
+						periodType = PeriodType.LAST_MONTH;
+						buildOperationList(account);
+						break;
+					}
+					// Intent i = new Intent(OperationList.this,
+					// DefineImportParameter.class);
+					// i.putExtra("ACCOUNT", account);
+					// i.putExtra("FILE_DRIVER_INDEX", item);
+					// startActivityForResult(i,
+					// ApplicationConstants.ACTIVITY_RETURN_IMPORT_OPERATION);
+				}
+			});
 			AlertDialog alert = builder.create();
 			alert.show();
 		}

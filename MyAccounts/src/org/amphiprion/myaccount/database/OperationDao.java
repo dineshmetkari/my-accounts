@@ -71,13 +71,15 @@ public class OperationDao extends AbstractDao {
 	 *            the account
 	 * @return the operation list
 	 */
-	public List<Operation> getOperations(Account account) {
+	public List<Operation> getOperations(Account account, Date from, Date to) {
 		String sql = "SELECT o." + Operation.DbField.ID + ", o." + Operation.DbField.AMOUNT + ", o."
 				+ Operation.DbField.DESCRIPTION + ", o." + Operation.DbField.DATE + ", o."
 				+ Operation.DbField.FK_CATEGORY + ", c." + Category.DbField.NAME + ", c." + Category.DbField.IMAGE_NAME
 				+ " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
 				+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='"
-				+ encodeString(account.getId()) + "'  order by o." + Operation.DbField.DATE + " desc";
+				+ encodeString(account.getId()) + "' and " + Operation.DbField.DATE + " BETWEEN '"
+				+ DatabaseHelper.dateToString(from) + "' AND '" + DatabaseHelper.dateToString(to) + "' order by o."
+				+ Operation.DbField.DATE + " desc";
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		ArrayList<Operation> result = new ArrayList<Operation>();
 		if (cursor.moveToFirst()) {

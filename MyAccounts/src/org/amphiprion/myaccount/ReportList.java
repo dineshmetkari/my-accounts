@@ -19,11 +19,13 @@
  */
 package org.amphiprion.myaccount;
 
+import org.amphiprion.myaccount.chart.XYLineChart;
+
 import android.app.Activity;
 import android.os.Bundle;
 
 /**
- * This activity manage the tags.
+ * This activity manage the reports.
  * 
  * @author amphiprion
  * 
@@ -37,6 +39,8 @@ public class ReportList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// setContentView(R.layout.report_list);
+
+		setContentView(new XYLineChart(getApplicationContext()));
 	}
+
 }
