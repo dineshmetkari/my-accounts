@@ -55,4 +55,10 @@
 	<string name="FILE">Fichier à Importer</string>
 	<string name="mandatory_field">\'%1$s\' est obligatoire.</string>
 	
+	<!-- Period -->
+	<string name="period_change">Changer la Période</string>
+	<string name="period_this_month">Ce Mois - %1$s</string>
+	<string name="period_last_month">Le Mois Dernier - %1$s</string>
+	<string name="period_custom">Interval Personnalisé</string>
+	<string name="nb_record">%1$s Ligne(s)</string>
 </resources>
