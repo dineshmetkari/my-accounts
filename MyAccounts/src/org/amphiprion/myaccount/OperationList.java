@@ -189,7 +189,7 @@ public class OperationList extends Activity {
 		if (item.getItemId() == ApplicationConstants.MENU_ID_IMPORT_OPERATION) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getResources().getString(R.string.file_import_choice_title));
-			builder.setSingleChoiceItems(new FileDriverAdapter(OperationList.this, FileDriverManager.getDrivers()), -1,
+			builder.setAdapter(new FileDriverAdapter(OperationList.this, FileDriverManager.getDrivers()),
 					new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int item) {
 							dialog.dismiss();
