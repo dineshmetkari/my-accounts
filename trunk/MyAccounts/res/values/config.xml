@@ -4,6 +4,7 @@
 		<item>org.amphiprion.myaccount.driver.file.impl.QifFileDriver</item>
 		<item>org.amphiprion.myaccount.driver.file.impl.CsvFileDriver</item>
 		<item>org.amphiprion.myaccount.driver.file.impl.OfxTxtFileDriver</item>
+		<item>org.amphiprion.myaccount.driver.file.impl.OfxXmlFileDriver</item>
 	</array>
 	<array name="category_images">
 		<item>none</item>
