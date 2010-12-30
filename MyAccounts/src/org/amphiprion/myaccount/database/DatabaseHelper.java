@@ -27,6 +27,7 @@ import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
+import org.amphiprion.myaccount.database.entity.Report;
 import org.amphiprion.myaccount.database.entity.Rule;
 
 import android.content.Context;
@@ -36,7 +37,7 @@ import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "amphiprion_myaccount";
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 	private static SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DatabaseHelper(Context context) {
@@ -70,6 +71,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		if (oldVersion == 1) {
 			db.execSQL("ALTER TABLE CATEGORY ADD " + Category.DbField.IMAGE_NAME + " text");
+			oldVersion++;
+		}
+		if (oldVersion == 2) {
+			db.execSQL("create table REPORT (" + Report.DbField.ID + " text primary key, " + Report.DbField.NAME
+					+ " text not null, " + Report.DbField.TYPE_REPORT + " integer, " + Report.DbField.TYPE_PERIOD
+					+ " integer, " + Report.DbField.FROM_DATE + " date, " + Report.DbField.TO_DATE + " date)");
+
+			db.execSQL("create table REPORT_CATEGORY (RPT_" + Report.DbField.ID + " text not null, CAT_"
+					+ Category.DbField.ID + " text not null)");
 			oldVersion++;
 		}
 	}
