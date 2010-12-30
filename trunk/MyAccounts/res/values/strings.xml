@@ -43,6 +43,14 @@
 	<string name="icon">Icon</string>	
 	<string name="choose_icon">Choose an Icon</string>	
 
+	<!-- Report -->
+	<string name="report_name">Report Name</string>
+	<string name="report_type">Report Type</string>
+	<string name="report_categories">Categories</string>
+	<string name="add_report">Add</string>
+	<string name="edit_report_title">Edit Report</string>
+	<string name="delete_report_title">Delete Report</string>
+
 	<!-- Button -->
 	<string name="ok">Ok</string>
 	<string name="save">Save</string>

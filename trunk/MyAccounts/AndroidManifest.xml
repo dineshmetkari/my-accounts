@@ -36,6 +36,9 @@
         <activity android:name=".EditOperation" 
                   android:label="@string/edit_operation_title">
         </activity>
+        <activity android:name=".EditReport" 
+                  android:label="@string/edit_report_title">
+        </activity>
         <activity android:name=".Chart"  android:screenOrientation="landscape"
                   android:label="@string/app_name">
         </activity>
