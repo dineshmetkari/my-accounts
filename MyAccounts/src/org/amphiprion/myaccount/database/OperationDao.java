@@ -247,4 +247,31 @@ public class OperationDao extends AbstractDao {
 			getDatabase().endTransaction();
 		}
 	}
+
+	/**
+	 * Return the amount after the given date.
+	 * 
+	 * @param account
+	 *            the account
+	 * @param date
+	 *            the date
+	 * @param include
+	 *            true if the date is inclusive
+	 * @return the amount (cash flow)
+	 */
+	public double getAmountAfter(Account account, Date date, boolean include) {
+		String sql = "SELECT sum(" + Operation.DbField.AMOUNT + ") from OPERATION WHERE "
+				+ Operation.DbField.FK_ACCOUNT + "='" + encodeString(account.getId()) + "' AND "
+				+ Operation.DbField.DATE + (include ? ">=" : ">") + "'" + DatabaseHelper.dateToString(date) + "'";
+		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+		double result = 0;
+		if (cursor.moveToFirst()) {
+			String amount = cursor.getString(0);
+			if (amount != null) {
+				result = Double.parseDouble(amount);
+			}
+		}
+		cursor.close();
+		return result;
+	}
 }

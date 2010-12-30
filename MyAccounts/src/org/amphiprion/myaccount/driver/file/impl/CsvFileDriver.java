@@ -17,7 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with My Accounts.  If not, see <http://www.gnu.org/licenses/>.
  */
-package org.amphiprion.myaccount.driver.file;
+package org.amphiprion.myaccount.driver.file.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -33,6 +33,8 @@ import java.util.List;
 import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Operation;
+import org.amphiprion.myaccount.driver.file.FileDriver;
+import org.amphiprion.myaccount.driver.file.Parameter;
 import org.amphiprion.myaccount.driver.file.Parameter.Type;
 
 import android.util.Log;
@@ -43,23 +45,29 @@ import android.util.Log;
  * @author amphiprion
  * 
  */
-public class QifFileDriver implements FileDriver {
+public class CsvFileDriver implements FileDriver {
 	/** The date format parameter name. */
 	private static final String DATE_FORMAT_NAME = "DATE_FORMAT";
 	/** The decimal separator parameter name. */
 	private static final String DECIMAL_SEPARATOR_NAME = "DECIMAL";
+	/** The decimal separator parameter name. */
+	private static final String FIELD_SEPARATOR_NAME = "FIELD";
 	/** The from parameter name. */
 	private static final String FROM_NAME = "FROM";
 	/** The to parameter name. */
 	private static final String TO_NAME = "TO";
 	/** The to parameter file name. */
 	private static final String FILE_NAME = "FILE";
+	/** The to parameter data on first line name. */
+	private static final String DATA_FROM_FIRST_LINE_NAME = "DATA_FROM_FIRST_LINE";
 
 	private Parameter<String> dateFormat;
 	private Parameter<String> decimalSeparator;
+	private Parameter<String> fieldSeparator;
 	private Parameter<Date> from;
 	private Parameter<Date> to;
 	private Parameter<URI> file;
+	private Parameter<Boolean> dataStartFromFirstLine;
 	/**
 	 * The parameter list.
 	 */
@@ -67,18 +75,23 @@ public class QifFileDriver implements FileDriver {
 	private List<Parameter> parameters;
 
 	@SuppressWarnings("unchecked")
-	public QifFileDriver() {
+	public CsvFileDriver() {
+		fieldSeparator = new Parameter<String>(FIELD_SEPARATOR_NAME, Type.FIELD_SEPARATOR, "Tab");
 		dateFormat = new Parameter<String>(DATE_FORMAT_NAME, Type.DATE_FORMAT, "dd/MM/yy");
 		decimalSeparator = new Parameter<String>(DECIMAL_SEPARATOR_NAME, Type.DECIMAL_SEPARATOR, ".");
 		from = new Parameter<Date>(FROM_NAME, Type.DATE_PICKER);
 		to = new Parameter<Date>(TO_NAME, Type.DATE_PICKER);
 		file = new Parameter<URI>(FILE_NAME, Type.FILE_URI);
+		dataStartFromFirstLine = new Parameter<Boolean>(DATA_FROM_FIRST_LINE_NAME, Type.BOOLEAN, false);
+
 		parameters = new ArrayList<Parameter>();
+		parameters.add(fieldSeparator);
 		parameters.add(dateFormat);
 		parameters.add(decimalSeparator);
 		parameters.add(from);
 		parameters.add(to);
 		parameters.add(file);
+		parameters.add(dataStartFromFirstLine);
 	}
 
 	/**
@@ -112,7 +125,7 @@ public class QifFileDriver implements FileDriver {
 	 */
 	@Override
 	public String getName() {
-		return "QIF";
+		return "CSV";
 	}
 
 	/**
@@ -126,38 +139,45 @@ public class QifFileDriver implements FileDriver {
 	public List<Operation> parse(List<Parameter> parameters) {
 
 		List<Operation> operations = new ArrayList<Operation>();
+
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat.getValue());
 			FileInputStream fis = new FileInputStream(new File(file.getValue()));
 			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
+			String separ = fieldSeparator.getValue();
+			if ("tab".equals(separ.toLowerCase())) {
+				separ = "\t";
+			}
 
 			String ligne;
 			Operation op = new Operation();
+			boolean skipFirstLine = !dataStartFromFirstLine.getValue().booleanValue();
 			while ((ligne = br.readLine()) != null) {
-				if (ligne.startsWith("^")) {
-					if (op.getAmount() != 0 && op.getDate() != null) {
-						if ((to.getValue() == null || !op.getDate().after(to.getValue()))
-								&& (from.getValue() == null || !op.getDate().before(from.getValue()))) {
-							operations.add(op);
-						}
-					}
-					op = new Operation();
-				} else if (ligne.startsWith("T")) {
-					String amount = ligne.substring(1);
-					if (",".equals(decimalSeparator.getValue())) {
-						amount = amount.replace(',', '.');
-					}
-					op.setAmount(Double.parseDouble(amount));
-				} else if (ligne.startsWith("D")) {
-					String date = ligne.substring(1);
-					op.setDate(sdf.parse(date));
-				} else if (ligne.startsWith("M")) {
-					String desc = ligne.substring(1);
-					op.setDescription(desc);
+				if (skipFirstLine) {
+					skipFirstLine = false;
+					continue;
 				}
+				String[] columns = ligne.split(separ);
+				// Log.d(ApplicationConstants.PACKAGE, ">" + ligne + " | " +
+				// columns.length);
+				op.setDate(sdf.parse(columns[0]));
+				op.setDescription(columns[1]);
+				String amount = columns[2];
+				if (",".equals(decimalSeparator.getValue())) {
+					amount = amount.replace(',', '.');
+				}
+				op.setAmount(Double.parseDouble(amount));
+
+				if (op.getAmount() != 0 && op.getDate() != null) {
+					if ((to.getValue() == null || !op.getDate().after(to.getValue()))
+							&& (from.getValue() == null || !op.getDate().before(from.getValue()))) {
+						operations.add(op);
+					}
+				}
+				op = new Operation();
 			}
 		} catch (Exception e) {
-			Log.e(ApplicationConstants.PACKAGE, "Error parsing QIF", e);
+			Log.e(ApplicationConstants.PACKAGE, "Error parsing CSV", e);
 			operations.clear();
 		}
 		return operations;
@@ -180,7 +200,7 @@ public class QifFileDriver implements FileDriver {
 	 */
 	@Override
 	public String getSubDirectory() {
-		return "qif";
+		return "csv";
 	}
 
 }

@@ -93,7 +93,16 @@ public class OperationList extends Activity {
 
 		TextView lblTotalCurrency = (TextView) findViewById(R.id.lblTotalCurrency);
 		lblTotalCurrency.setTypeface(CurrencyUtil.currencyFace);
+		TextView lblCurrencyEnd = (TextView) findViewById(R.id.lblCurrencyEnd);
+		lblCurrencyEnd.setTypeface(CurrencyUtil.currencyFace);
+		TextView lblCurrencyStart = (TextView) findViewById(R.id.lblCurrencyStart);
+		lblCurrencyStart.setTypeface(CurrencyUtil.currencyFace);
+
 		TextView lblTotalBalance = (TextView) findViewById(R.id.lblTotalBalance);
+		TextView lblBalanceEnd = (TextView) findViewById(R.id.lblBalanceEnd);
+		TextView lblDateEnd = (TextView) findViewById(R.id.lblDateEnd);
+		TextView lblBalanceStart = (TextView) findViewById(R.id.lblBalanceStart);
+		TextView lblDateStart = (TextView) findViewById(R.id.lblDateStart);
 
 		lblTotalBalance.setText("" + account.getBalance());
 		String tmpCurrency = account.getCurrency();
@@ -101,6 +110,27 @@ public class OperationList extends Activity {
 			tmpCurrency = tmpCurrency.substring(3);
 		}
 		lblTotalCurrency.setText(tmpCurrency);
+		if (account.getBalance() < 0) {
+			lblTotalBalance.setTextColor(getResources().getColor(R.color.negative));
+			lblTotalCurrency.setTextColor(getResources().getColor(R.color.negative));
+		} else {
+			lblTotalBalance.setTextColor(getResources().getColor(R.color.positive));
+			lblTotalCurrency.setTextColor(getResources().getColor(R.color.positive));
+		}
+
+		lblCurrencyEnd.setText(tmpCurrency);
+		lblCurrencyStart.setText(tmpCurrency);
+
+		double amountStart = OperationDao.getInstance(this).getAmountAfter(account, period[0], true);
+		double amountEnd = OperationDao.getInstance(this).getAmountAfter(account, period[1], false);
+
+		lblBalanceEnd.setText("" + (Math.round((account.getBalance() - amountEnd) * 100.0) / 100.0));
+		lblDateEnd.setText(getResources().getString(R.string.operation_balance_at_end,
+				DateUtil.defaultDateFormat.format(period[1])));
+
+		lblBalanceStart.setText("" + (Math.round((account.getBalance() - amountStart) * 100.0) / 100.0));
+		lblDateStart.setText(getResources().getString(R.string.operation_balance_at_start,
+				DateUtil.defaultDateFormat.format(period[0])));
 
 		List<Operation> operations = OperationDao.getInstance(this).getOperations(account, period[0], period[1]);
 		TextView tvNbRecord = (TextView) findViewById(R.id.lblNbRecord);

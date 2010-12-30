@@ -109,6 +109,5 @@ public class EditOperation extends Activity {
 				finish();
 			}
 		});
-
 	}
 }
