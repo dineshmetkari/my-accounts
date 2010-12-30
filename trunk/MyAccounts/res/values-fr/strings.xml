@@ -29,6 +29,8 @@
 	<string name="operation_name">Nom</string>
 	<string name="operation_amount">Montant</string>
 	<string name="operation_date">Date</string>
+	<string name="operation_balance_at_start">Solde au Debut du %1$s:</string>	
+	<string name="operation_balance_at_end">Solde à la Fin du %1$s:</string>	
 	
 	<!-- Categories -->
 	<string name="category_unknown">Autre</string>
@@ -60,6 +62,8 @@
 	<string name="FROM">Date de Début</string>
 	<string name="TO">Date de Fin</string>
 	<string name="FILE">Fichier à Importer</string>
+	<string name="DATA_FROM_FIRST_LINE">Les Données commencent à la 1ère Ligne</string>
+
 	<string name="mandatory_field">\'%1$s\' est obligatoire.</string>
 	
 	<!-- Period -->

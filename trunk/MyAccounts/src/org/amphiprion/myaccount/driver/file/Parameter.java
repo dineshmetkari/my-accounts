@@ -30,7 +30,7 @@ public class Parameter<T> {
 	 * List of possible parameter types.
 	 */
 	public enum Type {
-		DATE_FORMAT, DECIMAL_SEPARATOR, DATE_PICKER, FILE_URI, FIELD_SEPARATOR
+		DATE_FORMAT, DECIMAL_SEPARATOR, DATE_PICKER, FILE_URI, FIELD_SEPARATOR, BOOLEAN
 	}
 
 	private String name;

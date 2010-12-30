@@ -29,7 +29,9 @@
 	<string name="operation_name">Name</string>
 	<string name="operation_amount">Amount</string>
 	<string name="operation_date">Date</string>
-	
+	<string name="operation_balance_at_start">Balance at Start of %1$s:</string>	
+	<string name="operation_balance_at_end">Balance at End of %1$s:</string>	
+
 	<!-- Categories -->
 	<string name="category_unknown">Other</string>
 	<string name="category_name">Category Name</string>
@@ -60,6 +62,8 @@
 	<string name="FROM">From</string>
 	<string name="TO">To</string>
 	<string name="FILE">File to Import</string>
+	<string name="DATA_FROM_FIRST_LINE">Data Starts from First Line</string>
+
 	<string name="mandatory_field">\'%1$s\' is mandatory.</string>
 
 	<!-- Period -->

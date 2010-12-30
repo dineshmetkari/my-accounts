@@ -50,6 +50,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -133,13 +134,6 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 			View editView = null;
 			switch (param.getType()) {
 			case DATE_PICKER:
-				// editView = new DatePicker(this);
-				// if (param.getValue() != null) {
-				// Date date = (Date) param.getValue();
-				// ((DatePicker) editView).init(date.getYear() + 1900,
-				// date.getMonth(), date.getDate(), null);
-				// }
-				// break;
 				editView = new DatePickerSpinner(this);
 				DateAdapter dateAdapter = new DateAdapter(this);
 				((Spinner) editView).setAdapter(dateAdapter);
@@ -163,6 +157,9 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 				editView = new Spinner(this);
 				((Spinner) editView).setAdapter(new DecimalSepatorAdapter(this));
 				break;
+			case BOOLEAN:
+				editView = new CheckBox(this);
+				break;
 			case DATE_FORMAT:
 				editView = new Spinner(this);
 				((Spinner) editView).setAdapter(new DateFormatAdapter(this));
@@ -184,7 +181,7 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 						if (DefineImportParameter.this.driver.getSubDirectory() != null) {
 							file = new File(file, DefineImportParameter.this.driver.getSubDirectory());
 						}
-						intent.setDataAndType(Uri.parse(file.toString()), "text/qif");
+						intent.setDataAndType(Uri.parse(file.toString()), "text/*");
 
 						try {
 							startActivityForResult(intent, ApplicationConstants.ACTIVITY_RETURN_CHOOSE_FILE);
@@ -274,6 +271,10 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 			case DECIMAL_SEPARATOR:
 				Spinner sp = (Spinner) root.getChildAt(indexView);
 				param.setValue(sp.getSelectedItem());
+				break;
+			case BOOLEAN:
+				CheckBox chk = (CheckBox) root.getChildAt(indexView);
+				param.setValue(chk.isChecked());
 				break;
 			case DATE_FORMAT:
 				Spinner spd = (Spinner) root.getChildAt(indexView);
