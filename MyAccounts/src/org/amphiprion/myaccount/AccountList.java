@@ -110,7 +110,7 @@ public class AccountList extends Activity {
 			if (tmpCurrency.length() > 3) {
 				tmpCurrency = tmpCurrency.substring(3);
 			}
-			lblTotalBalance.setText("" + total);
+			lblTotalBalance.setText("" + (Math.round(total * 100.0) / 100.0));
 			lblTotalCurrency.setText(tmpCurrency);
 		} else {
 			lblTotalBalance.setText(" - ");

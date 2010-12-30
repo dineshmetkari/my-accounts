@@ -40,34 +40,25 @@ import org.amphiprion.myaccount.driver.file.Parameter.Type;
 import android.util.Log;
 
 /**
- * This the driver for CSV files.
+ * This the driver for OFX 1.x files.
  * 
  * @author amphiprion
  * 
  */
-public class CsvFileDriver implements FileDriver {
-	/** The date format parameter name. */
-	private static final String DATE_FORMAT_NAME = "DATE_FORMAT";
+public class OfxTxtFileDriver implements FileDriver {
 	/** The decimal separator parameter name. */
 	private static final String DECIMAL_SEPARATOR_NAME = "DECIMAL";
-	/** The decimal separator parameter name. */
-	private static final String FIELD_SEPARATOR_NAME = "FIELD";
 	/** The from parameter name. */
 	private static final String FROM_NAME = "FROM";
 	/** The to parameter name. */
 	private static final String TO_NAME = "TO";
 	/** The to parameter file name. */
 	private static final String FILE_NAME = "FILE";
-	/** The to parameter data on first line name. */
-	private static final String DATA_FROM_FIRST_LINE_NAME = "DATA_FROM_FIRST_LINE";
 
-	private Parameter<String> dateFormat;
 	private Parameter<String> decimalSeparator;
-	private Parameter<String> fieldSeparator;
 	private Parameter<Date> from;
 	private Parameter<Date> to;
 	private Parameter<URI> file;
-	private Parameter<Boolean> dataStartFromFirstLine;
 	/**
 	 * The parameter list.
 	 */
@@ -75,23 +66,17 @@ public class CsvFileDriver implements FileDriver {
 	private List<Parameter> parameters;
 
 	@SuppressWarnings("unchecked")
-	public CsvFileDriver() {
-		fieldSeparator = new Parameter<String>(FIELD_SEPARATOR_NAME, Type.FIELD_SEPARATOR, "Tab");
-		dateFormat = new Parameter<String>(DATE_FORMAT_NAME, Type.DATE_FORMAT, "dd/MM/yy");
+	public OfxTxtFileDriver() {
 		decimalSeparator = new Parameter<String>(DECIMAL_SEPARATOR_NAME, Type.DECIMAL_SEPARATOR, ".");
 		from = new Parameter<Date>(FROM_NAME, Type.DATE_PICKER);
 		to = new Parameter<Date>(TO_NAME, Type.DATE_PICKER);
 		file = new Parameter<URI>(FILE_NAME, Type.FILE_URI);
-		dataStartFromFirstLine = new Parameter<Boolean>(DATA_FROM_FIRST_LINE_NAME, Type.BOOLEAN, false);
 
 		parameters = new ArrayList<Parameter>();
-		parameters.add(fieldSeparator);
-		parameters.add(dateFormat);
 		parameters.add(decimalSeparator);
 		parameters.add(from);
 		parameters.add(to);
 		parameters.add(file);
-		parameters.add(dataStartFromFirstLine);
 	}
 
 	/**
@@ -125,7 +110,7 @@ public class CsvFileDriver implements FileDriver {
 	 */
 	@Override
 	public String getName() {
-		return "CSV";
+		return "OFX 1.x";
 	}
 
 	/**
@@ -141,43 +126,54 @@ public class CsvFileDriver implements FileDriver {
 		List<Operation> operations = new ArrayList<Operation>();
 
 		try {
-			SimpleDateFormat sdf = new SimpleDateFormat(dateFormat.getValue());
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
 			FileInputStream fis = new FileInputStream(new File(file.getValue()));
 			BufferedReader br = new BufferedReader(new InputStreamReader(fis));
-			String separ = fieldSeparator.getValue();
-			if ("tab".equals(separ.toLowerCase())) {
-				separ = "\t";
-			}
 
 			String ligne;
 			Operation op = new Operation();
-			boolean skipFirstLine = !dataStartFromFirstLine.getValue().booleanValue();
+			boolean inTrasactionList = false;
+			boolean inOperation = false;
 			while ((ligne = br.readLine()) != null) {
-				if (skipFirstLine) {
-					skipFirstLine = false;
-					continue;
-				}
-				String[] columns = ligne.split(separ);
-				// Log.d(ApplicationConstants.PACKAGE, ">" + ligne + " | " +
-				// columns.length);
-				op.setDate(sdf.parse(columns[0]));
-				op.setDescription(columns[1]);
-				String amount = columns[2];
-				if (",".equals(decimalSeparator.getValue())) {
-					amount = amount.replace(',', '.');
-				}
-				op.setAmount(Double.parseDouble(amount));
-
-				if (op.getAmount() != 0 && op.getDate() != null) {
-					if ((to.getValue() == null || !op.getDate().after(to.getValue()))
-							&& (from.getValue() == null || !op.getDate().before(from.getValue()))) {
-						operations.add(op);
+				int index = -1;
+				if (ligne.contains("BANKTRANLIST")) {
+					inTrasactionList = !inTrasactionList;
+					inOperation = false;
+				} else if (inTrasactionList) {
+					if (ligne.contains("STMTTRN")) {
+						inOperation = !inOperation;
+						if (inOperation == false) {
+							if (op.getAmount() != 0 && op.getDate() != null) {
+								if ((to.getValue() == null || !op.getDate().after(to.getValue()))
+										&& (from.getValue() == null || !op.getDate().before(from.getValue()))) {
+									operations.add(op);
+								}
+							}
+							op = new Operation();
+						}
+					} else if ((index = ligne.indexOf("DTPOSTED")) != -1) {
+						op.setDate(sdf.parse(ligne.substring(index + 9)));
+					} else if ((index = ligne.indexOf("TRNAMT")) != -1) {
+						String amount = ligne.substring(index + 7);
+						if (",".equals(decimalSeparator.getValue())) {
+							amount = amount.replace(',', '.');
+						}
+						op.setAmount(Double.parseDouble(amount));
+					} else if ((index = ligne.indexOf("NAME")) != -1) {
+						op.setDescription(ligne.substring(index + 5));
+					} else if ((index = ligne.indexOf("MEMO")) != -1) {
+						String s = ligne.substring(index + 5);
+						if (!s.equals(".")) {
+							op.setDescription(op.getDescription() + "\n" + s);
+						}
 					}
 				}
-				op = new Operation();
+				// Log.d(ApplicationConstants.PACKAGE, ">" + ligne + " | " +
+				// columns.length);
+
 			}
 		} catch (Exception e) {
-			Log.e(ApplicationConstants.PACKAGE, "Error parsing CSV", e);
+			Log.e(ApplicationConstants.PACKAGE, "Error parsing OFX 1.x", e);
 			operations.clear();
 		}
 		return operations;
@@ -200,7 +196,7 @@ public class CsvFileDriver implements FileDriver {
 	 */
 	@Override
 	public String getSubDirectory() {
-		return "csv";
+		return "ofx";
 	}
 
 }
