@@ -38,8 +38,7 @@ public class FileDriverAdapter extends ArrayAdapter<FileDriver> {
 	 * Default constructor.
 	 */
 	public FileDriverAdapter(Context context, List<FileDriver> drivers) {
-		super(context, android.R.layout.simple_spinner_item, drivers);
-		setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		super(context, android.R.layout.select_dialog_item, drivers);
 	}
 
 }
