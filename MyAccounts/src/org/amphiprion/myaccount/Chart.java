@@ -48,9 +48,7 @@ public class Chart extends Activity {
 		Intent i = getIntent();
 		Report report = (Report) i.getExtras().get("REPORT");
 
-		// setTitle(getResources().getString(R.string.period_custom_label,
-		// DateUtil.defaultDateFormat.format(period[0]),
-		// DateUtil.defaultDateFormat.format(period[1])));
+		setTitle(report.getName());
 
 		if (report.getType() == Type.CATEGORY_AMOUNT_BY_MONTH) {
 			setContentView(new LineChart(getApplicationContext(), report));
