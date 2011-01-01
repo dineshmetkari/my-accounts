@@ -59,7 +59,7 @@
 
 	<!-- File drivers -->
 	<string name="install_file_chooser_title">Need an Application.</string>
-	<string name="install_file_chooser_message">To be able to select a file, you need to install for example ES File Explorer. Click OK to install it, or Cancel.</string>
+	<string name="install_file_chooser_message">To be able to select a file, you need to install for example AndExplorer. Click OK to install it, or Cancel.</string>
 	<string name="file_import_choice_title">Choose a file driver</string>
 	<string name="file_import_title">Define import parameters</string>
 	<string name="nb_imported_operation">%1$d operation(s) have been imported.</string>
