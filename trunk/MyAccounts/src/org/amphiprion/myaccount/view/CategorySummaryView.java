@@ -81,6 +81,8 @@ public class CategorySummaryView extends LinearLayout {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		imglp.gravity = Gravity.CENTER_VERTICAL;
 		imglp.rightMargin = 5;
+		imglp.topMargin = 5;
+		imglp.bottomMargin = 5;
 		img.setLayoutParams(imglp);
 
 		String image = category.getImage();

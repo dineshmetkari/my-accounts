@@ -21,6 +21,7 @@ package org.amphiprion.myaccount.view;
 
 import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Report;
+import org.amphiprion.myaccount.database.entity.Report.Type;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -80,9 +81,15 @@ public class ReportSummaryView extends LinearLayout {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		imglp.gravity = Gravity.CENTER_VERTICAL;
 		imglp.rightMargin = 5;
+		imglp.topMargin = 5;
+		imglp.bottomMargin = 5;
 		img.setLayoutParams(imglp);
 
-		img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.pie_chart));
+		if (report.getType() == Type.DAILY_BALANCE) {
+			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.pie_chart));
+		} else {
+			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.line_chart));
+		}
 		return img;
 	}
 
