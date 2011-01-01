@@ -46,10 +46,20 @@
 	<!-- Report -->
 	<string name="report_name">Report Name</string>
 	<string name="report_type">Report Type</string>
+	<string name="report_period_type">Period Type</string>
 	<string name="report_categories">Categories</string>
 	<string name="add_report">Add</string>
 	<string name="edit_report_title">Edit Report</string>
 	<string name="delete_report_title">Delete Report</string>
+	
+	<string name="report_type_0">Category Amount by Month</string>
+	<string name="report_type_1">Daily Balance</string>
+	<string name="report_type_2">Category Amount</string>
+
+	<string name="report_period_type_0">This Year</string>
+	<string name="report_period_type_1">Last Year</string>
+	<string name="report_period_type_2">Last 6 Months</string>
+	<string name="report_period_type_3">Custom Range</string>
 
 	<!-- Button -->
 	<string name="ok">Ok</string>

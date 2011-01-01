@@ -13,10 +13,21 @@
 
 		<TextView android:layout_width="fill_parent"
 			android:layout_height="wrap_content" android:textColor="#000000"
+			android:text="@string/account_name" />
+		<Spinner android:id="@+id/cbAccount"
+			android:layout_height="wrap_content" android:layout_width="fill_parent"></Spinner>
+
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:textColor="#000000"
 			android:text="@string/report_type" />
 		<Spinner android:id="@+id/cbReportType"
 			android:layout_height="wrap_content" android:layout_width="fill_parent"></Spinner>
 
+		<TextView android:layout_width="fill_parent"
+			android:layout_height="wrap_content" android:textColor="#000000"
+			android:text="@string/report_period_type" />
+		<Spinner android:id="@+id/cbReportPeriodType"
+			android:layout_height="wrap_content" android:layout_width="fill_parent"></Spinner>
 
 
 

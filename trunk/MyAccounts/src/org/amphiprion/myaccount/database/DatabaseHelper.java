@@ -38,7 +38,7 @@ import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "amphiprion_myaccount";
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 4;
 	private static SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DatabaseHelper(Context context) {
@@ -84,6 +84,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 			db.execSQL("create table REPORT_CATEGORY (" + ReportCategory.DbField.RPT_ID + " text not null, "
 					+ ReportCategory.DbField.CAT_ID + " text not null)");
+			oldVersion++;
+		}
+		if (oldVersion == 3) {
+			db.execSQL("ALTER TABLE REPORT ADD " + Report.DbField.FK_ACCOUNT + " text not null default ''");
 			oldVersion++;
 		}
 	}

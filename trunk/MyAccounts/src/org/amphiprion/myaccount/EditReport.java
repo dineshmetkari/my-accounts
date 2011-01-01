@@ -21,11 +21,18 @@ package org.amphiprion.myaccount;
 
 import java.util.List;
 
+import org.amphiprion.myaccount.adapter.AccountAdapter;
+import org.amphiprion.myaccount.adapter.ReportPeriodTypeAdapter;
+import org.amphiprion.myaccount.adapter.ReportTypeAdapter;
+import org.amphiprion.myaccount.database.AccountDao;
 import org.amphiprion.myaccount.database.CategoryDao;
 import org.amphiprion.myaccount.database.ReportDao;
+import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Report;
 import org.amphiprion.myaccount.database.entity.ReportCategory;
+import org.amphiprion.myaccount.database.entity.Report.PeriodType;
+import org.amphiprion.myaccount.database.entity.Report.Type;
 import org.amphiprion.myaccount.view.ReportCategoryView;
 
 import android.app.Activity;
@@ -65,7 +72,16 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 
 		allCategories = CategoryDao.getInstance(this).getCategories();
 
+		List<Account> accounts = AccountDao.getInstance(this).getAccounts();
+		final Spinner cbAccount = (Spinner) findViewById(R.id.cbAccount);
+		cbAccount.setAdapter(new AccountAdapter(this, accounts));
+
 		final Spinner cbReportType = (Spinner) findViewById(R.id.cbReportType);
+		cbReportType.setAdapter(new ReportTypeAdapter(this));
+
+		final Spinner cbReportPeriodType = (Spinner) findViewById(R.id.cbReportPeriodType);
+		cbReportPeriodType.setAdapter(new ReportPeriodTypeAdapter(this));
+
 		final TextView txtName = (TextView) findViewById(R.id.txtReportName);
 
 		if (report == null) {
@@ -80,26 +96,21 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 			// its a creation
 			report = new Report();
 		}
-		// List<Category> parents =
-		// CategoryDao.getInstance(this).getPossibleParentFor(category);
-		// parents.add(0, new Category(""));
-		// cbParentCategory.setAdapter(new CategoryAdapter(this, parents));
-		// if (category.getParent() != null) {
-		// cbParentCategory.setSelection(parents.indexOf(category.getParent()));
-		// }
+
+		cbReportType.setSelection(report.getType().ordinal());
+		cbReportPeriodType.setSelection(report.getPeriodType().ordinal());
+		if (report.getAccountId() != null) {
+			cbAccount.setSelection(accounts.indexOf(new Account(report.getAccountId())));
+		}
 
 		Button btSave = (Button) findViewById(R.id.btSave);
 		btSave.setOnClickListener(new ViewGroup.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				report.setName("" + txtName.getText());
-				// Category parent = (Category)
-				// cbParentCategory.getSelectedItem();
-				// if ("".equals(parent.getId())) {
-				// category.setParent(null);
-				// } else {
-				// category.setParent(parent);
-				// }
+				report.setType((Type) cbReportType.getSelectedItem());
+				report.setPeriodType((PeriodType) cbReportPeriodType.getSelectedItem());
+				report.setAccountId(((Account) cbAccount.getSelectedItem()).getId());
 				updateReportCategoryFilters();
 				report.setReportCategories(reportCategories);
 				Intent i = new Intent();
