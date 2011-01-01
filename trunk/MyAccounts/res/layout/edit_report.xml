@@ -28,15 +28,35 @@
 			android:text="@string/report_period_type" />
 		<Spinner android:id="@+id/cbReportPeriodType"
 			android:layout_height="wrap_content" android:layout_width="fill_parent"></Spinner>
+		
+		<LinearLayout android:id="@+id/pReportDates" android:layout_height="wrap_content"
+			android:layout_width="fill_parent">
+			<LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:layout_weight="1" android:layout_width="fill_parent">
+				<TextView android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:text="@string/FROM"
+					android:textColor="#000000" android:layout_weight="1"/>
+				<view class="org.amphiprion.myaccount.view.DatePickerSpinner"
+					android:id="@+id/cbFromDate" android:layout_height="wrap_content" android:layout_width="fill_parent"/>
+			</LinearLayout>
+			<LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:layout_weight="1" android:layout_width="fill_parent">
+				<TextView android:layout_width="wrap_content"
+					android:layout_height="wrap_content" android:text="@string/TO"
+					android:textColor="#000000" android:layout_weight="1"/>
+				<view class="org.amphiprion.myaccount.view.DatePickerSpinner"
+					android:id="@+id/cbToDate" android:layout_height="wrap_content" android:layout_width="fill_parent"/>
+			</LinearLayout>
+		</LinearLayout>
 
 
 
 	</LinearLayout>
-	<TextView android:layout_height="wrap_content" android:text="@string/report_categories"
+		<LinearLayout android:layout_weight="1" 
+			android:orientation="vertical" android:layout_width="fill_parent" android:id="@+id/pReport_category_list" android:layout_height="wrap_content">	
+			<TextView android:layout_height="wrap_content" android:text="@string/report_categories"
 		android:background="#333333" android:layout_width="fill_parent"
 		android:gravity="center"></TextView>
-	<ScrollView android:layout_weight="1" android:layout_width="fill_parent"
-		android:layout_height="wrap_content" android:background="#FFFFFF"
+	<ScrollView android:layout_width="fill_parent"
+		android:layout_height="fill_parent" android:background="#FFFFFF"
 		android:layout_marginLeft="3px" android:layout_marginRight="3px">
 
 
@@ -45,6 +65,8 @@
 		<LinearLayout android:layout_height="wrap_content"
 			android:orientation="vertical" android:layout_width="fill_parent" android:id="@+id/report_category_list"></LinearLayout>
 	</ScrollView>
+</LinearLayout>
+
 	<LinearLayout android:layout_height="wrap_content"
 		android:layout_width="fill_parent">
 		<Button android:text="@string/save" android:id="@+id/btSave"
