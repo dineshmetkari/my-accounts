@@ -63,6 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 			db.execSQL("create table RULE (" + Rule.DbField.ID + " text primary key, " + Rule.DbField.FILTER
 					+ " text not null, " + Rule.DbField.FK_CATEGORY + " text not null)");
+			onUpgrade(db, 1, DATABASE_VERSION);
 		} catch (Throwable e) {
 			Log.e(ApplicationConstants.PACKAGE, "Can not create database.", e);
 		}
