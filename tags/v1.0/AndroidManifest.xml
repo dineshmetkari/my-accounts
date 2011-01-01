@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+      package="org.amphiprion.myaccount"
+      android:versionCode="1"
+      android:versionName="1.0">
+    <application android:icon="@drawable/icon" android:label="@string/app_name">
+        <activity android:name=".Home" android:theme="@android:style/Theme.NoTitleBar"
+                  android:label="@string/app_name">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".AccountList"
+                  android:label="@string/app_name">
+        </activity>
+        <activity android:name=".CategoryList"
+                  android:label="@string/app_name">
+        </activity>
+        <activity android:name=".ReportList"
+                  android:label="@string/app_name">
+        </activity>
+
+        <activity android:name=".EditAccount" 
+                  android:label="@string/edit_account_title">
+        </activity>
+        <activity android:name=".OperationList" 
+                  android:label="@string/operations_title">
+        </activity> 
+        <activity android:name=".EditCategory" 
+                  android:label="@string/edit_category_title">
+        </activity>
+        <activity android:name=".DefineImportParameter" 
+                  android:label="@string/file_import_title">
+        </activity>
+        <activity android:name=".EditOperation" 
+                  android:label="@string/edit_operation_title">
+        </activity>
+        <activity android:name=".EditReport" 
+                  android:label="@string/edit_report_title">
+        </activity>
+        <activity android:name=".Chart"  android:screenOrientation="landscape"
+                  android:label="@string/app_name">
+        </activity>
+        <activity android:name=".InstantChart"  android:screenOrientation="landscape"
+                  android:label="@string/app_name">
+        </activity>
+    </application>
+    <uses-sdk android:minSdkVersion="8" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+
+</manifest> 
