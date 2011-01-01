@@ -19,16 +19,19 @@
  */
 package org.amphiprion.myaccount.view;
 
+import java.util.List;
+
 import org.amphiprion.myaccount.R;
+import org.amphiprion.myaccount.adapter.CategoryAdapter;
 import org.amphiprion.myaccount.database.entity.Category;
+import org.amphiprion.myaccount.database.entity.ReportCategory;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 
 /**
  * View used to display a category in the report category list.
@@ -37,15 +40,16 @@ import android.widget.LinearLayout;
  * 
  */
 public class ReportCategoryView extends LinearLayout {
-	/** the linked category. */
-	private Category category;
+	/** the linked report category. */
+	private ReportCategory reportCategory;
 	/** The report category clicked listener. */
 	private OnReportCategoryClickedListener reportCategoryClickedListener;
-
+	/** the list of existing categories. */
+	private List<Category> allCategories;
 	/** The imageview. */
 	private ImageView img;
-	/** The edit text. */
-	private EditText txt;
+	/** The spinner category. */
+	private Spinner txt;
 
 	/**
 	 * Construct a rule view.
@@ -55,12 +59,12 @@ public class ReportCategoryView extends LinearLayout {
 	 * @param rule
 	 *            the rule entity
 	 */
-	public ReportCategoryView(Context context, Category category,
-			OnReportCategoryClickedListener reportCategoryClickedListener) {
+	public ReportCategoryView(Context context, ReportCategory reportCategory,
+			OnReportCategoryClickedListener reportCategoryClickedListener, List<Category> allCategories) {
 		super(context);
-		this.category = category;
+		this.reportCategory = reportCategory;
 		this.reportCategoryClickedListener = reportCategoryClickedListener;
-
+		this.allCategories = allCategories;
 		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		setLayoutParams(lp);
@@ -72,10 +76,10 @@ public class ReportCategoryView extends LinearLayout {
 	}
 
 	/**
-	 * @return the category
+	 * @return the reportCategory
 	 */
-	public Category getCategory() {
-		return category;
+	public ReportCategory getReportCategory() {
+		return reportCategory;
 	}
 
 	/**
@@ -91,7 +95,7 @@ public class ReportCategoryView extends LinearLayout {
 		imglp.rightMargin = 5;
 		img.setLayoutParams(imglp);
 
-		if (category == null) {
+		if (reportCategory == null) {
 			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.add));
 		} else {
 			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.remove));
@@ -117,20 +121,19 @@ public class ReportCategoryView extends LinearLayout {
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 3);
 		accountLayout.setOrientation(VERTICAL);
 		accountLayout.setLayoutParams(aclp);
-		EditText t = new EditText(getContext());
+		Spinner t = new Spinner(getContext());
+
 		LayoutParams tlp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
 				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 
 		t.setLayoutParams(tlp);
-		if (category != null) {
-			t.setText(category.getName());
+		t.setAdapter(new CategoryAdapter(getContext(), allCategories));
+
+		if (reportCategory != null) {
+			t.setSelection(allCategories.indexOf(new Category(reportCategory.getCategoryId())));
 		} else {
-			t.setText("");
 			t.setVisibility(INVISIBLE);
 		}
-		t.setTextSize(16);
-		t.setTypeface(Typeface.DEFAULT_BOLD);
-		t.setTextColor(getContext().getResources().getColor(R.color.black));
 		accountLayout.addView(t);
 
 		txt = t;
@@ -145,26 +148,26 @@ public class ReportCategoryView extends LinearLayout {
 	}
 
 	/**
-	 * Set the new category. Call this method only if the current category is
-	 * null.
+	 * Set the new report category. Call this method only if the current report
+	 * category is null.
 	 * 
-	 * @param category
-	 *            the new category
+	 * @param reportCategory
+	 *            the new report category
 	 */
-	public void setCategory(Category category) {
-		if (this.category == null) {
-			this.category = category;
+	public void setReportCategory(ReportCategory reportCategory) {
+		if (this.reportCategory == null) {
+			this.reportCategory = reportCategory;
 			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.remove));
 			txt.setVisibility(VISIBLE);
 		}
 	}
 
-	// /**
-	// * Update the filter of the rule entity.
-	// */
-	// public void updateCategoryFilter() {
-	// if (category!= null) {
-	// category.setFilter(txt.getText().toString());
-	// }
-	// }
+	/**
+	 * Update the filter of the rule entity.
+	 */
+	public void updateReportCategoryFilter() {
+		if (reportCategory != null) {
+			reportCategory.setCategoryId(((Category) txt.getSelectedItem()).getId());
+		}
+	}
 }

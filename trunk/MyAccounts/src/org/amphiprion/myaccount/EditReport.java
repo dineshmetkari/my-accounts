@@ -21,9 +21,11 @@ package org.amphiprion.myaccount;
 
 import java.util.List;
 
+import org.amphiprion.myaccount.database.CategoryDao;
 import org.amphiprion.myaccount.database.ReportDao;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Report;
+import org.amphiprion.myaccount.database.entity.ReportCategory;
 import org.amphiprion.myaccount.view.ReportCategoryView;
 
 import android.app.Activity;
@@ -45,8 +47,11 @@ import android.widget.TextView;
 public class EditReport extends Activity implements ReportCategoryView.OnReportCategoryClickedListener {
 	private Report report;
 
-	/** The categories of the report. */
-	private List<Category> categories;
+	/** The full categories list. */
+	private List<Category> allCategories;
+
+	/** The report category links of the report. */
+	private List<ReportCategory> reportCategories;
 
 	/**
 	 * {@inheritDoc}
@@ -57,6 +62,8 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.edit_report);
+
+		allCategories = CategoryDao.getInstance(this).getCategories();
 
 		final Spinner cbReportType = (Spinner) findViewById(R.id.cbReportType);
 		final TextView txtName = (TextView) findViewById(R.id.txtReportName);
@@ -93,9 +100,8 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 				// } else {
 				// category.setParent(parent);
 				// }
-				// updateCategoryFilters();
-				report.setCategories(categories);
-
+				updateReportCategoryFilters();
+				report.setReportCategories(reportCategories);
 				Intent i = new Intent();
 				i.putExtra("REPORT", report);
 				setResult(RESULT_OK, i);
@@ -112,31 +118,31 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 			}
 		});
 
-		buildCategoryList();
+		buildReportCategoryList();
 
 	}
 
-	private void buildCategoryList() {
-		categories = ReportDao.getInstance(this).getCategories(report);
+	private void buildReportCategoryList() {
+		reportCategories = ReportDao.getInstance(this).getReportCategories(report);
 
-		LinearLayout ln = (LinearLayout) findViewById(R.id.rule_list);
+		LinearLayout ln = (LinearLayout) findViewById(R.id.report_category_list);
 		ln.removeAllViews();
-		for (Category category : categories) {
-			ln.addView(new ReportCategoryView(this, category, this));
+		for (ReportCategory reportCategory : reportCategories) {
+			ln.addView(new ReportCategoryView(this, reportCategory, this, allCategories));
 		}
-		ln.addView(new ReportCategoryView(this, null, this));
+		ln.addView(new ReportCategoryView(this, null, this, allCategories));
 	}
 
-	// /**
-	// * Ask the rule views to update its underlying rule.
-	// */
-	// private void updateCategoryFilters() {
-	// LinearLayout ln = (LinearLayout) findViewById(R.id.category_list);
-	// for (int i = 0; i < ln.getChildCount(); i++) {
-	// ReportCategoryView v = (ReportCategoryView) ln.getChildAt(i);
-	// v.updateCategoryFilter();
-	// }
-	// }
+	/**
+	 * Ask the rule views to update its underlying rule.
+	 */
+	private void updateReportCategoryFilters() {
+		LinearLayout ln = (LinearLayout) findViewById(R.id.report_category_list);
+		for (int i = 0; i < ln.getChildCount(); i++) {
+			ReportCategoryView v = (ReportCategoryView) ln.getChildAt(i);
+			v.updateReportCategoryFilter();
+		}
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -145,19 +151,15 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 	 */
 	@Override
 	public void reportCategoryClicked(ReportCategoryView view) {
-		// LinearLayout ln = (LinearLayout) findViewById(R.id.rule_list);
-		// if (view.getCategory() == null) {
-		// ln.addView(new ReportCategoryView(this, null, this));
-		// Category category = new Category();
-		// rule.setCategoryId(category.getId());
-		// view.setRule(rule);
-		// rules.add(rule);
-		// } else if (view.getRule().getState() == Rule.DbState.CREATE) {
-		// ln.removeView(view);
-		// rules.remove(view.getRule());
-		// } else {
-		// view.getRule().setState(Rule.DbState.DELETE);
-		// ln.removeView(view);
-		// }
+		LinearLayout ln = (LinearLayout) findViewById(R.id.report_category_list);
+		if (view.getReportCategory() == null) {
+			ln.addView(new ReportCategoryView(this, null, this, allCategories));
+			ReportCategory reportCategory = new ReportCategory(report.getId());
+			view.setReportCategory(reportCategory);
+			reportCategories.add(reportCategory);
+		} else {
+			ln.removeView(view);
+			reportCategories.remove(view.getReportCategory());
+		}
 	}
 }
