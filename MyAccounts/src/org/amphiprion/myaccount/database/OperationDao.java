@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import net.droidsolutions.droidcharts.core.data.CategoryDataset;
+import net.droidsolutions.droidcharts.core.data.DefaultCategoryDataset;
 import net.droidsolutions.droidcharts.core.data.DefaultPieDataset;
 import net.droidsolutions.droidcharts.core.data.PieDataset;
 
@@ -30,6 +32,8 @@ import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
+import org.amphiprion.myaccount.database.entity.Report;
+import org.amphiprion.myaccount.database.entity.ReportCategory;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -105,40 +109,6 @@ public class OperationDao extends AbstractDao {
 		}
 		cursor.close();
 		return result;
-	}
-
-	public PieDataset getPieDataset(Account account, Date from, Date to, boolean income) {
-		String sql = "select res.sum, cat." + Category.DbField.NAME + " from (";
-
-		sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, ";
-		sql += "ifnull(c." + Category.DbField.PARENT + ", c." + Category.DbField.ID + ") as catId";
-		sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
-				+ Category.DbField.ID + " WHERE o." + Operation.DbField.AMOUNT;
-		if (income) {
-			sql += ">=0";
-		} else {
-			sql += "<0";
-		}
-		sql += " AND o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(account.getId()) + "' and "
-				+ Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
-				+ DatabaseHelper.dateToString(to) + "' group by 2";
-
-		sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by cat."
-				+ Category.DbField.NAME;
-		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
-		DefaultPieDataset dataset = new DefaultPieDataset();
-		if (cursor.moveToFirst()) {
-			do {
-				String name = cursor.getString(1);
-				double value = Math.abs(cursor.getDouble(0));
-				if (name == null) {
-					name = getContext().getResources().getString(R.string.category_unknown);
-				}
-				dataset.setValue(name, value);
-			} while (cursor.moveToNext());
-		}
-		cursor.close();
-		return dataset;
 	}
 
 	/**
@@ -274,4 +244,157 @@ public class OperationDao extends AbstractDao {
 		cursor.close();
 		return result;
 	}
+
+	public PieDataset getPieDataset(Account account, Date from, Date to, boolean income) {
+		String sql = "select res.sum, cat." + Category.DbField.NAME + " from (";
+
+		sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, ";
+		sql += "ifnull(c." + Category.DbField.PARENT + ", c." + Category.DbField.ID + ") as catId";
+		sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
+				+ Category.DbField.ID + " WHERE o." + Operation.DbField.AMOUNT;
+		if (income) {
+			sql += ">=0";
+		} else {
+			sql += "<0";
+		}
+		sql += " AND o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(account.getId()) + "' and "
+				+ Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+				+ DatabaseHelper.dateToString(to) + "' group by 2";
+
+		sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by cat."
+				+ Category.DbField.NAME;
+		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		if (cursor.moveToFirst()) {
+			do {
+				String name = cursor.getString(1);
+				double value = Math.abs(cursor.getDouble(0));
+				if (name == null) {
+					name = getContext().getResources().getString(R.string.category_unknown);
+				}
+				dataset.setValue(name, value);
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return dataset;
+	}
+
+	/**
+	 * @param account
+	 * @param report
+	 * @param b
+	 * @return
+	 */
+	public PieDataset getPieDataset(Report report) {
+		DefaultPieDataset dataset = new DefaultPieDataset();
+		List<ReportCategory> reportCategories = ReportDao.getInstance(getContext()).getReportCategories(report);
+		String accountId = report.getAccountId();
+		for (ReportCategory rc : reportCategories) {
+			String sql = "select res.sum, cat." + Category.DbField.NAME + " from (";
+
+			sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, '" + rc.getCategoryId() + "' as catId";
+			sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
+					+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId)
+					+ "'";
+			sql += " and (c." + Category.DbField.ID + "='" + rc.getCategoryId() + "' or c." + Category.DbField.PARENT
+					+ "='" + rc.getCategoryId() + "')";
+			// sql += " and " + Operation.DbField.DATE + " BETWEEN '" +
+			// DatabaseHelper.dateToString(from) + "' AND '"
+			// + DatabaseHelper.dateToString(to) + "' group by 2";
+			sql += " group by 2";
+			sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by 2";
+
+			Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+			if (cursor.moveToFirst()) {
+				double value = Math.abs(cursor.getDouble(0));
+				String name = cursor.getString(1);
+				if (name == null) {
+					name = getContext().getResources().getString(R.string.category_unknown);
+				}
+
+				dataset.setValue(name, value);
+			}
+			cursor.close();
+		}
+		return dataset;
+	}
+
+	/**
+	 * @param account
+	 * @param report
+	 * @param b
+	 * @return
+	 */
+	public CategoryDataset getLineDataset(Report report) {
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		List<ReportCategory> reportCategories = ReportDao.getInstance(getContext()).getReportCategories(report);
+		String accountId = report.getAccountId();
+		for (ReportCategory rc : reportCategories) {
+			String sql = "select res.sum, res.per, cat." + Category.DbField.NAME + " from (";
+
+			sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, strftime('%Y-%m',o."
+					+ Operation.DbField.DATE + ",'localtime') as per, '" + rc.getCategoryId() + "' as catId";
+			sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
+					+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId)
+					+ "'";
+			sql += " and (c." + Category.DbField.ID + "='" + rc.getCategoryId() + "' or c." + Category.DbField.PARENT
+					+ "='" + rc.getCategoryId() + "')";
+			// sql += " and " + Operation.DbField.DATE + " BETWEEN '" +
+			// DatabaseHelper.dateToString(from) + "' AND '"
+			// + DatabaseHelper.dateToString(to) + "' group by 2";
+			sql += " group by 2";
+			sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by 2";
+
+			Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+			if (cursor.moveToFirst()) {
+				do {
+					double value = Math.abs(cursor.getDouble(0));
+					String name = cursor.getString(2);
+					if (name == null) {
+						name = getContext().getResources().getString(R.string.category_unknown);
+					}
+
+					dataset.addValue(value, name, cursor.getString(1));
+
+				} while (cursor.moveToNext());
+			}
+			cursor.close();
+		}
+		return dataset;
+	}
+
+	/**
+	 * @param account
+	 * @param report
+	 * @param b
+	 * @return
+	 */
+	public CategoryDataset getBalanceDataset(Report report) {
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		String accountId = report.getAccountId();
+
+		String sql = "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, strftime('%Y-%m-%d',o."
+				+ Operation.DbField.DATE + ",'localtime') as per";
+		sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
+				+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId)
+				+ "'";
+		// sql += " and " + Operation.DbField.DATE + " BETWEEN '" +
+		// DatabaseHelper.dateToString(from) + "' AND '"
+		// + DatabaseHelper.dateToString(to) + "' group by 2";
+		sql += " group by 2";
+
+		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+		if (cursor.moveToFirst()) {
+			double amount = 0; // TODO init with the start amount
+			do {
+				double value = cursor.getDouble(0);
+				amount += value;
+
+				dataset.addValue(amount, "e", cursor.getString(1));
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return dataset;
+	}
+
 }

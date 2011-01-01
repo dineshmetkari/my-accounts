@@ -229,12 +229,11 @@ public class OperationList extends Activity {
 			AlertDialog alert = builder.create();
 			alert.show();
 		} else if (item.getItemId() == ApplicationConstants.MENU_ID_INSTANT_CHART_OPERATION) {
-			Intent i = new Intent(OperationList.this, Chart.class);
+			Intent i = new Intent(OperationList.this, InstantChart.class);
 			i.putExtra("ACCOUNT", account);
 			i.putExtra("FROM", period[0]);
 			i.putExtra("TO", period[1]);
 			startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_INSTANT_CHART);
-
 		}
 		return true;
 	}

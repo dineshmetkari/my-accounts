@@ -46,10 +46,20 @@
 	<!-- Report -->
 	<string name="report_name">Nom du Rapport</string>
 	<string name="report_type">Type du Rapport</string>
+	<string name="report_period_type">Type de Période</string>
 	<string name="report_categories">Categories</string>
 	<string name="add_report">Ajouter</string>
 	<string name="edit_report_title">Editer Rapport</string>
 	<string name="delete_report_title">Supprimer Rapport</string>
+
+	<string name="report_type_0">Montant par Categorie et par Mois</string>
+	<string name="report_type_1">Evolution du Solde</string>
+	<string name="report_type_2">Montant par Category</string>
+
+	<string name="report_period_type_0">Cette Année</string>
+	<string name="report_period_type_1">L\'Année Dernière</string>
+	<string name="report_period_type_2">Les 6 Dernier Mois</string>
+	<string name="report_period_type_3">Période Personnalisée</string>
 
 	<!-- Button -->
 	<string name="ok">Ok</string>

@@ -19,18 +19,23 @@
  */
 package org.amphiprion.myaccount.chart;
 
-import java.util.Date;
 import java.util.List;
 
-import net.droidsolutions.droidcharts.awt.Font;
 import net.droidsolutions.droidcharts.awt.Rectangle2D;
+import net.droidsolutions.droidcharts.common.RectangleInsets;
 import net.droidsolutions.droidcharts.core.ChartFactory;
 import net.droidsolutions.droidcharts.core.JFreeChart;
+import net.droidsolutions.droidcharts.core.axis.CategoryAxis;
+import net.droidsolutions.droidcharts.core.axis.CategoryLabelPositions;
+import net.droidsolutions.droidcharts.core.axis.NumberAxis;
+import net.droidsolutions.droidcharts.core.data.CategoryDataset;
 import net.droidsolutions.droidcharts.core.data.PieDataset;
+import net.droidsolutions.droidcharts.core.plot.CategoryPlot;
 import net.droidsolutions.droidcharts.core.plot.PiePlot;
+import net.droidsolutions.droidcharts.core.plot.PlotOrientation;
+import net.droidsolutions.droidcharts.core.renderer.category.LineAndShapeRenderer;
 
 import org.amphiprion.myaccount.database.OperationDao;
-import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Report;
 
 import android.content.Context;
@@ -38,16 +43,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.Typeface;
 import android.os.Handler;
 import android.view.View;
 
-public class PieChart extends View {
+public class BalanceChart extends View {
 	/** The view bounds. */
 	private final Rect mRect = new Rect();
 	/** The user interface thread handler. */
 	private final Handler mHandler;
-	private PieDataset dataset;
+	private CategoryDataset dataset;
 	private JFreeChart chart;
 
 	/**
@@ -58,29 +62,11 @@ public class PieChart extends View {
 	 * @param chart
 	 *            the chart to be drawn
 	 */
-	public PieChart(Context context, Account account, Date[] period) {
+	public BalanceChart(Context context, Report report) {
 		super(context);
 		mHandler = new Handler();
-
-		dataset = OperationDao.getInstance(context).getPieDataset(account, period[0], period[1], false);
-		chart = createChart(dataset);
-
-	}
-
-	/**
-	 * Creates a new graphical view.
-	 * 
-	 * @param context
-	 *            the context
-	 * @param chart
-	 *            the chart to be drawn
-	 */
-	public PieChart(Context context, Report report) {
-		super(context);
-		mHandler = new Handler();
-
-		dataset = OperationDao.getInstance(context).getPieDataset(report);
-		chart = createChart(dataset);
+		dataset = OperationDao.getInstance(context).getBalanceDataset(report);
+		chart = createLineChart(dataset);
 
 	}
 
@@ -113,53 +99,73 @@ public class PieChart extends View {
 	 * 
 	 * @return a chart.
 	 */
-	private JFreeChart createChart(final PieDataset dataset) {
-		JFreeChart chart = ChartFactory.createPieChart("Pie Chart Demo 1", // chart
+	private JFreeChart createLineChart(final CategoryDataset dataset) {
+		JFreeChart chart = ChartFactory.createLineChart(" ", "", "",// chart
 				// title
-				dataset, // data
+				dataset, PlotOrientation.VERTICAL,// data
 				false, // include legend
-				true, false);
-
-		PiePlot plot = (PiePlot) chart.getPlot();
+				false, false);
 
 		Paint white = new Paint(Paint.ANTI_ALIAS_FLAG);
 		white.setColor(Color.WHITE);
-
 		Paint dkGray = new Paint(Paint.ANTI_ALIAS_FLAG);
 		dkGray.setColor(Color.DKGRAY);
-
 		Paint lightGray = new Paint(Paint.ANTI_ALIAS_FLAG);
 		lightGray.setColor(Color.LTGRAY);
 		lightGray.setStrokeWidth(10);
 
-		Paint black = new Paint(Paint.ANTI_ALIAS_FLAG);
-		black.setColor(Color.BLACK);
+		final CategoryPlot plot = chart.getCategoryPlot();
 
-		Paint borderPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-		borderPaint.setColor(Color.WHITE);
-		borderPaint.setStrokeWidth(5);
-		// chart.setBorderPaint(borderPaint);
-		chart.setBackgroundPaint(dkGray);
+		// plot.setBackgroundPaint(dkGray);
+		plot.setDomainGridlinePaint(lightGray);
+		plot.setRangeGridlinePaint(lightGray);
+		plot.setDomainGridlinesVisible(true);
 
-		plot.setLabelFont(new Font("SansSerif", Typeface.BOLD, 12));
-		plot.setNoDataMessage("No data available");
-		plot.setCircular(true);
-		plot.setLabelGap(0.02);
-		plot.setLabelBackgroundPaint(lightGray);
-		plot.setBackgroundPaint(dkGray);
+		chart.setBackgroundPaint(white);
 
-		// Resources res = getResources();
-		// int[] colors = new int[] { 2555, 125445, 15454, 15454, 2154, 2154,
-		// 54, 87845 };
-		//
-		// int[] outlineColors = new int[] { res.getColor(R.color.white),
-		// res.getColor(R.color.white),
-		// res.getColor(R.color.white), res.getColor(R.color.white),
-		// res.getColor(R.color.white),
-		// res.getColor(R.color.white), res.getColor(R.color.white),
-		// res.getColor(R.color.white) };
-		// PieRenderer renderer = new PieRenderer(colors, outlineColors, 3f);
-		// renderer.setColor(plot, dataset);
+		// set the stroke for each series...
+		// plot.getRenderer().setSeriesStroke(0, 1f);
+		// plot.getRenderer().setSeriesStroke(1, 2f);
+		// plot.getRenderer().setSeriesStroke(2, 3f);
+
+		Paint blue = new Paint(Paint.ANTI_ALIAS_FLAG);
+		blue.setColor(Color.rgb(125, 138, 46));
+		// blue.set
+		blue.setAlpha(200);
+		blue.setStrokeWidth(10);
+		Paint green = new Paint(Paint.ANTI_ALIAS_FLAG);
+		green.setColor(Color.rgb(255, 240, 165));
+		green.setAlpha(200);
+
+		Paint red = new Paint(Paint.ANTI_ALIAS_FLAG);
+		red.setColor(Color.rgb(182, 73, 38));
+		red.setAlpha(200);
+
+		// plot.getRenderer().setSeriesPaint(0, blue);
+		// plot.getRenderer().setSeriesPaint(1, green);
+		// plot.getRenderer().setSeriesPaint(2, red);
+
+		// customise the renderer...
+		final LineAndShapeRenderer renderer = (LineAndShapeRenderer) plot.getRenderer();
+		// renderer.setItemLabelsVisible(true);
+		renderer.setSeriesShapesVisible(0, true);
+		renderer.setSeriesShapesVisible(1, true);
+		renderer.setSeriesShapesVisible(2, true);
+
+		// customise the range axis...
+		final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
+		rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+		rangeAxis.setAutoRangeIncludesZero(false);
+		rangeAxis.setLowerMargin(0.10);
+		rangeAxis.setLabelAngle(90);
+
+		final CategoryAxis domainAxis = plot.getDomainAxis();
+		// domainAxis.set
+		domainAxis.setCategoryLabelPositions(CategoryLabelPositions.DOWN_90);
+		domainAxis.setUpperMargin(0.10);
+		domainAxis.setLowerMargin(0.10);
+
+		plot.setInsets(new RectangleInsets(10, 0, 0, 10));
 		return chart;
 	}
 

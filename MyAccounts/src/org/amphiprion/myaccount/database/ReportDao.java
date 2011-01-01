@@ -25,6 +25,8 @@ import java.util.List;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Report;
 import org.amphiprion.myaccount.database.entity.ReportCategory;
+import org.amphiprion.myaccount.database.entity.Report.PeriodType;
+import org.amphiprion.myaccount.database.entity.Report.Type;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -70,18 +72,19 @@ public class ReportDao extends AbstractDao {
 	 */
 	public List<Report> getReports() {
 		String sql = "SELECT " + Report.DbField.ID + "," + Report.DbField.NAME + "," + Report.DbField.TYPE_REPORT + ","
-				+ Report.DbField.TYPE_PERIOD + "," + Report.DbField.FROM_DATE + "," + Report.DbField.TO_DATE
-				+ " from REPORT order by " + Report.DbField.NAME + " asc";
+				+ Report.DbField.TYPE_PERIOD + "," + Report.DbField.FROM_DATE + "," + Report.DbField.TO_DATE + ","
+				+ Report.DbField.FK_ACCOUNT + " from REPORT order by " + Report.DbField.NAME + " asc";
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		ArrayList<Report> result = new ArrayList<Report>();
 		if (cursor.moveToFirst()) {
 			do {
 				Report a = new Report(cursor.getString(0));
 				a.setName(cursor.getString(1));
-				a.setType(Integer.parseInt(cursor.getString(2)));
-				a.setPeriodType(Integer.parseInt(cursor.getString(3)));
+				a.setType(Type.fromDbValue(Integer.parseInt(cursor.getString(2))));
+				a.setPeriodType(PeriodType.fromDbValue(Integer.parseInt(cursor.getString(3))));
 				a.setFrom(DatabaseHelper.stringToDate(cursor.getString(4)));
 				a.setTo(DatabaseHelper.stringToDate(cursor.getString(5)));
+				a.setAccountId(cursor.getString(6));
 				result.add(a);
 			} while (cursor.moveToNext());
 		}
@@ -101,11 +104,12 @@ public class ReportDao extends AbstractDao {
 
 			String sql = "insert into REPORT (" + Report.DbField.ID + "," + Report.DbField.NAME + ","
 					+ Report.DbField.TYPE_REPORT + "," + Report.DbField.TYPE_PERIOD + "," + Report.DbField.FROM_DATE
-					+ "," + Report.DbField.TO_DATE + ") values ('" + report.getId() + "','"
-					+ encodeString(report.getName()) + "'," + report.getType() + "," + report.getPeriodType() + ","
+					+ "," + Report.DbField.TO_DATE + "," + Report.DbField.FK_ACCOUNT + ") values ('" + report.getId()
+					+ "','" + encodeString(report.getName()) + "'," + report.getType().getDbValue() + ","
+					+ report.getPeriodType().getDbValue() + ","
 					+ (report.getFrom() == null ? "null" : "'" + DatabaseHelper.dateToString(report.getFrom()) + "'")
 					+ "," + (report.getTo() == null ? "null" : "'" + DatabaseHelper.dateToString(report.getTo()) + "'")
-					+ ")";
+					+ ",'" + report.getAccountId() + "'" + ")";
 
 			execSQL(sql);
 
@@ -132,12 +136,14 @@ public class ReportDao extends AbstractDao {
 		try {
 
 			String sql = "update REPORT set " + Report.DbField.NAME + "='" + encodeString(report.getName()) + "',"
-					+ Report.DbField.TYPE_REPORT + "=" + report.getType() + "," + Report.DbField.TYPE_PERIOD + "="
-					+ report.getPeriodType() + "," + Report.DbField.FROM_DATE + "="
+					+ Report.DbField.TYPE_REPORT + "=" + report.getType().getDbValue() + ","
+					+ Report.DbField.TYPE_PERIOD + "=" + report.getPeriodType().getDbValue() + ","
+					+ Report.DbField.FROM_DATE + "="
 					+ (report.getFrom() == null ? "null" : "'" + DatabaseHelper.dateToString(report.getFrom()) + "'")
 					+ "," + Report.DbField.TO_DATE + "="
-					+ (report.getTo() == null ? "null" : "'" + DatabaseHelper.dateToString(report.getTo()) + "'")
-					+ " WHERE " + Report.DbField.ID + "='" + report.getId() + "'";
+					+ (report.getTo() == null ? "null" : "'" + DatabaseHelper.dateToString(report.getTo()) + "'") + ","
+					+ Report.DbField.FK_ACCOUNT + "='" + report.getAccountId() + "'" + " WHERE " + Report.DbField.ID
+					+ "='" + report.getId() + "'";
 
 			execSQL(sql);
 
@@ -195,8 +201,6 @@ public class ReportDao extends AbstractDao {
 			do {
 				ReportCategory rc = new ReportCategory(report.getId());
 				rc.setCategoryId(cursor.getString(0));
-				// Category a = new Category(cursor.getString(0));
-				// a.setName(cursor.getString(1));
 				result.add(rc);
 			} while (cursor.moveToNext());
 		}

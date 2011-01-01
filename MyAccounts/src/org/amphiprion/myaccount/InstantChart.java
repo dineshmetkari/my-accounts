@@ -19,11 +19,11 @@
  */
 package org.amphiprion.myaccount;
 
-import org.amphiprion.myaccount.chart.BalanceChart;
-import org.amphiprion.myaccount.chart.LineChart;
+import java.util.Date;
+
 import org.amphiprion.myaccount.chart.PieChart;
-import org.amphiprion.myaccount.database.entity.Report;
-import org.amphiprion.myaccount.database.entity.Report.Type;
+import org.amphiprion.myaccount.database.entity.Account;
+import org.amphiprion.myaccount.util.DateUtil;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -35,7 +35,7 @@ import android.os.Bundle;
  * @author amphiprion
  * 
  */
-public class Chart extends Activity {
+public class InstantChart extends Activity {
 	/**
 	 * {@inheritDoc}
 	 * 
@@ -46,19 +46,14 @@ public class Chart extends Activity {
 		super.onCreate(savedInstanceState);
 
 		Intent i = getIntent();
-		Report report = (Report) i.getExtras().get("REPORT");
+		Account account = (Account) i.getExtras().get("ACCOUNT");
+		Date[] period = new Date[2];
+		period[0] = (Date) i.getExtras().get("FROM");
+		period[1] = (Date) i.getExtras().get("TO");
 
-		// setTitle(getResources().getString(R.string.period_custom_label,
-		// DateUtil.defaultDateFormat.format(period[0]),
-		// DateUtil.defaultDateFormat.format(period[1])));
-
-		if (report.getType() == Type.CATEGORY_AMOUNT_BY_MONTH) {
-			setContentView(new LineChart(getApplicationContext(), report));
-		} else if (report.getType() == Type.CATEGORY_AMOUNT) {
-			setContentView(new PieChart(getApplicationContext(), report));
-		} else if (report.getType() == Type.DAILY_BALANCE) {
-			setContentView(new BalanceChart(getApplicationContext(), report));
-		}
+		setTitle(getResources().getString(R.string.period_custom_label, DateUtil.defaultDateFormat.format(period[0]),
+				DateUtil.defaultDateFormat.format(period[1])));
+		setContentView(new PieChart(getApplicationContext(), account, period));
 	}
 
 }

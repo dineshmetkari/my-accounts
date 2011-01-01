@@ -97,6 +97,50 @@ public class DateUtil {
 		return new Date[] { cFrom.getTime(), cTo.getTime() };
 	}
 
+	public static Date[] getLastYearRange() {
+		Calendar cFrom = Calendar.getInstance();
+		cFrom.set(Calendar.DAY_OF_MONTH, 1);
+		cFrom.set(Calendar.MONTH, Calendar.JANUARY);
+		cFrom.add(Calendar.YEAR, -1);
+		cFrom.set(Calendar.HOUR_OF_DAY, 0);
+		cFrom.set(Calendar.MINUTE, 0);
+		cFrom.set(Calendar.SECOND, 0);
+		cFrom.set(Calendar.MILLISECOND, 0);
+
+		Calendar cTo = Calendar.getInstance();
+		cTo.set(Calendar.DAY_OF_MONTH, 1);
+		cTo.set(Calendar.MONTH, Calendar.JANUARY);
+		cTo.set(Calendar.HOUR_OF_DAY, 23);
+		cTo.set(Calendar.MINUTE, 59);
+		cTo.set(Calendar.SECOND, 59);
+		cTo.set(Calendar.MILLISECOND, 0);
+		cTo.add(Calendar.DAY_OF_MONTH, -1);
+
+		return new Date[] { cFrom.getTime(), cTo.getTime() };
+	}
+
+	public static Date[] getThisYearRange() {
+		Calendar cFrom = Calendar.getInstance();
+		cFrom.set(Calendar.DAY_OF_MONTH, 1);
+		cFrom.set(Calendar.MONTH, Calendar.JANUARY);
+		cFrom.set(Calendar.HOUR_OF_DAY, 0);
+		cFrom.set(Calendar.MINUTE, 0);
+		cFrom.set(Calendar.SECOND, 0);
+		cFrom.set(Calendar.MILLISECOND, 0);
+
+		Calendar cTo = Calendar.getInstance();
+		cTo.set(Calendar.DAY_OF_MONTH, 1);
+		cTo.set(Calendar.MONTH, Calendar.JANUARY);
+		cFrom.add(Calendar.YEAR, 1);
+		cTo.set(Calendar.HOUR_OF_DAY, 23);
+		cTo.set(Calendar.MINUTE, 59);
+		cTo.set(Calendar.SECOND, 59);
+		cTo.set(Calendar.MILLISECOND, 0);
+		cTo.add(Calendar.DAY_OF_MONTH, -1);
+
+		return new Date[] { cFrom.getTime(), cTo.getTime() };
+	}
+
 	public static String getThisMonth() {
 		String s = monthFormat.format(new Date());
 		return s.substring(0, 1).toUpperCase() + s.substring(1);

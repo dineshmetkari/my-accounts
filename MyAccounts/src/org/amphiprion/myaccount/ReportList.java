@@ -126,7 +126,9 @@ public class ReportList extends Activity {
 			view.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View v) {
-					edit(((ReportSummaryView) v).getReport());
+					Intent i = new Intent(ReportList.this, Chart.class);
+					i.putExtra("REPORT", ((ReportSummaryView) v).getReport());
+					startActivity(i);
 				}
 			});
 

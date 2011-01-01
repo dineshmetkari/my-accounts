@@ -24,6 +24,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
+import org.amphiprion.myaccount.util.DateUtil;
+
 /**
  * The report entity.
  * 
@@ -38,7 +40,71 @@ public class Report implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum DbField {
-		ID, NAME, TYPE_REPORT, TYPE_PERIOD, FROM_DATE, TO_DATE
+		ID, NAME, TYPE_REPORT, TYPE_PERIOD, FROM_DATE, TO_DATE, FK_ACCOUNT
+	}
+
+	public enum Type {
+		CATEGORY_AMOUNT_BY_MONTH(0), DAILY_BALANCE(1), CATEGORY_AMOUNT(2);
+
+		private int dbValue;
+
+		private Type(int dbValue) {
+			this.dbValue = dbValue;
+		}
+
+		/**
+		 * @return the dbValue
+		 */
+		public int getDbValue() {
+			return dbValue;
+		}
+
+		/**
+		 * 
+		 * @param value
+		 * @return
+		 */
+		public static Type fromDbValue(int value) {
+			Type[] values = Type.values();
+			for (Type t : values) {
+				if (t.getDbValue() == value) {
+					return t;
+				}
+			}
+			return null;
+		}
+	}
+
+	public enum PeriodType {
+		THIS_YEAR(0), LAST_YEAR(1), LAST_6_MONTH(2), CUSTOM(3);
+
+		private int dbValue;
+
+		private PeriodType(int dbValue) {
+			this.dbValue = dbValue;
+		}
+
+		/**
+		 * @return the dbValue
+		 */
+		public int getDbValue() {
+			return dbValue;
+		}
+
+		/**
+		 * 
+		 * @param value
+		 * @return
+		 */
+		public static PeriodType fromDbValue(int value) {
+			PeriodType[] values = PeriodType.values();
+			for (PeriodType t : values) {
+				if (t.getDbValue() == value) {
+					return t;
+				}
+			}
+			return null;
+		}
 	}
 
 	/** The uuid. */
@@ -51,20 +117,22 @@ public class Report implements Serializable {
 	private List<ReportCategory> reportCategories;
 
 	/** The report type. */
-	private int type;
+	private Type type;
 	/** The period type. */
-	private int periodType;
+	private PeriodType periodType;
 
 	/** The from date for custom start date. */
 	private Date from;
 	/** The to date for custom end date. */
 	private Date to;
+	/** the account id. */
+	private String accountId;
 
 	/**
 	 * Default constructor.
 	 */
 	public Report() {
-		id = UUID.randomUUID().toString();
+		this(UUID.randomUUID().toString());
 	}
 
 	/**
@@ -75,6 +143,8 @@ public class Report implements Serializable {
 	 */
 	public Report(String id) {
 		this.id = id;
+		type = Type.CATEGORY_AMOUNT_BY_MONTH;
+		periodType = PeriodType.THIS_YEAR;
 	}
 
 	/**
@@ -82,6 +152,21 @@ public class Report implements Serializable {
 	 */
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * @return the accountId
+	 */
+	public String getAccountId() {
+		return accountId;
+	}
+
+	/**
+	 * @param accountId
+	 *            the accountId to set
+	 */
+	public void setAccountId(String accountId) {
+		this.accountId = accountId;
 	}
 
 	/**
@@ -118,7 +203,13 @@ public class Report implements Serializable {
 	 * @return the from
 	 */
 	public Date getFrom() {
-		return from;
+		if (periodType == PeriodType.LAST_YEAR) {
+			return DateUtil.getLastYearRange()[0];
+		} else if (periodType == PeriodType.THIS_YEAR) {
+			return DateUtil.getThisYearRange()[0];
+		} else {
+			return from;
+		}
 	}
 
 	/**
@@ -132,7 +223,7 @@ public class Report implements Serializable {
 	/**
 	 * @return the periodType
 	 */
-	public int getPeriodType() {
+	public PeriodType getPeriodType() {
 		return periodType;
 	}
 
@@ -140,7 +231,7 @@ public class Report implements Serializable {
 	 * @param periodType
 	 *            the periodType to set
 	 */
-	public void setPeriodType(int periodType) {
+	public void setPeriodType(PeriodType periodType) {
 		this.periodType = periodType;
 	}
 
@@ -148,7 +239,13 @@ public class Report implements Serializable {
 	 * @return the to
 	 */
 	public Date getTo() {
-		return to;
+		if (periodType == PeriodType.LAST_YEAR) {
+			return DateUtil.getLastYearRange()[1];
+		} else if (periodType == PeriodType.THIS_YEAR) {
+			return DateUtil.getThisYearRange()[1];
+		} else {
+			return to;
+		}
 	}
 
 	/**
@@ -162,7 +259,7 @@ public class Report implements Serializable {
 	/**
 	 * @return the type
 	 */
-	public int getType() {
+	public Type getType() {
 		return type;
 	}
 
@@ -170,7 +267,7 @@ public class Report implements Serializable {
 	 * @param type
 	 *            the type to set
 	 */
-	public void setType(int type) {
+	public void setType(Type type) {
 		this.type = type;
 	}
 
