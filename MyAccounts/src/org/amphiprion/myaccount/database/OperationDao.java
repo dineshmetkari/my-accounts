@@ -287,6 +287,8 @@ public class OperationDao extends AbstractDao {
 	 */
 	public PieDataset getPieDataset(Report report) {
 		DefaultPieDataset dataset = new DefaultPieDataset();
+		Date from = report.getFrom();
+		Date to = report.getTo();
 		List<ReportCategory> reportCategories = ReportDao.getInstance(getContext()).getReportCategories(report);
 		String accountId = report.getAccountId();
 		for (ReportCategory rc : reportCategories) {
@@ -298,9 +300,8 @@ public class OperationDao extends AbstractDao {
 					+ "'";
 			sql += " and (c." + Category.DbField.ID + "='" + rc.getCategoryId() + "' or c." + Category.DbField.PARENT
 					+ "='" + rc.getCategoryId() + "')";
-			// sql += " and " + Operation.DbField.DATE + " BETWEEN '" +
-			// DatabaseHelper.dateToString(from) + "' AND '"
-			// + DatabaseHelper.dateToString(to) + "' group by 2";
+			sql += " and o." + Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+					+ DatabaseHelper.dateToString(to) + "'";
 			sql += " group by 2";
 			sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by 2";
 
@@ -326,6 +327,9 @@ public class OperationDao extends AbstractDao {
 	 * @return
 	 */
 	public CategoryDataset getLineDataset(Report report) {
+		Date from = report.getFrom();
+		Date to = report.getTo();
+
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		List<ReportCategory> reportCategories = ReportDao.getInstance(getContext()).getReportCategories(report);
 		String accountId = report.getAccountId();
@@ -339,9 +343,8 @@ public class OperationDao extends AbstractDao {
 					+ "'";
 			sql += " and (c." + Category.DbField.ID + "='" + rc.getCategoryId() + "' or c." + Category.DbField.PARENT
 					+ "='" + rc.getCategoryId() + "')";
-			// sql += " and " + Operation.DbField.DATE + " BETWEEN '" +
-			// DatabaseHelper.dateToString(from) + "' AND '"
-			// + DatabaseHelper.dateToString(to) + "' group by 2";
+			sql += " and o." + Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+					+ DatabaseHelper.dateToString(to) + "'";
 			sql += " group by 2";
 			sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by 2";
 
@@ -370,6 +373,9 @@ public class OperationDao extends AbstractDao {
 	 * @return
 	 */
 	public CategoryDataset getBalanceDataset(Report report) {
+		Date from = report.getFrom();
+		Date to = report.getTo();
+
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		String accountId = report.getAccountId();
 
@@ -378,9 +384,8 @@ public class OperationDao extends AbstractDao {
 		sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
 				+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId)
 				+ "'";
-		// sql += " and " + Operation.DbField.DATE + " BETWEEN '" +
-		// DatabaseHelper.dateToString(from) + "' AND '"
-		// + DatabaseHelper.dateToString(to) + "' group by 2";
+		sql += " and o." + Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+				+ DatabaseHelper.dateToString(to) + "'";
 		sql += " group by 2";
 
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});

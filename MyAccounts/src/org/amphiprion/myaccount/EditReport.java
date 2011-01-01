@@ -19,9 +19,11 @@
  */
 package org.amphiprion.myaccount;
 
+import java.util.Date;
 import java.util.List;
 
 import org.amphiprion.myaccount.adapter.AccountAdapter;
+import org.amphiprion.myaccount.adapter.DateAdapter;
 import org.amphiprion.myaccount.adapter.ReportPeriodTypeAdapter;
 import org.amphiprion.myaccount.adapter.ReportTypeAdapter;
 import org.amphiprion.myaccount.database.AccountDao;
@@ -40,6 +42,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -84,6 +87,12 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 
 		final TextView txtName = (TextView) findViewById(R.id.txtReportName);
 
+		final Spinner cbFromDate = (Spinner) findViewById(R.id.cbFromDate);
+		cbFromDate.setAdapter(new DateAdapter(this));
+
+		final Spinner cbToDate = (Spinner) findViewById(R.id.cbToDate);
+		cbToDate.setAdapter(new DateAdapter(this));
+
 		if (report == null) {
 			Intent intent = getIntent();
 			if (intent.getExtras() != null) {
@@ -97,11 +106,48 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 			report = new Report();
 		}
 
+		if (report.getFrom() != null) {
+			((DateAdapter) cbFromDate.getAdapter()).add(report.getFrom());
+		} else {
+			((DateAdapter) cbFromDate.getAdapter()).add(new Date());
+		}
+		if (report.getTo() != null) {
+			((DateAdapter) cbToDate.getAdapter()).add(report.getTo());
+		} else {
+			((DateAdapter) cbToDate.getAdapter()).add(new Date());
+		}
+
 		cbReportType.setSelection(report.getType().ordinal());
 		cbReportPeriodType.setSelection(report.getPeriodType().ordinal());
 		if (report.getAccountId() != null) {
 			cbAccount.setSelection(accounts.indexOf(new Account(report.getAccountId())));
 		}
+		updateVisibility(report.getPeriodType());
+		updateListVisibility(report.getType());
+		cbReportPeriodType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				updateVisibility((PeriodType) cbReportPeriodType.getSelectedItem());
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+
+			}
+		});
+		cbReportType.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+				updateListVisibility((Type) cbReportType.getSelectedItem());
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+
+			}
+		});
 
 		Button btSave = (Button) findViewById(R.id.btSave);
 		btSave.setOnClickListener(new ViewGroup.OnClickListener() {
@@ -111,6 +157,8 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 				report.setType((Type) cbReportType.getSelectedItem());
 				report.setPeriodType((PeriodType) cbReportPeriodType.getSelectedItem());
 				report.setAccountId(((Account) cbAccount.getSelectedItem()).getId());
+				report.setFrom((Date) cbFromDate.getSelectedItem());
+				report.setTo((Date) cbToDate.getSelectedItem());
 				updateReportCategoryFilters();
 				report.setReportCategories(reportCategories);
 				Intent i = new Intent();
@@ -131,6 +179,24 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 
 		buildReportCategoryList();
 
+	}
+
+	private void updateVisibility(PeriodType periodType) {
+		final LinearLayout panelDates = (LinearLayout) findViewById(R.id.pReportDates);
+		if (periodType == PeriodType.CUSTOM) {
+			panelDates.setVisibility(View.VISIBLE);
+		} else {
+			panelDates.setVisibility(View.GONE);
+		}
+	}
+
+	private void updateListVisibility(Type type) {
+		LinearLayout ln = (LinearLayout) findViewById(R.id.pReport_category_list);
+		if (type == Type.DAILY_BALANCE) {
+			ln.setVisibility(View.INVISIBLE);
+		} else {
+			ln.setVisibility(View.VISIBLE);
+		}
 	}
 
 	private void buildReportCategoryList() {

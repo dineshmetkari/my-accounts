@@ -207,8 +207,25 @@ public class Report implements Serializable {
 			return DateUtil.getLastYearRange()[0];
 		} else if (periodType == PeriodType.THIS_YEAR) {
 			return DateUtil.getThisYearRange()[0];
+		} else if (periodType == PeriodType.LAST_6_MONTH) {
+			return DateUtil.getLast6MonthRange()[0];
 		} else {
 			return from;
+		}
+	}
+
+	/**
+	 * @return the to
+	 */
+	public Date getTo() {
+		if (periodType == PeriodType.LAST_YEAR) {
+			return DateUtil.getLastYearRange()[1];
+		} else if (periodType == PeriodType.THIS_YEAR) {
+			return DateUtil.getThisYearRange()[1];
+		} else if (periodType == PeriodType.LAST_6_MONTH) {
+			return DateUtil.getLast6MonthRange()[1];
+		} else {
+			return to;
 		}
 	}
 
@@ -233,19 +250,6 @@ public class Report implements Serializable {
 	 */
 	public void setPeriodType(PeriodType periodType) {
 		this.periodType = periodType;
-	}
-
-	/**
-	 * @return the to
-	 */
-	public Date getTo() {
-		if (periodType == PeriodType.LAST_YEAR) {
-			return DateUtil.getLastYearRange()[1];
-		} else if (periodType == PeriodType.THIS_YEAR) {
-			return DateUtil.getThisYearRange()[1];
-		} else {
-			return to;
-		}
 	}
 
 	/**
