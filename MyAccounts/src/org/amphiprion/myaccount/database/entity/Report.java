@@ -47,8 +47,8 @@ public class Report implements Serializable {
 	/** The name. */
 	private String name;
 
-	/** The categories. */
-	private List<Category> categories;
+	/** The report category links. */
+	private List<ReportCategory> reportCategories;
 
 	/** The report type. */
 	private int type;
@@ -100,18 +100,18 @@ public class Report implements Serializable {
 	}
 
 	/**
-	 * @return the categories
+	 * @return the reportCategories
 	 */
-	public List<Category> getCategories() {
-		return categories;
+	public List<ReportCategory> getReportCategories() {
+		return reportCategories;
 	}
 
 	/**
-	 * @param categories
-	 *            the categories to set
+	 * @param reportCategories
+	 *            the reportCategories to set
 	 */
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
+	public void setReportCategories(List<ReportCategory> reportCategories) {
+		this.reportCategories = reportCategories;
 	}
 
 	/**

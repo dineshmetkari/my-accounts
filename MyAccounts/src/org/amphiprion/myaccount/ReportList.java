@@ -102,7 +102,7 @@ public class ReportList extends Activity {
 				Report report = (Report) data.getExtras().get("REPORT");
 				ReportDao.getInstance(this).createReport(report);
 				buildReportList();
-			} else if (requestCode == ApplicationConstants.ACTIVITY_RETURN_EDIT_CATEGORY) {
+			} else if (requestCode == ApplicationConstants.ACTIVITY_RETURN_EDIT_REPORT) {
 				Report report = (Report) data.getExtras().get("REPORT");
 				ReportDao.getInstance(this).updateReport(report);
 				buildReportList();

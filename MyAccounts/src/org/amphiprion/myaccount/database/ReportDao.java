@@ -24,6 +24,7 @@ import java.util.List;
 
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Report;
+import org.amphiprion.myaccount.database.entity.ReportCategory;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -108,9 +109,10 @@ public class ReportDao extends AbstractDao {
 
 			execSQL(sql);
 
-			for (Category category : report.getCategories()) {
-				sql = "insert into REPORT_CATEGORY (RPT_" + Report.DbField.ID + ", CAT_" + Category.DbField.ID
-						+ ") values ('" + report.getId() + "', '" + category.getId() + "')";
+			for (ReportCategory reportCategory : report.getReportCategories()) {
+				sql = "insert into REPORT_CATEGORY (" + ReportCategory.DbField.RPT_ID + ", "
+						+ ReportCategory.DbField.CAT_ID + ") values ('" + reportCategory.getReportId() + "', '"
+						+ reportCategory.getCategoryId() + "')";
 				execSQL(sql);
 			}
 			getDatabase().setTransactionSuccessful();
@@ -135,16 +137,17 @@ public class ReportDao extends AbstractDao {
 					+ (report.getFrom() == null ? "null" : "'" + DatabaseHelper.dateToString(report.getFrom()) + "'")
 					+ "," + Report.DbField.TO_DATE + "="
 					+ (report.getTo() == null ? "null" : "'" + DatabaseHelper.dateToString(report.getTo()) + "'")
-					+ " WHERE " + Report.DbField.ID + "='" + report.getId() + "')";
+					+ " WHERE " + Report.DbField.ID + "='" + report.getId() + "'";
 
 			execSQL(sql);
 
-			sql = "delete from REPORT_CATEGORY where RPT_" + Report.DbField.ID + "='" + report.getId() + "'";
+			sql = "delete from REPORT_CATEGORY where " + ReportCategory.DbField.RPT_ID + "='" + report.getId() + "'";
 			execSQL(sql);
 
-			for (Category category : report.getCategories()) {
-				sql = "insert into REPORT_CATEGORY (RPT_" + Report.DbField.ID + ", CAT_" + Category.DbField.ID
-						+ ") values ('" + report.getId() + "', '" + category.getId() + "')";
+			for (ReportCategory reportCategory : report.getReportCategories()) {
+				sql = "insert into REPORT_CATEGORY (" + ReportCategory.DbField.RPT_ID + ", "
+						+ ReportCategory.DbField.CAT_ID + ") values ('" + reportCategory.getReportId() + "', '"
+						+ reportCategory.getCategoryId() + "')";
 				execSQL(sql);
 			}
 
@@ -164,7 +167,8 @@ public class ReportDao extends AbstractDao {
 		getDatabase().beginTransaction();
 		try {
 
-			String sql = "delete from REPORT_CATEGORY where RPT_" + Report.DbField.ID + "='" + report.getId() + "'";
+			String sql = "delete from REPORT_CATEGORY where " + ReportCategory.DbField.RPT_ID + "='" + report.getId()
+					+ "'";
 			execSQL(sql);
 
 			sql = "DELETE FROM REPORT WHERE " + Report.DbField.ID + "='" + encodeString(report.getId()) + "'";
@@ -180,18 +184,20 @@ public class ReportDao extends AbstractDao {
 	 * @param report
 	 * @return
 	 */
-	public List<Category> getCategories(Report report) {
+	public List<ReportCategory> getReportCategories(Report report) {
 		String sql = "SELECT cat." + Category.DbField.ID + ",cat." + Category.DbField.NAME
-				+ " from REPORT_CATEGORY rc join CATEGORY cat on rc.CAT_" + Category.DbField.ID + "=cat."
-				+ Category.DbField.ID + " WHERE rc.RPT_" + Report.DbField.ID + "='" + report.getId()
+				+ " from REPORT_CATEGORY rc join CATEGORY cat on rc." + ReportCategory.DbField.CAT_ID + "=cat."
+				+ Category.DbField.ID + " WHERE rc." + ReportCategory.DbField.RPT_ID + "='" + report.getId()
 				+ "' order by cat." + Category.DbField.NAME + " asc";
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
-		ArrayList<Category> result = new ArrayList<Category>();
+		ArrayList<ReportCategory> result = new ArrayList<ReportCategory>();
 		if (cursor.moveToFirst()) {
 			do {
-				Category a = new Category(cursor.getString(0));
-				a.setName(cursor.getString(1));
-				result.add(a);
+				ReportCategory rc = new ReportCategory(report.getId());
+				rc.setCategoryId(cursor.getString(0));
+				// Category a = new Category(cursor.getString(0));
+				// a.setName(cursor.getString(1));
+				result.add(rc);
 			} while (cursor.moveToNext());
 		}
 		cursor.close();

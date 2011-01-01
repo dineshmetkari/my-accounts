@@ -32,8 +32,7 @@
 
 
 		<LinearLayout android:layout_height="wrap_content"
-			android:orientation="vertical" android:id="@+id/rule_list"
-			android:layout_width="fill_parent"></LinearLayout>
+			android:orientation="vertical" android:layout_width="fill_parent" android:id="@+id/report_category_list"></LinearLayout>
 	</ScrollView>
 	<LinearLayout android:layout_height="wrap_content"
 		android:layout_width="fill_parent">

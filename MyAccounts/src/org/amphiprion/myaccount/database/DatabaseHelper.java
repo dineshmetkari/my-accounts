@@ -28,6 +28,7 @@ import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.database.entity.Report;
+import org.amphiprion.myaccount.database.entity.ReportCategory;
 import org.amphiprion.myaccount.database.entity.Rule;
 
 import android.content.Context;
@@ -69,6 +70,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		if (oldVersion < 1) {
+			oldVersion = 1;
+		}
 		if (oldVersion == 1) {
 			db.execSQL("ALTER TABLE CATEGORY ADD " + Category.DbField.IMAGE_NAME + " text");
 			oldVersion++;
@@ -78,8 +82,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 					+ " text not null, " + Report.DbField.TYPE_REPORT + " integer, " + Report.DbField.TYPE_PERIOD
 					+ " integer, " + Report.DbField.FROM_DATE + " date, " + Report.DbField.TO_DATE + " date)");
 
-			db.execSQL("create table REPORT_CATEGORY (RPT_" + Report.DbField.ID + " text not null, CAT_"
-					+ Category.DbField.ID + " text not null)");
+			db.execSQL("create table REPORT_CATEGORY (" + ReportCategory.DbField.RPT_ID + " text not null, "
+					+ ReportCategory.DbField.CAT_ID + " text not null)");
 			oldVersion++;
 		}
 	}
