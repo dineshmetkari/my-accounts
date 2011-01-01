@@ -217,7 +217,7 @@ public class DefineImportParameter extends Activity implements OnTaskEndListener
 		alertDialog.setButton(getResources().getText(R.string.ok), new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int which) {
 				Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://details?id=com.estrongs.android.pop"));
+						.parse("market://details?id=lysesoft.andexplorer"));
 				startActivity(marketIntent);
 				return;
 			}
