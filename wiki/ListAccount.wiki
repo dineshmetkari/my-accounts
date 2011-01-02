@@ -4,7 +4,7 @@
 
 == Description ==
 {{{
-Home Screen
+Account List
 }}}
 http://lh3.ggpht.com/_uozVey2Igxw/TSBnx5i_aNI/AAAAAAAAASk/J0iYlGqf21k/s512/accountlist.png
 
