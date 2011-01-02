@@ -5,4 +5,5 @@ http://amphiprion-for-droid.blogspot.com/2011/01/myaccounts.html
 
 = Documentation =
   * Account
-    *  List of Account
+    * List of Account
+    * Add/Edit an Account
