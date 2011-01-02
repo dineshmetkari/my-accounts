@@ -8,7 +8,10 @@ Home Screen
 }}}
 http://lh3.ggpht.com/_uozVey2Igxw/TSBnx5i_aNI/AAAAAAAAASk/J0iYlGqf21k/s512/accountlist.png
 
-This screen display the list of summary for all existing accounts.
+This screen display the list of summary for all existing accounts. This screen also contains:
+ * One Tab to display the [CategoryList Category List]
+ * One Tab to display the [ReportList Report List]
+ * A total balance section to sum the balance of several account.
 
 == Option Menu ==
 Click on the Android Menu button to open the menu. The possible commands are:
