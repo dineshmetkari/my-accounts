@@ -14,6 +14,7 @@ This screen display the list of summary for all existing accounts.
 
 = Account Summary =
 http://lh4.ggpht.com/_uozVey2Igxw/TSB2YY9yDGI/AAAAAAAAASo/X39qFeAlDvI/accountsummary.png
+<br/>
 This view contains several informaton:
 * Icon
 * Name
