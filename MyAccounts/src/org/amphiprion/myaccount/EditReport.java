@@ -36,6 +36,7 @@ import org.amphiprion.myaccount.database.entity.ReportCategory;
 import org.amphiprion.myaccount.database.entity.Report.PeriodType;
 import org.amphiprion.myaccount.database.entity.Report.Type;
 import org.amphiprion.myaccount.view.ReportCategoryView;
+import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
 import android.content.Intent;

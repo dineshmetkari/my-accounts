@@ -20,8 +20,8 @@
 package org.amphiprion.myaccount.view;
 
 import org.amphiprion.myaccount.ApplicationConstants;
-import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Category;
+import org.amphiprion.myaccounts.R;
 
 import android.content.Context;
 import android.graphics.Typeface;

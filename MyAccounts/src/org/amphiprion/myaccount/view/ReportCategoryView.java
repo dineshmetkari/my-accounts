@@ -21,10 +21,10 @@ package org.amphiprion.myaccount.view;
 
 import java.util.List;
 
-import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.adapter.CategoryAdapter;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.ReportCategory;
+import org.amphiprion.myaccounts.R;
 
 import android.content.Context;
 import android.view.Gravity;

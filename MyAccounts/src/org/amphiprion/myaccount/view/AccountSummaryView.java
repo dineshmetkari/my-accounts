@@ -19,10 +19,10 @@
  */
 package org.amphiprion.myaccount.view;
 
-import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.util.DateUtil;
+import org.amphiprion.myaccounts.R;
 
 import android.content.Context;
 import android.graphics.Typeface;

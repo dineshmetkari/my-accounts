@@ -30,6 +30,7 @@ import org.amphiprion.myaccount.driver.file.FileDriverManager;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.util.DateUtil;
 import org.amphiprion.myaccount.view.OperationSummaryView;
+import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
 import android.app.AlertDialog;

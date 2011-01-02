@@ -26,6 +26,7 @@ import org.amphiprion.myaccount.database.AccountDao;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.view.AccountSummaryView;
+import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
 import android.content.Intent;

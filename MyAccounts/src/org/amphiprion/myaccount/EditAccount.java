@@ -22,6 +22,7 @@ package org.amphiprion.myaccount;
 import org.amphiprion.myaccount.adapter.CurrencyAdapter;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.util.CurrencyUtil;
+import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -26,7 +26,7 @@ package org.amphiprion.myaccount;
  * 
  */
 public interface ApplicationConstants {
-	public final static String PACKAGE = "org.amphiprion.myaccount";
+	public final static String PACKAGE = "org.amphiprion.myaccounts";
 	public final static String NAME = "MyAccounts";
 	public static final String IMPORT_DRIRECTORY = "import";
 

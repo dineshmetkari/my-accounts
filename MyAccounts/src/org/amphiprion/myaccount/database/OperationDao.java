@@ -28,12 +28,12 @@ import net.droidsolutions.droidcharts.core.data.DefaultCategoryDataset;
 import net.droidsolutions.droidcharts.core.data.DefaultPieDataset;
 import net.droidsolutions.droidcharts.core.data.PieDataset;
 
-import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.database.entity.Report;
 import org.amphiprion.myaccount.database.entity.ReportCategory;
+import org.amphiprion.myaccounts.R;
 
 import android.content.Context;
 import android.database.Cursor;

@@ -22,6 +22,7 @@ package org.amphiprion.myaccount;
 import org.amphiprion.myaccount.driver.file.FileDriverManager;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.util.DateUtil;
+import org.amphiprion.myaccounts.R;
 
 import android.app.TabActivity;
 import android.content.Intent;
