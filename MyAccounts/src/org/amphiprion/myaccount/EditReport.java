@@ -193,7 +193,7 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 
 	private void updateListVisibility(Type type) {
 		LinearLayout ln = (LinearLayout) findViewById(R.id.pReport_category_list);
-		if (type == Type.DAILY_BALANCE) {
+		if (type == Type.DAILY_BALANCE || type == Type.TREND) {
 			ln.setVisibility(View.INVISIBLE);
 		} else {
 			ln.setVisibility(View.VISIBLE);

@@ -89,6 +89,30 @@ public class AccountDao extends AbstractDao {
 	}
 
 	/**
+	 * Return the given account.
+	 * 
+	 * @return the account
+	 */
+	public Account getAccount(String id) {
+		Account result = null;
+		String sql = "SELECT " + Account.DbField.ID + "," + Account.DbField.NAME + "," + Account.DbField.CURRENCY + ","
+				+ Account.DbField.BALANCE + "," + Account.DbField.LAST_OPERATION + "," + Account.DbField.EXCLUDED
+				+ " from ACCOUNT WHERE " + Account.DbField.ID + "='" + id + "'";
+		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+		if (cursor.moveToFirst()) {
+			Account a = new Account(cursor.getString(0));
+			a.setName(cursor.getString(1));
+			a.setCurrency(cursor.getString(2));
+			a.setBalance(cursor.getDouble(3));
+			a.setLastOperation(DatabaseHelper.stringToDate(cursor.getString(4)));
+			a.setExcluded("1".equals(cursor.getString(5)));
+			result = a;
+		}
+		cursor.close();
+		return result;
+	}
+
+	/**
 	 * Persist a new account.
 	 * 
 	 * @param account

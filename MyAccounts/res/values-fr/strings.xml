@@ -55,11 +55,15 @@
 	<string name="report_type_0">Montant par catégorie et par mois</string>
 	<string name="report_type_1">Evolution du solde</string>
 	<string name="report_type_2">Montant par catégorie</string>
+	<string name="report_type_3">Tendance</string>
 
 	<string name="report_period_type_0">Cette année</string>
 	<string name="report_period_type_1">L\'année dernière</string>
 	<string name="report_period_type_2">Les 6 derniers mois</string>
 	<string name="report_period_type_3">Période personnalisée</string>
+
+	<string name="income">Revenus</string>
+	<string name="expense">Dépenses</string>
 
 	<!-- Button -->
 	<string name="ok">Ok</string>
