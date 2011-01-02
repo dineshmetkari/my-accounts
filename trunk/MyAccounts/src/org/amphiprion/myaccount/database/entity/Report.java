@@ -44,7 +44,7 @@ public class Report implements Serializable {
 	}
 
 	public enum Type {
-		CATEGORY_AMOUNT_BY_MONTH(0), DAILY_BALANCE(1), CATEGORY_AMOUNT(2);
+		CATEGORY_AMOUNT_BY_MONTH(0), DAILY_BALANCE(1), CATEGORY_AMOUNT(2), TREND(3);
 
 		private int dbValue;
 

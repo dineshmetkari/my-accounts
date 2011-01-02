@@ -55,11 +55,15 @@
 	<string name="report_type_0">Category Amount by Month</string>
 	<string name="report_type_1">Daily Balance</string>
 	<string name="report_type_2">Category Amount</string>
+	<string name="report_type_3">Trend</string>
 
 	<string name="report_period_type_0">This Year</string>
 	<string name="report_period_type_1">Last Year</string>
 	<string name="report_period_type_2">Last 6 Months</string>
 	<string name="report_period_type_3">Custom Range</string>
+
+	<string name="income">Income</string>
+	<string name="expense">Expense</string>
 
 	<!-- Button -->
 	<string name="ok">Ok</string>

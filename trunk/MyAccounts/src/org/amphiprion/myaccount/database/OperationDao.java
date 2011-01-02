@@ -372,12 +372,52 @@ public class OperationDao extends AbstractDao {
 	 * @param b
 	 * @return
 	 */
-	public CategoryDataset getBalanceDataset(Report report) {
+	public CategoryDataset getIncomeExpenseDataset(Report report) {
 		Date from = report.getFrom();
 		Date to = report.getTo();
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 		String accountId = report.getAccountId();
+		for (int i = 0; i < 2; i++) {
+
+			String sql = "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, strftime('%Y-%m',o."
+					+ Operation.DbField.DATE + ",'localtime') as per";
+			sql += " from OPERATION o WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId) + "'";
+			sql += " and o.amount" + (i == 0 ? ">=0" : "<0");
+			sql += " and o." + Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+					+ DatabaseHelper.dateToString(to) + "'";
+			sql += " group by 2";
+
+			Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
+			if (cursor.moveToFirst()) {
+				do {
+					double value = Math.abs(cursor.getDouble(0));
+					String name = (i == 0 ? getContext().getResources().getString(R.string.income) : getContext()
+							.getResources().getString(R.string.expense));
+
+					dataset.addValue(value, name, cursor.getString(1));
+
+				} while (cursor.moveToNext());
+			}
+			cursor.close();
+		}
+		return dataset;
+	}
+
+	/**
+	 * @param account
+	 * @param report
+	 * @param b
+	 * @return
+	 */
+	public CategoryDataset getBalanceDataset(Report report) {
+		Date from = report.getFrom();
+		Date to = report.getTo();
+
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+
+		String accountId = report.getAccountId();
+		Account account = AccountDao.getInstance(getContext()).getAccount(accountId);
 
 		String sql = "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, strftime('%Y-%m-%d',o."
 				+ Operation.DbField.DATE + ",'localtime') as per";
@@ -390,7 +430,8 @@ public class OperationDao extends AbstractDao {
 
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		if (cursor.moveToFirst()) {
-			double amount = 0; // TODO init with the start amount
+
+			double amount = account.getBalance() - getAmountAfter(account, from, true);
 			do {
 				double value = cursor.getDouble(0);
 				amount += value;

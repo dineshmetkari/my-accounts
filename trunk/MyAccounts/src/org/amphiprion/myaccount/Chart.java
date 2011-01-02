@@ -22,6 +22,7 @@ package org.amphiprion.myaccount;
 import org.amphiprion.myaccount.chart.BalanceChart;
 import org.amphiprion.myaccount.chart.LineChart;
 import org.amphiprion.myaccount.chart.PieChart;
+import org.amphiprion.myaccount.chart.TrendChart;
 import org.amphiprion.myaccount.database.entity.Report;
 import org.amphiprion.myaccount.database.entity.Report.Type;
 
@@ -56,6 +57,8 @@ public class Chart extends Activity {
 			setContentView(new PieChart(getApplicationContext(), report));
 		} else if (report.getType() == Type.DAILY_BALANCE) {
 			setContentView(new BalanceChart(getApplicationContext(), report));
+		} else if (report.getType() == Type.TREND) {
+			setContentView(new TrendChart(getApplicationContext(), report));
 		}
 	}
 
