@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<array name="file_driver">
+		<item>org.amphiprion.myaccount.driver.file.impl.QifFileDriver</item>
+		<item>org.amphiprion.myaccount.driver.file.impl.CsvFileDriver</item>
+		<item>org.amphiprion.myaccount.driver.file.impl.OfxTxtFileDriver</item>
+		<item>org.amphiprion.myaccount.driver.file.impl.OfxXmlFileDriver</item>
+	</array>
+	<array name="category_images">
+		<item>none</item>
+		<item>boardgame</item>
+		<item>book</item>
+		<item>car</item>
+		<item>energy</item>
+		<item>gift</item>
+		<item>house</item>
+		<item>internet</item>
+		<item>kitchen</item>
+		<item>phone</item>
+		<item>restaurant</item>
+		<item>salary</item>
+		<item>shirt</item>
+		<item>shopcart</item>
+		<item>tools</item>
+		<item>video_game</item>
+	</array>
+
+	<string name="default_currency">USD</string>
+	<string name="default_date_format">dd MMM yyyy</string>
+	<string name="default_operation_date_format">MM/dd</string>
+</resources>
