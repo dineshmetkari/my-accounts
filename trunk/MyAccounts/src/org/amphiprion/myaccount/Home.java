@@ -19,6 +19,8 @@
  */
 package org.amphiprion.myaccount;
 
+import java.io.File;
+
 import org.amphiprion.myaccount.driver.file.FileDriverManager;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.util.DateUtil;
@@ -28,6 +30,7 @@ import android.app.TabActivity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.TabHost;
 
 public class Home extends TabActivity {
@@ -46,6 +49,10 @@ public class Home extends TabActivity {
 			FileDriverManager.init(fileDrivers);
 			CurrencyUtil.init(this);
 			DateUtil.init(this);
+
+			File file = new File(Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/"
+					+ ApplicationConstants.BACKUP_DRIRECTORY);
+			file.mkdirs();
 		}
 
 		setContentView(R.layout.main);

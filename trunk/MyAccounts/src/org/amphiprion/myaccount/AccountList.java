@@ -19,10 +19,14 @@
  */
 package org.amphiprion.myaccount;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.amphiprion.myaccount.database.AccountDao;
+import org.amphiprion.myaccount.database.DatabaseBackupDao;
+import org.amphiprion.myaccount.database.DatabaseHelper;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.view.AccountSummaryView;
@@ -31,6 +35,7 @@ import org.amphiprion.myaccounts.R;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,6 +43,7 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AccountList extends Activity {
 	/** The current category for context menu. */
@@ -135,6 +141,12 @@ public class AccountList extends Activity {
 
 		MenuItem addAccount = menu.add(0, ApplicationConstants.MENU_ID_ADD_ACCOUNT, 1, R.string.add_account);
 		addAccount.setIcon(android.R.drawable.ic_menu_add);
+
+		MenuItem backup = menu.add(1, ApplicationConstants.MENU_ID_BACKUP_DB, 1, R.string.backup_db);
+		backup.setIcon(android.R.drawable.ic_menu_more);
+
+		MenuItem restore = menu.add(1, ApplicationConstants.MENU_ID_RESTORE_DB, 2, R.string.restore_db);
+		restore.setIcon(android.R.drawable.ic_menu_more);
 		return true;
 	}
 
@@ -193,6 +205,17 @@ public class AccountList extends Activity {
 			Intent i = new Intent(this, EditAccount.class);
 			// i.putExtra("ACCOUNT", account);
 			startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_CREATE_ACCOUNT);
+		} else if (item.getItemId() == ApplicationConstants.MENU_ID_BACKUP_DB) {
+			String path = Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/"
+					+ ApplicationConstants.BACKUP_DRIRECTORY + "/";
+			path += new SimpleDateFormat("yyyyMMdd-hh-mm-ss").format(new Date());
+			path += "-dbv" + DatabaseHelper.DATABASE_VERSION + ".xml";
+			boolean ok = DatabaseBackupDao.getInstance(this).backupDatabase(path);
+			if (ok) {
+				Toast.makeText(this, R.string.backup_db_ok, Toast.LENGTH_LONG).show();
+			} else {
+				Toast.makeText(this, R.string.backup_db_ko, Toast.LENGTH_LONG).show();
+			}
 		}
 		return true;
 	}

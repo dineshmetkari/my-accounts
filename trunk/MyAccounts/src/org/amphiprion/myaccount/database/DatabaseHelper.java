@@ -38,7 +38,7 @@ import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "amphiprion_myaccount";
-	private static final int DATABASE_VERSION = 4;
+	public static final int DATABASE_VERSION = 4;
 	private static SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DatabaseHelper(Context context) {
