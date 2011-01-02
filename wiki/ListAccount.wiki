@@ -3,8 +3,9 @@
 = Main Screen =
 
 == Description ==
+{{{
 Home Screen
----
+}}}
 http://lh5.ggpht.com/_uozVey2Igxw/TR_Hb5SKydI/AAAAAAAAASE/ZCufLfzPdYQ/screen.png
 
 This screen display the list of summary for all existing accounts.
