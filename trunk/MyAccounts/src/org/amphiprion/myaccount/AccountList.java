@@ -117,7 +117,11 @@ public class AccountList extends Activity {
 			lblTotalBalance.setText(" - ");
 			lblTotalCurrency.setText("");
 		}
-
+		if (accounts.isEmpty()) {
+			TextView tv = new TextView(this);
+			tv.setText(R.string.empty_account_list);
+			ln.addView(tv);
+		}
 	}
 
 	/**

@@ -36,6 +36,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * This activity manage the tags.
@@ -142,6 +143,12 @@ public class CategoryList extends Activity {
 
 			ln.addView(view);
 		}
+		if (categories.isEmpty()) {
+			TextView tv = new TextView(this);
+			tv.setText(R.string.empty_category_list);
+			ln.addView(tv);
+		}
+
 	}
 
 	/**
