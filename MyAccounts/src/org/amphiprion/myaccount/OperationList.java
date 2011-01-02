@@ -155,6 +155,12 @@ public class OperationList extends Activity {
 			});
 			ln.addView(view);
 		}
+		if (operations.isEmpty()) {
+			TextView tv = new TextView(this);
+			tv.setText(R.string.empty_operation_list);
+			ln.addView(tv);
+		}
+
 	}
 
 	/**

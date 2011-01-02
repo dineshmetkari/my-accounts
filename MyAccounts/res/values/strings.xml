@@ -9,6 +9,10 @@
 	<string name="account_tab">Accounts</string>
 	<string name="category_tab">Categories</string>
 	<string name="report_tab">Reports</string>
+	<string name="empty_account_list">\nUse the Menu to create a new Account.\n\nTo perform an action on an existing Account, Long Click on it.</string>
+	<string name="empty_operation_list">\nUse the Menu to import Operations in this account.\n\nTo perform an action on an existing Operation, Long Click on it</string>
+	<string name="empty_category_list">\nUse the Menu to create a new Category.\n\nTo perform an action on an existing Category, Long Click on it</string>
+	<string name="empty_report_list">\nUse the Menu to create a new Report.\n\nTo perform an action on an existing Report, Long Click on it</string>
 	
 	<!-- Account -->
 	<string name="edit_account_title">Edit Account</string>
