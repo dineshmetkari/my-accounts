@@ -6,4 +6,4 @@ http://amphiprion-for-droid.blogspot.com/2011/01/myaccounts.html
 = Documentation =
   * Account
     * [ListAccount List of Account]
-    * [Add/Edit an Account]
+    * [EditAccount Add/Edit an Account]
