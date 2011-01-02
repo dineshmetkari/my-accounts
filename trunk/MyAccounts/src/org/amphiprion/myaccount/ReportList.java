@@ -25,6 +25,7 @@ import java.util.List;
 import org.amphiprion.myaccount.database.ReportDao;
 import org.amphiprion.myaccount.database.entity.Report;
 import org.amphiprion.myaccount.view.ReportSummaryView;
+import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
 import android.content.Intent;

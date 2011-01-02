@@ -20,7 +20,7 @@
 package org.amphiprion.myaccount.adapter;
 
 import org.amphiprion.myaccount.ApplicationConstants;
-import org.amphiprion.myaccount.R;
+import org.amphiprion.myaccounts.R;
 
 import android.content.Context;
 import android.graphics.Bitmap;

@@ -25,6 +25,7 @@ import java.util.List;
 import org.amphiprion.myaccount.database.CategoryDao;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.view.CategorySummaryView;
+import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
 import android.content.Intent;

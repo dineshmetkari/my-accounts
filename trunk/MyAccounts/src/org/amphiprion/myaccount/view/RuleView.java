@@ -19,8 +19,8 @@
  */
 package org.amphiprion.myaccount.view;
 
-import org.amphiprion.myaccount.R;
 import org.amphiprion.myaccount.database.entity.Rule;
+import org.amphiprion.myaccounts.R;
 
 import android.content.Context;
 import android.graphics.Typeface;

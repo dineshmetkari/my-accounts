@@ -24,6 +24,7 @@ import java.util.Date;
 import org.amphiprion.myaccount.chart.PieChart;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.util.DateUtil;
+import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
 import android.content.Intent;

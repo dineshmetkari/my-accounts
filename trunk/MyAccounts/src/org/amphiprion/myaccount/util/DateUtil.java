@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import org.amphiprion.myaccount.R;
+import org.amphiprion.myaccounts.R;
 
 import android.content.Context;
 

@@ -28,6 +28,7 @@ import org.amphiprion.myaccount.database.RuleDao;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Rule;
 import org.amphiprion.myaccount.view.RuleView;
+import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
 import android.app.Dialog;

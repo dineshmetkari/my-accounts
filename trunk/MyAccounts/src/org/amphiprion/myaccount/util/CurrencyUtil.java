@@ -20,7 +20,7 @@
 package org.amphiprion.myaccount.util;
 
 import org.amphiprion.myaccount.ApplicationConstants;
-import org.amphiprion.myaccount.R;
+import org.amphiprion.myaccounts.R;
 
 import android.content.Context;
 import android.graphics.Typeface;
@@ -44,7 +44,7 @@ public class CurrencyUtil {
 	public static void init(Context context) {
 		if (currencies == null) {
 			currencies = context.getResources().getStringArray(R.array.currency_list);
-			currencyFace = Typeface.createFromAsset(context.getAssets(), "tahomabd.ttf");
+			currencyFace = Typeface.createFromAsset(context.getAssets(), "fonts/tahomabd.ttf");
 		}
 	}
 
