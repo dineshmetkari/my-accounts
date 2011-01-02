@@ -6,7 +6,7 @@
 {{{
 Home Screen
 }}}
-http://lh4.ggpht.com/_uozVey2Igxw/TSBiPj51haI/AAAAAAAAASg/JuJhyx65H-0/s512/accountlist.png
+http://lh3.ggpht.com/_uozVey2Igxw/TSBnx5i_aNI/AAAAAAAAASk/J0iYlGqf21k/s512/accountlist.png
 
 This screen display the list of summary for all existing accounts.
 
