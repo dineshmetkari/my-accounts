@@ -1,7 +1,14 @@
 #Explain the List of Account screen and all functionalities available in it.
 
-= Screen Shot =
+= Main Screen =
 
-http://picasaweb.google.com/lh/photo/Yd6I8J-b3z-0Vv7tujwikZ691BQ9o4QuDW6iQESDd3g?feat=directlink&rien=a.png
-
+== Description ==
 http://lh5.ggpht.com/_uozVey2Igxw/TR_Hb5SKydI/AAAAAAAAASE/ZCufLfzPdYQ/screen.png
+
+This screen display the list of summary for all existing accounts.
+
+== Option Menu ==
+
+= Account Summary =
+
+== Contextual Menu ==
