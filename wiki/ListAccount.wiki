@@ -16,11 +16,11 @@ This screen display the list of summary for all existing accounts.
 http://lh4.ggpht.com/_uozVey2Igxw/TSB2YY9yDGI/AAAAAAAAASo/X39qFeAlDvI/accountsummary.png
 <br/>
 This view contains several informaton:
-* Icon
-* Name
-* Balance
-* Date of the most recent operation (or empty) 
+ * Icon
+ * Name
+ * Balance
+ * Date of the most recent operation (or empty) 
 == Contextual Menu ==
 Long click on an account summary to open the contextual menu. The possible commands are:
-* Edit Account
-* Delete Account
+ * Edit Account 
+ * Delete Account
