@@ -23,12 +23,21 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 
 import org.amphiprion.myaccount.ApplicationConstants;
+import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
+import android.widget.Toast;
 
 /**
  * This class is used to to backup and restore database data to SD card.
@@ -75,6 +84,7 @@ public class DatabaseBackupDao extends AbstractDao {
 	 */
 	public boolean backupDatabase(String path) {
 		BufferedWriter fos = null;
+		Toast.makeText(getContext(), path, Toast.LENGTH_LONG).show();
 		File file = new File(path);
 		try {
 			fos = new BufferedWriter(new FileWriter(file));
@@ -94,11 +104,13 @@ public class DatabaseBackupDao extends AbstractDao {
 					for (int idx = 0; idx < numcols; idx++) {
 						name = cur.getColumnName(idx);
 						val = cur.getString(idx);
-						fos.write("\n      <col id='" + name + "'>");
-						fos.write("<![CDATA[");
-						fos.write(val);
-						fos.write("]]>");
-						fos.write("\n      </col>");
+						if (val != null) {
+							fos.write("\n      <col id='" + name + "'>");
+							fos.write("<![CDATA[");
+							fos.write(val);
+							fos.write("]]>");
+							fos.write("</col>");
+						}
 					}
 					cur.moveToNext();
 					fos.write("\n    </row>");
@@ -109,7 +121,7 @@ public class DatabaseBackupDao extends AbstractDao {
 			fos.write("</database>");
 			fos.close();
 			return true;
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			Log.e(ApplicationConstants.PACKAGE, "Backup Error", e);
 			try {
 				fos.close();
@@ -119,4 +131,102 @@ public class DatabaseBackupDao extends AbstractDao {
 			return false;
 		}
 	}
+
+	/**
+	 * Restore the database using the given file.
+	 * 
+	 * @param path
+	 *            the file path
+	 * @return true if the restore is successful
+	 */
+	public boolean restoreDatabase(String path) {
+		SAXParserFactory factory = SAXParserFactory.newInstance();
+		SAXParser parser;
+		RestoreHandler handler = new RestoreHandler();
+		try {
+			parser = factory.newSAXParser();
+			parser.parse(path, handler);
+			return true;
+		} catch (Throwable e) {
+			Log.e(ApplicationConstants.PACKAGE, "Restore Error", e);
+			return false;
+		}
+	}
+
+	private class RestoreHandler extends DefaultHandler {
+
+		private String tableName;
+		private List<String> columns;
+		private List<String> values;
+
+		private StringBuilder builder;
+
+		public RestoreHandler() {
+			columns = new ArrayList<String>();
+			values = new ArrayList<String>();
+		}
+
+		@Override
+		public void characters(char[] ch, int start, int length) throws SAXException {
+			super.characters(ch, start, length);
+			builder.append(ch, start, length);
+		}
+
+		@Override
+		public void endElement(String uri, String localName, String name) throws SAXException {
+			super.endElement(uri, localName, name);
+			if (localName.equalsIgnoreCase("row")) {
+				// insert row
+				StringBuffer sb = new StringBuffer();
+				sb.append("insert into ");
+				sb.append(tableName);
+				sb.append(" (");
+				for (int i = 0; i < columns.size(); i++) {
+					if (i > 0) {
+						sb.append(",");
+					}
+					sb.append(columns.get(i));
+				}
+				sb.append(") values (");
+				String[] params = new String[values.size()];
+				for (int i = 0; i < values.size(); i++) {
+					if (i > 0) {
+						sb.append(",");
+					}
+					sb.append("?");
+					params[i] = values.get(i);
+				}
+				sb.append(")");
+				execSQL(sb.toString(), params);
+
+				columns.clear();
+				values.clear();
+
+			} else if (localName.equalsIgnoreCase("col")) {
+				values.add(builder.toString());
+			}
+			builder.setLength(0);
+		}
+
+		@Override
+		public void startDocument() throws SAXException {
+			super.startDocument();
+			builder = new StringBuilder();
+		}
+
+		@Override
+		public void startElement(String uri, String localName, String name, Attributes attributes) throws SAXException {
+			super.startElement(uri, localName, name, attributes);
+			if (localName.equalsIgnoreCase("table")) {
+				tableName = attributes.getValue("id");
+				execSQL("delete from " + tableName);
+
+			} else if (localName.equalsIgnoreCase("col")) {
+				columns.add(attributes.getValue("id"));
+			}
+			builder.setLength(0);
+		}
+
+	}
+
 }
