@@ -19,6 +19,7 @@
  */
 package org.amphiprion.myaccount;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,7 +34,11 @@ import org.amphiprion.myaccount.view.AccountSummaryView;
 import org.amphiprion.myaccounts.R;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.ContextMenu;
@@ -216,8 +221,46 @@ public class AccountList extends Activity {
 			} else {
 				Toast.makeText(this, R.string.backup_db_ko, Toast.LENGTH_LONG).show();
 			}
+		} else if (item.getItemId() == ApplicationConstants.MENU_ID_RESTORE_DB) {
+			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			File file = new File(Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/"
+					+ ApplicationConstants.BACKUP_DRIRECTORY);
+			intent.setDataAndType(Uri.parse(file.toString()), "text/*");
+
+			try {
+				startActivityForResult(intent, ApplicationConstants.ACTIVITY_RETURN_CHOOSE_RESTORE_FILE);
+			} catch (ActivityNotFoundException e) {
+				// No activity to handle this mime type.
+				// Download for exemple ES File Manager
+				askToDownloadFileManager();
+			}
+
 		}
 		return true;
+	}
+
+	public void askToDownloadFileManager() {
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.install_file_chooser_message)
+				.create();
+		alertDialog.setTitle(R.string.install_file_chooser_title);
+		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
+		alertDialog.setButton(getResources().getText(R.string.ok), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri
+						.parse("market://details?id=lysesoft.andexplorer"));
+				startActivity(marketIntent);
+				return;
+			}
+		});
+		alertDialog.setButton2(getResources().getText(R.string.cancel), new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int which) {
+				// do nothing
+			}
+		});
+		alertDialog.show();
+		return;
+
 	}
 
 	/**
@@ -237,7 +280,17 @@ public class AccountList extends Activity {
 				Account account = (Account) data.getExtras().get("ACCOUNT");
 				AccountDao.getInstance(this).updateAccount(account);
 				buildAccountList();
+			} else if (requestCode == ApplicationConstants.ACTIVITY_RETURN_CHOOSE_RESTORE_FILE) {
+				String path = data.getDataString();
+				boolean ok = DatabaseBackupDao.getInstance(this).restoreDatabase(path);
+				if (ok) {
+					Toast.makeText(this, R.string.restore_db_ok, Toast.LENGTH_LONG).show();
+				} else {
+					Toast.makeText(this, R.string.restore_db_ko, Toast.LENGTH_LONG).show();
+				}
+				buildAccountList();
 			}
+
 		}
 		if (requestCode == ApplicationConstants.ACTIVITY_RETURN_VIEW_OPERATION_LIST) {
 			buildAccountList();

@@ -28,8 +28,8 @@
 	<string name="restore_db">Restore Database</string>
 	<string name="backup_db_ok">Backup Successful.</string>	
 	<string name="backup_db_ko">Backup Failed.</string>	
-	<string name="Restore_db_ok">Restore Successful.</string>	
-	<string name="Restore_db_ko">Restore Failed.</string>	
+	<string name="restore_db_ok">Restore Successful.</string>	
+	<string name="restore_db_ko">Restore Failed.</string>	
 	<!-- Operations -->
 	<string name="edit_operation_title">Edit Operation</string>
 	<string name="operations_title">Transactions: </string>

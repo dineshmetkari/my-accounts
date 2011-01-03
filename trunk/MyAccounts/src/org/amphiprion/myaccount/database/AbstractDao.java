@@ -44,12 +44,20 @@ public abstract class AbstractDao {
 	}
 
 	protected void execSQL(String sql) {
+		execSQL(sql, null);
+	}
+
+	protected void execSQL(String sql, String[] args) {
 		boolean joinTransaction = getDatabase().inTransaction();
 		if (!joinTransaction) {
 			getDatabase().beginTransaction();
 		}
 		try {
-			getDatabase().execSQL(sql);
+			if (args == null) {
+				getDatabase().execSQL(sql);
+			} else {
+				getDatabase().execSQL(sql, args);
+			}
 			if (!joinTransaction) {
 				getDatabase().setTransactionSuccessful();
 			}

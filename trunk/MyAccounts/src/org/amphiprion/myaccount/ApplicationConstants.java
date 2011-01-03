@@ -57,5 +57,6 @@ public interface ApplicationConstants {
 	public static final int ACTIVITY_RETURN_EDIT_OPERATION = 9;
 	public static final int ACTIVITY_RETURN_CREATE_REPORT = 10;
 	public static final int ACTIVITY_RETURN_EDIT_REPORT = 11;
+	public static final int ACTIVITY_RETURN_CHOOSE_RESTORE_FILE = 12;
 
 }
