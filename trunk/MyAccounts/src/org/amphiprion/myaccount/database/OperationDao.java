@@ -154,6 +154,56 @@ public class OperationDao extends AbstractDao {
 	 *            the operation to update
 	 * @return newBalance use to update the account balance
 	 */
+	public void create(Operation operation, double newBalance) {
+		getDatabase().beginTransaction();
+		try {
+
+			String sql = "insert into OPERATION ("
+					+ Operation.DbField.ID
+					+ ","
+					+ Operation.DbField.AMOUNT
+					+ ","
+					+ Operation.DbField.DATE
+					+ ","
+					+ Operation.DbField.DESCRIPTION
+					+ ","
+					+ Operation.DbField.FK_ACCOUNT
+					+ ","
+					+ Operation.DbField.FK_CATEGORY
+					+ ") values ('"
+					+ encodeString(operation.getId())
+					+ "',"
+					+ operation.getAmount()
+					+ ",'"
+					+ DatabaseHelper.dateToString(operation.getDate())
+					+ "','"
+					+ encodeString(operation.getDescription())
+					+ "','"
+					+ encodeString(operation.getAccountId())
+					+ "',"
+					+ (operation.getCategory() == null ? "null" : "'" + encodeString(operation.getCategory().getId())
+							+ "'") + ")";
+
+			execSQL(sql);
+
+			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "=" + newBalance + " WHERE " + Account.DbField.ID
+					+ "='" + encodeString(operation.getAccountId()) + "'";
+			execSQL(sql);
+
+			getDatabase().setTransactionSuccessful();
+		} finally {
+			getDatabase().endTransaction();
+		}
+
+	}
+
+	/**
+	 * Update an existing operation
+	 * 
+	 * @param operation
+	 *            the operation to update
+	 * @return newBalance use to update the account balance
+	 */
 	public void update(Operation operation, double newBalance) {
 		getDatabase().beginTransaction();
 		try {
@@ -184,10 +234,20 @@ public class OperationDao extends AbstractDao {
 	 * @param operation
 	 *            the operation to delete
 	 */
-	public void delete(Operation operation) {
-		String sql = "DELETE FROM OPERATION WHERE " + Operation.DbField.ID + "='" + encodeString(operation.getId())
-				+ "'";
-		execSQL(sql);
+	public void delete(Operation operation, double newBalance) {
+		getDatabase().beginTransaction();
+		try {
+			String sql = "DELETE FROM OPERATION WHERE " + Operation.DbField.ID + "='" + encodeString(operation.getId())
+					+ "'";
+			execSQL(sql);
+			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "=" + newBalance + " WHERE " + Account.DbField.ID
+					+ "='" + encodeString(operation.getAccountId()) + "'";
+			execSQL(sql);
+
+			getDatabase().setTransactionSuccessful();
+		} finally {
+			getDatabase().endTransaction();
+		}
 	}
 
 	/**

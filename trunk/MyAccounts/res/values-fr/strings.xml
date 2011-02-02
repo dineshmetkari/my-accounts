@@ -32,7 +32,9 @@
 	<string name="restore_db_ko">Problème lors du restore.</string>	
 
 	<!-- Operations -->
+	<string name="add_operation">Ajouter une opération </string>
 	<string name="edit_operation_title">Editer l\'opération </string>
+	<string name="delete_operation_title">Supprimer l\'opération</string>
 	<string name="operations_title">Opérations : </string>
 	<string name="import_operation">Importer un fichier</string>
 	<string name="period_change">Changer la période</string>
