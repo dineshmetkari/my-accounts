@@ -38,9 +38,11 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,6 +55,7 @@ import android.widget.TextView;
  */
 public class OperationList extends Activity {
 	private Account account;
+	private Operation current;
 	double originalOperationAmout;
 	private Date[] period;
 
@@ -146,13 +149,20 @@ public class OperationList extends Activity {
 				public void onClick(View v) {
 					if (v instanceof OperationSummaryView) {
 						Operation operation = ((OperationSummaryView) v).getOperation();
-						originalOperationAmout = operation.getAmount();
-						Intent i = new Intent(OperationList.this, EditOperation.class);
-						i.putExtra("OPERATION", operation);
-						startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_EDIT_OPERATION);
+						edit(operation);
 					}
 				}
 			});
+			view.setOnLongClickListener(new View.OnLongClickListener() {
+				@Override
+				public boolean onLongClick(View v) {
+					registerForContextMenu(v);
+					openContextMenu(v);
+					unregisterForContextMenu(v);
+					return true;
+				}
+			});
+
 			ln.addView(view);
 		}
 		if (operations.isEmpty()) {
@@ -161,6 +171,47 @@ public class OperationList extends Activity {
 			ln.addView(tv);
 		}
 
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.app.Activity#onCreateContextMenu(android.view.ContextMenu,
+	 *      android.view.View, android.view.ContextMenu.ContextMenuInfo)
+	 */
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		menu.clear();
+		if (v instanceof OperationSummaryView) {
+			current = ((OperationSummaryView) v).getOperation();
+			menu.add(1, ApplicationConstants.MENU_ID_EDIT_OPERATION, 0, R.string.edit_operation_title);
+			menu.add(1, ApplicationConstants.MENU_ID_DELETE_OPERATION, 1, R.string.delete_operation_title);
+		}
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @see android.app.Activity#onContextItemSelected(android.view.MenuItem)
+	 */
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		if (item.getItemId() == ApplicationConstants.MENU_ID_EDIT_OPERATION) {
+			edit(current);
+		} else if (item.getItemId() == ApplicationConstants.MENU_ID_DELETE_OPERATION) {
+			double newBalance = Math.round((account.getBalance() - current.getAmount()) * 100.0) / 100.0;
+			OperationDao.getInstance(this).delete(current, newBalance);
+			account.setBalance(newBalance);
+			buildOperationList(account);
+		}
+		return true;
+	}
+
+	private void edit(Operation operation) {
+		originalOperationAmout = operation.getAmount();
+		Intent i = new Intent(OperationList.this, EditOperation.class);
+		i.putExtra("OPERATION", operation);
+		startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_EDIT_OPERATION);
 	}
 
 	/**
@@ -175,11 +226,14 @@ public class OperationList extends Activity {
 		MenuItem importOp = menu.add(0, ApplicationConstants.MENU_ID_IMPORT_OPERATION, 1, R.string.import_operation);
 		importOp.setIcon(android.R.drawable.ic_menu_recent_history);
 
-		MenuItem changePeriod = menu.add(1, ApplicationConstants.MENU_ID_CHANGE_PERIOD_OPERATION, 1,
+		MenuItem addOp = menu.add(1, ApplicationConstants.MENU_ID_ADD_OPERATION, 0, R.string.add_operation);
+		addOp.setIcon(android.R.drawable.ic_menu_add);
+
+		MenuItem changePeriod = menu.add(1, ApplicationConstants.MENU_ID_CHANGE_PERIOD_OPERATION, 2,
 				R.string.period_change);
 		changePeriod.setIcon(android.R.drawable.ic_menu_my_calendar);
 
-		MenuItem instantChart = menu.add(2, ApplicationConstants.MENU_ID_INSTANT_CHART_OPERATION, 1,
+		MenuItem instantChart = menu.add(1, ApplicationConstants.MENU_ID_INSTANT_CHART_OPERATION, 3,
 				R.string.instant_chart);
 		instantChart.setIcon(android.R.drawable.ic_menu_slideshow);
 
@@ -241,6 +295,15 @@ public class OperationList extends Activity {
 			i.putExtra("FROM", period[0]);
 			i.putExtra("TO", period[1]);
 			startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_INSTANT_CHART);
+		} else if (item.getItemId() == ApplicationConstants.MENU_ID_ADD_OPERATION) {
+			originalOperationAmout = 0;
+			Intent i = new Intent(OperationList.this, EditOperation.class);
+			Operation op = new Operation();
+			op.setAccountId(account.getId());
+			op.setDate(new Date());
+
+			i.putExtra("OPERATION", op);
+			startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_CREATE_OPERATION);
 		}
 		return true;
 	}
@@ -292,6 +355,13 @@ public class OperationList extends Activity {
 				double newBalance = Math
 						.round((account.getBalance() + operation.getAmount() - originalOperationAmout) * 100.0) / 100.0;
 				OperationDao.getInstance(this).update(operation, newBalance);
+				account.setBalance(newBalance);
+				buildOperationList(account);
+			} else if (requestCode == ApplicationConstants.ACTIVITY_RETURN_CREATE_OPERATION) {
+				Operation operation = (Operation) data.getSerializableExtra("OPERATION");
+
+				double newBalance = Math.round((account.getBalance() + operation.getAmount()) * 100.0) / 100.0;
+				OperationDao.getInstance(this).create(operation, newBalance);
 				account.setBalance(newBalance);
 				buildOperationList(account);
 			}
