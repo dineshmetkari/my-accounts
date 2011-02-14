@@ -25,6 +25,7 @@ import java.util.Date;
 
 import org.amphiprion.myaccount.ApplicationConstants;
 import org.amphiprion.myaccount.database.entity.Account;
+import org.amphiprion.myaccount.database.entity.Budget;
 import org.amphiprion.myaccount.database.entity.Category;
 import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.database.entity.Report;
@@ -38,7 +39,7 @@ import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "amphiprion_myaccount";
-	public static final int DATABASE_VERSION = 4;
+	public static final int DATABASE_VERSION = 6;
 	private static SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DatabaseHelper(Context context) {
@@ -48,21 +49,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		try {
-			db.execSQL("create table ACCOUNT (" + Account.DbField.ID + " text primary key, " + Account.DbField.NAME
-					+ " text not null, " + Account.DbField.CURRENCY + " text not null, " + Account.DbField.BALANCE
-					+ " double not null, " + Account.DbField.EXCLUDED + " int not null, "
-					+ Account.DbField.LAST_OPERATION + " date) ");
+			db.execSQL("create table ACCOUNT (" + Account.DbField.ID + " text primary key, " + Account.DbField.NAME + " text not null, " + Account.DbField.CURRENCY
+					+ " text not null, " + Account.DbField.BALANCE + " double not null, " + Account.DbField.EXCLUDED + " int not null, " + Account.DbField.LAST_OPERATION
+					+ " date) ");
 
-			db.execSQL("create table OPERATION (" + Operation.DbField.ID + " text primary key, "
-					+ Operation.DbField.DATE + " date not null , " + Operation.DbField.AMOUNT + " double not null, "
-					+ Operation.DbField.DESCRIPTION + " string not null, " + Operation.DbField.FK_CATEGORY + " text , "
-					+ Operation.DbField.FK_ACCOUNT + " text not null) ");
+			db.execSQL("create table OPERATION (" + Operation.DbField.ID + " text primary key, " + Operation.DbField.DATE + " date not null , " + Operation.DbField.AMOUNT
+					+ " double not null, " + Operation.DbField.DESCRIPTION + " string not null, " + Operation.DbField.FK_CATEGORY + " text , " + Operation.DbField.FK_ACCOUNT
+					+ " text not null) ");
 
-			db.execSQL("create table CATEGORY (" + Category.DbField.ID + " text primary key, " + Category.DbField.NAME
-					+ " text not null, " + Category.DbField.PARENT + " text)");
+			db.execSQL("create table CATEGORY (" + Category.DbField.ID + " text primary key, " + Category.DbField.NAME + " text not null, " + Category.DbField.PARENT + " text)");
 
-			db.execSQL("create table RULE (" + Rule.DbField.ID + " text primary key, " + Rule.DbField.FILTER
-					+ " text not null, " + Rule.DbField.FK_CATEGORY + " text not null)");
+			db.execSQL("create table RULE (" + Rule.DbField.ID + " text primary key, " + Rule.DbField.FILTER + " text not null, " + Rule.DbField.FK_CATEGORY + " text not null)");
 			onUpgrade(db, 1, DATABASE_VERSION);
 		} catch (Throwable e) {
 			Log.e(ApplicationConstants.PACKAGE, "Can not create database.", e);
@@ -79,16 +76,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 			oldVersion++;
 		}
 		if (oldVersion == 2) {
-			db.execSQL("create table REPORT (" + Report.DbField.ID + " text primary key, " + Report.DbField.NAME
-					+ " text not null, " + Report.DbField.TYPE_REPORT + " integer, " + Report.DbField.TYPE_PERIOD
-					+ " integer, " + Report.DbField.FROM_DATE + " date, " + Report.DbField.TO_DATE + " date)");
+			db.execSQL("create table REPORT (" + Report.DbField.ID + " text primary key, " + Report.DbField.NAME + " text not null, " + Report.DbField.TYPE_REPORT + " integer, "
+					+ Report.DbField.TYPE_PERIOD + " integer, " + Report.DbField.FROM_DATE + " date, " + Report.DbField.TO_DATE + " date)");
 
-			db.execSQL("create table REPORT_CATEGORY (" + ReportCategory.DbField.RPT_ID + " text not null, "
-					+ ReportCategory.DbField.CAT_ID + " text not null)");
+			db.execSQL("create table REPORT_CATEGORY (" + ReportCategory.DbField.RPT_ID + " text not null, " + ReportCategory.DbField.CAT_ID + " text not null)");
 			oldVersion++;
 		}
 		if (oldVersion == 3) {
 			db.execSQL("ALTER TABLE REPORT ADD " + Report.DbField.FK_ACCOUNT + " text not null default ''");
+			oldVersion++;
+		}
+		if (oldVersion == 4) {
+			db.execSQL("create TABLE BUDGET (" + Budget.DbField.ID + " text primary key," + Budget.DbField.NAME + " text not null," + Budget.DbField.TYPE_PERIOD + " integer,"
+					+ Budget.DbField.FK_CATEGORY + " text not null)");
+			oldVersion++;
+		}
+		if (oldVersion == 5) {
+			db.execSQL("ALTER TABLE BUDGET ADD " + Budget.DbField.AMOUNT + " double not null default 0");
 			oldVersion++;
 		}
 	}

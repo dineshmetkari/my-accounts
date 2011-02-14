@@ -8,10 +8,12 @@
 	<!-- Tabs -->	
 	<string name="account_tab">Comptes</string>
 	<string name="category_tab">Catégories</string>
+	<string name="budget_tab">Budgets</string>
 	<string name="report_tab">Rapports</string>
 	<string name="empty_account_list">\nUtiliser le Menu pour créer un nouveau compte.\n\nPour effectuer une action sur un compte existant, faire un clic long sur celui-ci.</string>
 	<string name="empty_operation_list">\nUtiliser le Menu pour importer des opérations dans ce compte.\n\nPour effectuer une action sur une opération existante, faire un clic long sur celle-ci.</string>
 	<string name="empty_category_list">\nUtiliser le Menu pour créer une nouvelle categorie.\n\nPour effectuer une action sur une catégorie existante, faire un clic long sur celle-ci.</string>
+	<string name="empty_budget_list">\nUtiliser le Menu pour créer un nouveau budget.\n\nPour effectuer une action sur un budget existant, faire un clic long sur celui-ci.</string>
 	<string name="empty_report_list">\nUtiliser le Menu pour créer un nouveau rapport.\n\nPour effectuer une action sur un rapport existant, faire un clic long sur celui-ci.</string>
 
 	<!-- Account -->
@@ -56,6 +58,18 @@
 	<string name="icon">Icone</string>	
 	<string name="choose_icon">Choisir une icone</string>	
 
+	<!--  Budget -->
+	<string name="budget_name">Nom du budget</string>
+	<string name="budget_period_type">Type de période</string>
+	<string name="add_budget">Ajouter un budget</string>
+	<string name="edit_budget_title">Editer le budget</string>
+	<string name="delete_budget_title">Supprimer le budget</string>
+	<string name="budget_amount">Montant</string>
+	
+	<string name="budget_period_type_0">Ce mois</string>
+	<string name="budget_period_type_1">Cette semaine</string>
+	<string name="budget_period_type_2">Cette année</string>
+	
 	<!-- Report -->
 	<string name="report_name">Nom du rapport</string>
 	<string name="report_type">Type du rapport</string>

@@ -46,7 +46,7 @@ import android.widget.Toast;
  * 
  */
 public class DatabaseBackupDao extends AbstractDao {
-	private String[] tables = new String[] { "ACCOUNT", "OPERATION", "CATEGORY", "RULE", "REPORT", "REPORT_CATEGORY" };
+	private String[] tables = new String[] { "ACCOUNT", "OPERATION", "CATEGORY", "RULE", "REPORT", "REPORT_CATEGORY", "BUDGET" };
 
 	/** The singleton. */
 	private static DatabaseBackupDao instance;
@@ -88,8 +88,7 @@ public class DatabaseBackupDao extends AbstractDao {
 		File file = new File(path);
 		try {
 			fos = new BufferedWriter(new FileWriter(file));
-			fos.write("<database version='" + DatabaseHelper.DATABASE_VERSION + "' id='" + getDatabase().getPath()
-					+ "'>");
+			fos.write("<database version='" + DatabaseHelper.DATABASE_VERSION + "' id='" + getDatabase().getPath() + "'>");
 			for (String table : tables) {
 				fos.write("\n  <table id='" + table + "'>");
 				String sql = "select * from " + table;

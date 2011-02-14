@@ -40,6 +40,8 @@ public class DateUtil {
 	public static SimpleDateFormat defaultOperationDateFormat;
 	/** The default month format. */
 	public static SimpleDateFormat monthFormat;
+	/** the budget period date format. */
+	public static SimpleDateFormat budgetDateFormat;
 
 	/**
 	 * Initialize the currency utility.
@@ -54,6 +56,8 @@ public class DateUtil {
 			String opFormat = context.getResources().getString(R.string.default_operation_date_format);
 			defaultOperationDateFormat = new SimpleDateFormat(opFormat);
 			monthFormat = new SimpleDateFormat("MMMM");
+			String budgetFormat = context.getResources().getString(R.string.default_budget_date_format);
+			budgetDateFormat = new SimpleDateFormat(budgetFormat);
 		}
 	}
 
@@ -88,6 +92,73 @@ public class DateUtil {
 
 		Calendar cTo = Calendar.getInstance();
 		cTo.set(Calendar.DAY_OF_MONTH, 1);
+		cTo.set(Calendar.HOUR_OF_DAY, 23);
+		cTo.set(Calendar.MINUTE, 59);
+		cTo.set(Calendar.SECOND, 59);
+		cTo.set(Calendar.MILLISECOND, 0);
+		cTo.add(Calendar.DAY_OF_MONTH, -1);
+
+		return new Date[] { cFrom.getTime(), cTo.getTime() };
+	}
+
+	public static Date[] getPreviousMonthRange(Date date) {
+		Calendar cFrom = Calendar.getInstance();
+		cFrom.setTime(date);
+		cFrom.set(Calendar.DAY_OF_MONTH, 1);
+		cFrom.add(Calendar.MONTH, -1);
+		cFrom.set(Calendar.HOUR_OF_DAY, 0);
+		cFrom.set(Calendar.MINUTE, 0);
+		cFrom.set(Calendar.SECOND, 0);
+		cFrom.set(Calendar.MILLISECOND, 0);
+
+		Calendar cTo = Calendar.getInstance();
+		cTo.setTime(date);
+		cTo.set(Calendar.DAY_OF_MONTH, 1);
+		cTo.set(Calendar.HOUR_OF_DAY, 23);
+		cTo.set(Calendar.MINUTE, 59);
+		cTo.set(Calendar.SECOND, 59);
+		cTo.set(Calendar.MILLISECOND, 0);
+		cTo.add(Calendar.DAY_OF_MONTH, -1);
+
+		return new Date[] { cFrom.getTime(), cTo.getTime() };
+	}
+
+	public static Date[] getMonthRange(Date date) {
+		Calendar cFrom = Calendar.getInstance();
+		cFrom.setTime(date);
+		cFrom.set(Calendar.DAY_OF_MONTH, 1);
+		cFrom.set(Calendar.HOUR_OF_DAY, 0);
+		cFrom.set(Calendar.MINUTE, 0);
+		cFrom.set(Calendar.SECOND, 0);
+		cFrom.set(Calendar.MILLISECOND, 0);
+
+		Calendar cTo = Calendar.getInstance();
+		cTo.setTime(date);
+		cTo.set(Calendar.DAY_OF_MONTH, 1);
+		cTo.add(Calendar.MONTH, 1);
+		cTo.set(Calendar.HOUR_OF_DAY, 23);
+		cTo.set(Calendar.MINUTE, 59);
+		cTo.set(Calendar.SECOND, 59);
+		cTo.set(Calendar.MILLISECOND, 0);
+		cTo.add(Calendar.DAY_OF_MONTH, -1);
+
+		return new Date[] { cFrom.getTime(), cTo.getTime() };
+	}
+
+	public static Date[] getNextMonthRange(Date date) {
+		Calendar cFrom = Calendar.getInstance();
+		cFrom.setTime(date);
+		cFrom.set(Calendar.DAY_OF_MONTH, 1);
+		cFrom.add(Calendar.MONTH, +1);
+		cFrom.set(Calendar.HOUR_OF_DAY, 0);
+		cFrom.set(Calendar.MINUTE, 0);
+		cFrom.set(Calendar.SECOND, 0);
+		cFrom.set(Calendar.MILLISECOND, 0);
+
+		Calendar cTo = Calendar.getInstance();
+		cTo.setTime(date);
+		cTo.set(Calendar.DAY_OF_MONTH, 1);
+		cTo.add(Calendar.MONTH, +2);
 		cTo.set(Calendar.HOUR_OF_DAY, 23);
 		cTo.set(Calendar.MINUTE, 59);
 		cTo.set(Calendar.SECOND, 59);

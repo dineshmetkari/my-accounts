@@ -8,10 +8,12 @@
 	<!-- Tabs -->	
 	<string name="account_tab">Accounts</string>
 	<string name="category_tab">Categories</string>
+	<string name="budget_tab">Budgets</string>
 	<string name="report_tab">Reports</string>
 	<string name="empty_account_list">\nUse the Menu to create a new Account.\n\nTo perform an action on an existing Account, Long Click on it.</string>
 	<string name="empty_operation_list">\nUse the Menu to import Operations in this account.\n\nTo perform an action on an existing Operation, Long Click on it</string>
 	<string name="empty_category_list">\nUse the Menu to create a new Category.\n\nTo perform an action on an existing Category, Long Click on it</string>
+	<string name="empty_budget_list">\nUse the Menu to create a new Budget.\n\nTo perform an action on an existing Budget, Long Click on it</string>
 	<string name="empty_report_list">\nUse the Menu to create a new Report.\n\nTo perform an action on an existing Report, Long Click on it</string>
 	
 	<!-- Account -->
@@ -55,6 +57,19 @@
 	<string name="icon">Icon</string>	
 	<string name="choose_icon">Choose an Icon</string>	
 
+	<!--  Budget -->
+	<string name="budget_name">Budget Name</string>
+	<string name="budget_period_type">Period Type</string>
+	<string name="add_budget">Add Budget</string>
+	<string name="edit_budget_title">Edit Budget</string>
+	<string name="delete_budget_title">Delete Budget</string>
+	<string name="budget_amount">Amount</string>
+
+	<string name="budget_period_type_0">This Month</string>
+	<string name="budget_period_type_1">This Week</string>
+	<string name="budget_period_type_2">This Year</string>
+	
+	
 	<!-- Report -->
 	<string name="report_name">Report Name</string>
 	<string name="report_type">Report Type</string>

@@ -28,4 +28,5 @@
 	<string name="default_currency">USD</string>
 	<string name="default_date_format">dd MMM yyyy</string>
 	<string name="default_operation_date_format">MM/dd</string>
+	<string name="default_budget_date_format">MMMM yyyy</string>
 </resources>
