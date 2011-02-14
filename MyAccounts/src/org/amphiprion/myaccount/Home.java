@@ -50,8 +50,7 @@ public class Home extends TabActivity {
 			CurrencyUtil.init(this);
 			DateUtil.init(this);
 
-			File file = new File(Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/"
-					+ ApplicationConstants.BACKUP_DRIRECTORY);
+			File file = new File(Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/" + ApplicationConstants.BACKUP_DRIRECTORY);
 			file.mkdirs();
 		}
 
@@ -66,21 +65,23 @@ public class Home extends TabActivity {
 		intent = new Intent().setClass(this, AccountList.class);
 
 		// Initialize a TabSpec for each tab and add it to the TabHost
-		spec = tabHost.newTabSpec("accountlist").setIndicator(res.getString(R.string.account_tab),
-				res.getDrawable(R.drawable.bank_tab_icon)).setContent(intent);
+		spec = tabHost.newTabSpec("accountlist").setIndicator(res.getString(R.string.account_tab), res.getDrawable(R.drawable.bank_tab_icon)).setContent(intent);
 
 		tabHost.addTab(spec);
 
 		// Do the same for the other tabs
 		intent = new Intent().setClass(this, CategoryList.class);
-		spec = tabHost.newTabSpec("categorylist").setIndicator(res.getString(R.string.category_tab),
-				res.getDrawable(R.drawable.tag_tab_icon)).setContent(intent);
+		spec = tabHost.newTabSpec("categorylist").setIndicator(res.getString(R.string.category_tab), res.getDrawable(R.drawable.tag_tab_icon)).setContent(intent);
+		tabHost.addTab(spec);
+
+		// Do the same for the other tabs
+		intent = new Intent().setClass(this, BudgetList.class);
+		spec = tabHost.newTabSpec("budgetlist").setIndicator(res.getString(R.string.budget_tab), res.getDrawable(R.drawable.budget_tab_icon)).setContent(intent);
 		tabHost.addTab(spec);
 
 		// Do the same for the other tabs
 		intent = new Intent().setClass(this, ReportList.class);
-		spec = tabHost.newTabSpec("reportlist").setIndicator(res.getString(R.string.report_tab),
-				res.getDrawable(R.drawable.report_tab_icon)).setContent(intent);
+		spec = tabHost.newTabSpec("reportlist").setIndicator(res.getString(R.string.report_tab), res.getDrawable(R.drawable.report_tab_icon)).setContent(intent);
 		tabHost.addTab(spec);
 
 		tabHost.setCurrentTab(0);
