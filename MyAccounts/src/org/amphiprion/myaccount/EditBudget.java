@@ -85,6 +85,9 @@ public class EditBudget extends Activity {
 			public void onClick(View v) {
 				budget.setName("" + txtName.getText());
 				Category category = (Category) cbCategory.getSelectedItem();
+				if (category == null) {
+					return;
+				}
 				budget.setCategoryId(category.getId());
 				// budget.setPeriodType((PeriodType)
 				// cbBudgetPeriodType.getSelectedItem());
