@@ -39,10 +39,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -73,7 +73,7 @@ public class OperationList extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		DateUtil.init(this);
 		account = (Account) getIntent().getSerializableExtra("ACCOUNT");
 		setTitle(getResources().getText(R.string.operations_title) + " " + account.getName());
 		setContentView(R.layout.operation_list);
@@ -91,8 +91,7 @@ public class OperationList extends Activity {
 			period = DateUtil.getLastMonthRange();
 			tvPeriod.setText(getResources().getString(R.string.period_last_month, DateUtil.getLastMonth()));
 		} else {
-			tvPeriod.setText(getResources().getString(R.string.period_custom_label,
-					DateUtil.defaultDateFormat.format(period[0]), DateUtil.defaultDateFormat.format(period[1])));
+			tvPeriod.setText(getResources().getString(R.string.period_custom_label, DateUtil.defaultDateFormat.format(period[0]), DateUtil.defaultDateFormat.format(period[1])));
 		}
 
 		TextView lblTotalCurrency = (TextView) findViewById(R.id.lblTotalCurrency);
@@ -128,13 +127,11 @@ public class OperationList extends Activity {
 		double amountStart = OperationDao.getInstance(this).getAmountAfter(account, period[0], true);
 		double amountEnd = OperationDao.getInstance(this).getAmountAfter(account, period[1], false);
 
-		lblBalanceEnd.setText("" + (Math.round((account.getBalance() - amountEnd) * 100.0) / 100.0));
-		lblDateEnd.setText(getResources().getString(R.string.operation_balance_at_end,
-				DateUtil.defaultDateFormat.format(period[1])));
+		lblBalanceEnd.setText("" + Math.round((account.getBalance() - amountEnd) * 100.0) / 100.0);
+		lblDateEnd.setText(getResources().getString(R.string.operation_balance_at_end, DateUtil.defaultDateFormat.format(period[1])));
 
-		lblBalanceStart.setText("" + (Math.round((account.getBalance() - amountStart) * 100.0) / 100.0));
-		lblDateStart.setText(getResources().getString(R.string.operation_balance_at_start,
-				DateUtil.defaultDateFormat.format(period[0])));
+		lblBalanceStart.setText("" + Math.round((account.getBalance() - amountStart) * 100.0) / 100.0);
+		lblDateStart.setText(getResources().getString(R.string.operation_balance_at_start, DateUtil.defaultDateFormat.format(period[0])));
 
 		List<Operation> operations = OperationDao.getInstance(this).getOperations(account, period[0], period[1]);
 		TextView tvNbRecord = (TextView) findViewById(R.id.lblNbRecord);
@@ -229,12 +226,10 @@ public class OperationList extends Activity {
 		MenuItem addOp = menu.add(1, ApplicationConstants.MENU_ID_ADD_OPERATION, 0, R.string.add_operation);
 		addOp.setIcon(android.R.drawable.ic_menu_add);
 
-		MenuItem changePeriod = menu.add(1, ApplicationConstants.MENU_ID_CHANGE_PERIOD_OPERATION, 2,
-				R.string.period_change);
+		MenuItem changePeriod = menu.add(1, ApplicationConstants.MENU_ID_CHANGE_PERIOD_OPERATION, 2, R.string.period_change);
 		changePeriod.setIcon(android.R.drawable.ic_menu_my_calendar);
 
-		MenuItem instantChart = menu.add(1, ApplicationConstants.MENU_ID_INSTANT_CHART_OPERATION, 3,
-				R.string.instant_chart);
+		MenuItem instantChart = menu.add(1, ApplicationConstants.MENU_ID_INSTANT_CHART_OPERATION, 3, R.string.instant_chart);
 		instantChart.setIcon(android.R.drawable.ic_menu_slideshow);
 
 		return true;
@@ -250,16 +245,16 @@ public class OperationList extends Activity {
 		if (item.getItemId() == ApplicationConstants.MENU_ID_IMPORT_OPERATION) {
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(getResources().getString(R.string.file_import_choice_title));
-			builder.setAdapter(new FileDriverAdapter(OperationList.this, FileDriverManager.getDrivers()),
-					new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int item) {
-							dialog.dismiss();
-							Intent i = new Intent(OperationList.this, DefineImportParameter.class);
-							i.putExtra("ACCOUNT", account);
-							i.putExtra("FILE_DRIVER_INDEX", item);
-							startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_IMPORT_OPERATION);
-						}
-					});
+			builder.setAdapter(new FileDriverAdapter(OperationList.this, FileDriverManager.getDrivers()), new DialogInterface.OnClickListener() {
+				@Override
+				public void onClick(DialogInterface dialog, int item) {
+					dialog.dismiss();
+					Intent i = new Intent(OperationList.this, DefineImportParameter.class);
+					i.putExtra("ACCOUNT", account);
+					i.putExtra("FILE_DRIVER_INDEX", item);
+					startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_IMPORT_OPERATION);
+				}
+			});
 			AlertDialog alert = builder.create();
 			alert.show();
 		} else if (item.getItemId() == ApplicationConstants.MENU_ID_CHANGE_PERIOD_OPERATION) {
@@ -270,6 +265,7 @@ public class OperationList extends Activity {
 			items[1] = getResources().getString(R.string.period_last_month, DateUtil.getLastMonth());
 			items[2] = getResources().getString(R.string.period_custom);
 			builder.setItems(items, new DialogInterface.OnClickListener() {
+				@Override
 				public void onClick(DialogInterface dialog, int item) {
 					dialog.dismiss();
 					switch (PeriodType.values()[item]) {
@@ -352,8 +348,7 @@ public class OperationList extends Activity {
 			} else if (requestCode == ApplicationConstants.ACTIVITY_RETURN_EDIT_OPERATION) {
 				Operation operation = (Operation) data.getSerializableExtra("OPERATION");
 
-				double newBalance = Math
-						.round((account.getBalance() + operation.getAmount() - originalOperationAmout) * 100.0) / 100.0;
+				double newBalance = Math.round((account.getBalance() + operation.getAmount() - originalOperationAmout) * 100.0) / 100.0;
 				OperationDao.getInstance(this).update(operation, newBalance);
 				account.setBalance(newBalance);
 				buildOperationList(account);
