@@ -211,8 +211,11 @@ public class OperationDao extends AbstractDao {
 			String sql = "update OPERATION set " + Operation.DbField.AMOUNT + "=" + operation.getAmount() + ","
 					+ Operation.DbField.DATE + "='" + DatabaseHelper.dateToString(operation.getDate()) + "',"
 					+ Operation.DbField.DESCRIPTION + "='" + encodeString(operation.getDescription()) + "',"
-					+ Operation.DbField.FK_ACCOUNT + "='" + encodeString(operation.getAccountId()) + "',"
-					+ Operation.DbField.FK_CATEGORY + "='" + encodeString(operation.getCategory().getId()) + "' WHERE "
+					+ Operation.DbField.FK_ACCOUNT + "='" + encodeString(operation.getAccountId()) + "'";
+					if (operation.getCategory() != null) {
+						sql +=  "," + Operation.DbField.FK_CATEGORY + "='" + encodeString(operation.getCategory().getId()) + "'";
+					}
+					sql += " WHERE "
 					+ Operation.DbField.ID + "='" + encodeString(operation.getId()) + "'";
 
 			execSQL(sql);

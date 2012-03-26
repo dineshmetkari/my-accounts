@@ -154,6 +154,9 @@ public class EditReport extends Activity implements ReportCategoryView.OnReportC
 		btSave.setOnClickListener(new ViewGroup.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if ( cbAccount.getSelectedItem() == null) {
+					return;
+				}
 				report.setName("" + txtName.getText());
 				report.setType((Type) cbReportType.getSelectedItem());
 				report.setPeriodType((PeriodType) cbReportPeriodType.getSelectedItem());
