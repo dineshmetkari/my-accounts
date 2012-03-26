@@ -84,7 +84,11 @@ public class EditAccount extends Activity {
 			@Override
 			public void onClick(View v) {
 				account.setName("" + txtName.getText());
-				account.setBalance(Double.parseDouble("" + txtBalance.getText()));
+				try {
+					account.setBalance(Double.parseDouble("" + txtBalance.getText()));
+				} catch (NumberFormatException nfe) {
+					account.setBalance(0);
+				}
 				account.setCurrency(CurrencyUtil.currencies[cbCurrency.getSelectedItemPosition()]);
 				account.setExcluded(chkExclude.isChecked());
 
