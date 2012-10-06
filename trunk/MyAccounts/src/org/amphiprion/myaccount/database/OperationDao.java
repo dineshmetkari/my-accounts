@@ -80,13 +80,19 @@ public class OperationDao extends AbstractDao {
 	 * @return the operation list
 	 */
 	public List<Operation> getOperations(Account account, Date from, Date to) {
-		String sql = "SELECT o." + Operation.DbField.ID + ", o." + Operation.DbField.AMOUNT + ", o."
-				+ Operation.DbField.DESCRIPTION + ", o." + Operation.DbField.DATE + ", o."
-				+ Operation.DbField.FK_CATEGORY + ", c." + Category.DbField.NAME + ", c." + Category.DbField.IMAGE_NAME
-				+ " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
-				+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='"
-				+ encodeString(account.getId()) + "' and " + Operation.DbField.DATE + " BETWEEN '"
-				+ DatabaseHelper.dateToString(from) + "' AND '" + DatabaseHelper.dateToString(to) + "' order by o."
+		String sql = "SELECT o." + Operation.DbField.ID + ", o."
+				+ Operation.DbField.AMOUNT + ", o."
+				+ Operation.DbField.DESCRIPTION + ", o."
+				+ Operation.DbField.DATE + ", o."
+				+ Operation.DbField.FK_CATEGORY + ", c."
+				+ Category.DbField.NAME + ", c." + Category.DbField.IMAGE_NAME
+				+ " from OPERATION o left outer join CATEGORY c on o."
+				+ Operation.DbField.FK_CATEGORY + "=c." + Category.DbField.ID
+				+ " WHERE o." + Operation.DbField.FK_ACCOUNT + "='"
+				+ encodeString(account.getId()) + "' and "
+				+ Operation.DbField.DATE + " BETWEEN '"
+				+ DatabaseHelper.dateToString(from) + "' AND '"
+				+ DatabaseHelper.dateToString(to) + "' order by o."
 				+ Operation.DbField.DATE + " desc";
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		ArrayList<Operation> result = new ArrayList<Operation>();
@@ -141,7 +147,8 @@ public class OperationDao extends AbstractDao {
 				+ "','"
 				+ encodeString(operation.getAccountId())
 				+ "',"
-				+ (operation.getCategory() == null ? "null" : "'" + encodeString(operation.getCategory().getId()) + "'")
+				+ (operation.getCategory() == null ? "null" : "'"
+						+ encodeString(operation.getCategory().getId()) + "'")
 				+ ")";
 
 		execSQL(sql);
@@ -181,13 +188,15 @@ public class OperationDao extends AbstractDao {
 					+ "','"
 					+ encodeString(operation.getAccountId())
 					+ "',"
-					+ (operation.getCategory() == null ? "null" : "'" + encodeString(operation.getCategory().getId())
+					+ (operation.getCategory() == null ? "null" : "'"
+							+ encodeString(operation.getCategory().getId())
 							+ "'") + ")";
 
 			execSQL(sql);
 
-			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "=" + newBalance + " WHERE " + Account.DbField.ID
-					+ "='" + encodeString(operation.getAccountId()) + "'";
+			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "="
+					+ newBalance + " WHERE " + Account.DbField.ID + "='"
+					+ encodeString(operation.getAccountId()) + "'";
 			execSQL(sql);
 
 			getDatabase().setTransactionSuccessful();
@@ -208,20 +217,28 @@ public class OperationDao extends AbstractDao {
 		getDatabase().beginTransaction();
 		try {
 
-			String sql = "update OPERATION set " + Operation.DbField.AMOUNT + "=" + operation.getAmount() + ","
-					+ Operation.DbField.DATE + "='" + DatabaseHelper.dateToString(operation.getDate()) + "',"
-					+ Operation.DbField.DESCRIPTION + "='" + encodeString(operation.getDescription()) + "',"
-					+ Operation.DbField.FK_ACCOUNT + "='" + encodeString(operation.getAccountId()) + "'";
-					if (operation.getCategory() != null) {
-						sql +=  "," + Operation.DbField.FK_CATEGORY + "='" + encodeString(operation.getCategory().getId()) + "'";
-					}
-					sql += " WHERE "
-					+ Operation.DbField.ID + "='" + encodeString(operation.getId()) + "'";
+			String sql = "update OPERATION set " + Operation.DbField.AMOUNT
+					+ "=" + operation.getAmount() + ","
+					+ Operation.DbField.DATE + "='"
+					+ DatabaseHelper.dateToString(operation.getDate()) + "',"
+					+ Operation.DbField.DESCRIPTION + "='"
+					+ encodeString(operation.getDescription()) + "',"
+					+ Operation.DbField.FK_ACCOUNT + "='"
+					+ encodeString(operation.getAccountId()) + "'";
+			if (operation.getCategory() != null) {
+				sql += "," + Operation.DbField.FK_CATEGORY + "='"
+						+ encodeString(operation.getCategory().getId()) + "'";
+			} else {
+				sql += "," + Operation.DbField.FK_CATEGORY + "=null";
+			}
+			sql += " WHERE " + Operation.DbField.ID + "='"
+					+ encodeString(operation.getId()) + "'";
 
 			execSQL(sql);
 
-			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "=" + newBalance + " WHERE " + Account.DbField.ID
-					+ "='" + encodeString(operation.getAccountId()) + "'";
+			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "="
+					+ newBalance + " WHERE " + Account.DbField.ID + "='"
+					+ encodeString(operation.getAccountId()) + "'";
 			execSQL(sql);
 
 			getDatabase().setTransactionSuccessful();
@@ -240,11 +257,12 @@ public class OperationDao extends AbstractDao {
 	public void delete(Operation operation, double newBalance) {
 		getDatabase().beginTransaction();
 		try {
-			String sql = "DELETE FROM OPERATION WHERE " + Operation.DbField.ID + "='" + encodeString(operation.getId())
-					+ "'";
+			String sql = "DELETE FROM OPERATION WHERE " + Operation.DbField.ID
+					+ "='" + encodeString(operation.getId()) + "'";
 			execSQL(sql);
-			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "=" + newBalance + " WHERE " + Account.DbField.ID
-					+ "='" + encodeString(operation.getAccountId()) + "'";
+			sql = "UPDATE ACCOUNT set " + Account.DbField.BALANCE + "="
+					+ newBalance + " WHERE " + Account.DbField.ID + "='"
+					+ encodeString(operation.getAccountId()) + "'";
 			execSQL(sql);
 
 			getDatabase().setTransactionSuccessful();
@@ -264,8 +282,10 @@ public class OperationDao extends AbstractDao {
 		try {
 			for (Operation op : operations) {
 				op.setAccountId(account.getId());
-				account.setBalance(Math.round((account.getBalance() + op.getAmount()) * 100.0) / 100.0);
-				if (account.getLastOperation() == null || account.getLastOperation().before(op.getDate())) {
+				account.setBalance(Math.round((account.getBalance() + op
+						.getAmount()) * 100.0) / 100.0);
+				if (account.getLastOperation() == null
+						|| account.getLastOperation().before(op.getDate())) {
 					account.setLastOperation(op.getDate());
 				}
 				create(op);
@@ -293,9 +313,11 @@ public class OperationDao extends AbstractDao {
 	 * @return the amount (cash flow)
 	 */
 	public double getAmountAfter(Account account, Date date, boolean include) {
-		String sql = "SELECT sum(" + Operation.DbField.AMOUNT + ") from OPERATION WHERE "
-				+ Operation.DbField.FK_ACCOUNT + "='" + encodeString(account.getId()) + "' AND "
-				+ Operation.DbField.DATE + (include ? ">=" : ">") + "'" + DatabaseHelper.dateToString(date) + "'";
+		String sql = "SELECT sum(" + Operation.DbField.AMOUNT
+				+ ") from OPERATION WHERE " + Operation.DbField.FK_ACCOUNT
+				+ "='" + encodeString(account.getId()) + "' AND "
+				+ Operation.DbField.DATE + (include ? ">=" : ">") + "'"
+				+ DatabaseHelper.dateToString(date) + "'";
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		double result = 0;
 		if (cursor.moveToFirst()) {
@@ -308,23 +330,29 @@ public class OperationDao extends AbstractDao {
 		return result;
 	}
 
-	public PieDataset getPieDataset(Account account, Date from, Date to, boolean income) {
+	public PieDataset getPieDataset(Account account, Date from, Date to,
+			boolean income) {
 		String sql = "select res.sum, cat." + Category.DbField.NAME + " from (";
 
 		sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, ";
-		sql += "ifnull(c." + Category.DbField.PARENT + ", c." + Category.DbField.ID + ") as catId";
-		sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
-				+ Category.DbField.ID + " WHERE o." + Operation.DbField.AMOUNT;
+		sql += "ifnull(c." + Category.DbField.PARENT + ", c."
+				+ Category.DbField.ID + ") as catId";
+		sql += " from OPERATION o left outer join CATEGORY c on o."
+				+ Operation.DbField.FK_CATEGORY + "=c." + Category.DbField.ID
+				+ " WHERE o." + Operation.DbField.AMOUNT;
 		if (income) {
 			sql += ">=0";
 		} else {
 			sql += "<0";
 		}
-		sql += " AND o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(account.getId()) + "' and "
-				+ Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+		sql += " AND o." + Operation.DbField.FK_ACCOUNT + "='"
+				+ encodeString(account.getId()) + "' and "
+				+ Operation.DbField.DATE + " BETWEEN '"
+				+ DatabaseHelper.dateToString(from) + "' AND '"
 				+ DatabaseHelper.dateToString(to) + "' group by 2";
 
-		sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by cat."
+		sql += ") res left outer join CATEGORY cat on res.catId=cat."
+				+ Category.DbField.ID + " order by cat."
 				+ Category.DbField.NAME;
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		DefaultPieDataset dataset = new DefaultPieDataset();
@@ -333,7 +361,8 @@ public class OperationDao extends AbstractDao {
 				String name = cursor.getString(1);
 				double value = Math.abs(cursor.getDouble(0));
 				if (name == null) {
-					name = getContext().getResources().getString(R.string.category_unknown);
+					name = getContext().getResources().getString(
+							R.string.category_unknown);
 				}
 				dataset.setValue(name, value);
 			} while (cursor.moveToNext());
@@ -352,28 +381,37 @@ public class OperationDao extends AbstractDao {
 		DefaultPieDataset dataset = new DefaultPieDataset();
 		Date from = report.getFrom();
 		Date to = report.getTo();
-		List<ReportCategory> reportCategories = ReportDao.getInstance(getContext()).getReportCategories(report);
+		List<ReportCategory> reportCategories = ReportDao.getInstance(
+				getContext()).getReportCategories(report);
 		String accountId = report.getAccountId();
 		for (ReportCategory rc : reportCategories) {
-			String sql = "select res.sum, cat." + Category.DbField.NAME + " from (";
+			String sql = "select res.sum, cat." + Category.DbField.NAME
+					+ " from (";
 
-			sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, '" + rc.getCategoryId() + "' as catId";
-			sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
-					+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId)
-					+ "'";
-			sql += " and (c." + Category.DbField.ID + "='" + rc.getCategoryId() + "' or c." + Category.DbField.PARENT
-					+ "='" + rc.getCategoryId() + "')";
-			sql += " and o." + Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+			sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, '"
+					+ rc.getCategoryId() + "' as catId";
+			sql += " from OPERATION o left outer join CATEGORY c on o."
+					+ Operation.DbField.FK_CATEGORY + "=c."
+					+ Category.DbField.ID + " WHERE o."
+					+ Operation.DbField.FK_ACCOUNT + "='"
+					+ encodeString(accountId) + "'";
+			sql += " and (c." + Category.DbField.ID + "='" + rc.getCategoryId()
+					+ "' or c." + Category.DbField.PARENT + "='"
+					+ rc.getCategoryId() + "')";
+			sql += " and o." + Operation.DbField.DATE + " BETWEEN '"
+					+ DatabaseHelper.dateToString(from) + "' AND '"
 					+ DatabaseHelper.dateToString(to) + "'";
 			sql += " group by 2";
-			sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by 2";
+			sql += ") res left outer join CATEGORY cat on res.catId=cat."
+					+ Category.DbField.ID + " order by 2";
 
 			Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 			if (cursor.moveToFirst()) {
 				double value = Math.abs(cursor.getDouble(0));
 				String name = cursor.getString(1);
 				if (name == null) {
-					name = getContext().getResources().getString(R.string.category_unknown);
+					name = getContext().getResources().getString(
+							R.string.category_unknown);
 				}
 
 				dataset.setValue(name, value);
@@ -394,22 +432,31 @@ public class OperationDao extends AbstractDao {
 		Date to = report.getTo();
 
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
-		List<ReportCategory> reportCategories = ReportDao.getInstance(getContext()).getReportCategories(report);
+		List<ReportCategory> reportCategories = ReportDao.getInstance(
+				getContext()).getReportCategories(report);
 		String accountId = report.getAccountId();
 		for (ReportCategory rc : reportCategories) {
-			String sql = "select res.sum, res.per, cat." + Category.DbField.NAME + " from (";
+			String sql = "select res.sum, res.per, cat."
+					+ Category.DbField.NAME + " from (";
 
-			sql += "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, strftime('%Y-%m',o."
-					+ Operation.DbField.DATE + ",'localtime') as per, '" + rc.getCategoryId() + "' as catId";
-			sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
-					+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId)
-					+ "'";
-			sql += " and (c." + Category.DbField.ID + "='" + rc.getCategoryId() + "' or c." + Category.DbField.PARENT
-					+ "='" + rc.getCategoryId() + "')";
-			sql += " and o." + Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+			sql += "SELECT sum(o." + Operation.DbField.AMOUNT
+					+ ") as sum, strftime('%Y-%m',o." + Operation.DbField.DATE
+					+ ",'localtime') as per, '" + rc.getCategoryId()
+					+ "' as catId";
+			sql += " from OPERATION o left outer join CATEGORY c on o."
+					+ Operation.DbField.FK_CATEGORY + "=c."
+					+ Category.DbField.ID + " WHERE o."
+					+ Operation.DbField.FK_ACCOUNT + "='"
+					+ encodeString(accountId) + "'";
+			sql += " and (c." + Category.DbField.ID + "='" + rc.getCategoryId()
+					+ "' or c." + Category.DbField.PARENT + "='"
+					+ rc.getCategoryId() + "')";
+			sql += " and o." + Operation.DbField.DATE + " BETWEEN '"
+					+ DatabaseHelper.dateToString(from) + "' AND '"
 					+ DatabaseHelper.dateToString(to) + "'";
 			sql += " group by 2";
-			sql += ") res left outer join CATEGORY cat on res.catId=cat." + Category.DbField.ID + " order by 2";
+			sql += ") res left outer join CATEGORY cat on res.catId=cat."
+					+ Category.DbField.ID + " order by 2";
 
 			Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 			if (cursor.moveToFirst()) {
@@ -417,7 +464,8 @@ public class OperationDao extends AbstractDao {
 					double value = Math.abs(cursor.getDouble(0));
 					String name = cursor.getString(2);
 					if (name == null) {
-						name = getContext().getResources().getString(R.string.category_unknown);
+						name = getContext().getResources().getString(
+								R.string.category_unknown);
 					}
 
 					dataset.addValue(value, name, cursor.getString(1));
@@ -443,11 +491,14 @@ public class OperationDao extends AbstractDao {
 		String accountId = report.getAccountId();
 		for (int i = 0; i < 2; i++) {
 
-			String sql = "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, strftime('%Y-%m',o."
-					+ Operation.DbField.DATE + ",'localtime') as per";
-			sql += " from OPERATION o WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId) + "'";
+			String sql = "SELECT sum(o." + Operation.DbField.AMOUNT
+					+ ") as sum, strftime('%Y-%m',o." + Operation.DbField.DATE
+					+ ",'localtime') as per";
+			sql += " from OPERATION o WHERE o." + Operation.DbField.FK_ACCOUNT
+					+ "='" + encodeString(accountId) + "'";
 			sql += " and o.amount" + (i == 0 ? ">=0" : "<0");
-			sql += " and o." + Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+			sql += " and o." + Operation.DbField.DATE + " BETWEEN '"
+					+ DatabaseHelper.dateToString(from) + "' AND '"
 					+ DatabaseHelper.dateToString(to) + "'";
 			sql += " group by 2";
 
@@ -455,7 +506,8 @@ public class OperationDao extends AbstractDao {
 			if (cursor.moveToFirst()) {
 				do {
 					double value = Math.abs(cursor.getDouble(0));
-					String name = (i == 0 ? getContext().getResources().getString(R.string.income) : getContext()
+					String name = (i == 0 ? getContext().getResources()
+							.getString(R.string.income) : getContext()
 							.getResources().getString(R.string.expense));
 
 					dataset.addValue(value, name, cursor.getString(1));
@@ -480,21 +532,26 @@ public class OperationDao extends AbstractDao {
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		String accountId = report.getAccountId();
-		Account account = AccountDao.getInstance(getContext()).getAccount(accountId);
+		Account account = AccountDao.getInstance(getContext()).getAccount(
+				accountId);
 
-		String sql = "SELECT sum(o." + Operation.DbField.AMOUNT + ") as sum, strftime('%Y-%m-%d',o."
-				+ Operation.DbField.DATE + ",'localtime') as per";
-		sql += " from OPERATION o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c."
-				+ Category.DbField.ID + " WHERE o." + Operation.DbField.FK_ACCOUNT + "='" + encodeString(accountId)
-				+ "'";
-		sql += " and o." + Operation.DbField.DATE + " BETWEEN '" + DatabaseHelper.dateToString(from) + "' AND '"
+		String sql = "SELECT sum(o." + Operation.DbField.AMOUNT
+				+ ") as sum, strftime('%Y-%m-%d',o." + Operation.DbField.DATE
+				+ ",'localtime') as per";
+		sql += " from OPERATION o left outer join CATEGORY c on o."
+				+ Operation.DbField.FK_CATEGORY + "=c." + Category.DbField.ID
+				+ " WHERE o." + Operation.DbField.FK_ACCOUNT + "='"
+				+ encodeString(accountId) + "'";
+		sql += " and o." + Operation.DbField.DATE + " BETWEEN '"
+				+ DatabaseHelper.dateToString(from) + "' AND '"
 				+ DatabaseHelper.dateToString(to) + "'";
 		sql += " group by 2";
 
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		if (cursor.moveToFirst()) {
 
-			double amount = account.getBalance() - getAmountAfter(account, from, true);
+			double amount = account.getBalance()
+					- getAmountAfter(account, from, true);
 			do {
 				double value = cursor.getDouble(0);
 				amount += value;

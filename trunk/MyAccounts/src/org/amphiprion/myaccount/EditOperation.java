@@ -67,11 +67,13 @@ public class EditOperation extends Activity {
 		final TextView txtName = (TextView) findViewById(R.id.txtOperationName);
 		final TextView txtAmout = (TextView) findViewById(R.id.txtAmount);
 
-		List<Category> allCategories = CategoryDao.getInstance(this).getCategories();
+		List<Category> allCategories = CategoryDao.getInstance(this)
+				.getCategories();
 		allCategories.add(0, new Category(""));
 		cbCategory.setAdapter(new CategoryAdapter(this, allCategories));
 		if (operation.getCategory() != null) {
-			cbCategory.setSelection(allCategories.indexOf(operation.getCategory()));
+			cbCategory.setSelection(allCategories.indexOf(operation
+					.getCategory()));
 		}
 
 		txtName.setText(operation.getDescription());
@@ -85,14 +87,20 @@ public class EditOperation extends Activity {
 		btSave.setOnClickListener(new ViewGroup.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				operation.setDescription("" + txtName.getText());
+				double amount = 0;
+
 				Category category = (Category) cbCategory.getSelectedItem();
-				if ("".equals(category.getId())) {
+				operation.setDescription("" + txtName.getText());
+				if (category.getId() == null || "".equals(category.getId())) {
 					operation.setCategory(null);
 				} else {
 					operation.setCategory(category);
 				}
-				operation.setAmount(Double.parseDouble("" + txtAmout.getText()));
+				try {
+					amount = Double.parseDouble("" + txtAmout.getText());
+				} catch (NumberFormatException e) {
+				}
+				operation.setAmount(amount);
 				operation.setDate((Date) cbDate.getSelectedItem());
 
 				Intent i = new Intent();
