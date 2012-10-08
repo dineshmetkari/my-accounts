@@ -39,7 +39,7 @@ import android.util.Log;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 	private static final String DATABASE_NAME = "amphiprion_myaccount";
-	public static final int DATABASE_VERSION = 6;
+	public static final int DATABASE_VERSION = 7;
 	private static SimpleDateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 	public DatabaseHelper(Context context) {
@@ -93,6 +93,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 		}
 		if (oldVersion == 5) {
 			db.execSQL("ALTER TABLE BUDGET ADD " + Budget.DbField.AMOUNT + " double not null default 0");
+			oldVersion++;
+		}
+		if (oldVersion == 6) {
+			db.execSQL("create table RECURENT_OPE (" + Operation.DbField.ID + " text primary key, " + Operation.DbField.DATE + " date not null , " + Operation.DbField.AMOUNT
+					+ " double not null, " + Operation.DbField.DESCRIPTION + " string not null, " + Operation.DbField.FK_CATEGORY + " text , " + Operation.DbField.FK_ACCOUNT
+					+ " text not null) ");
+			db.execSQL("ALTER TABLE OPERATION ADD " + Operation.DbField.FK_RECURENT + " text");
 			oldVersion++;
 		}
 	}

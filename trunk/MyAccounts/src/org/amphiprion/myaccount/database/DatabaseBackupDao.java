@@ -46,7 +46,7 @@ import android.widget.Toast;
  * 
  */
 public class DatabaseBackupDao extends AbstractDao {
-	private String[] tables = new String[] { "ACCOUNT", "OPERATION", "CATEGORY", "RULE", "REPORT", "REPORT_CATEGORY", "BUDGET" };
+	private String[] tables = new String[] { "ACCOUNT", "OPERATION", "CATEGORY", "RULE", "REPORT", "REPORT_CATEGORY", "BUDGET", "RECURENT_OPE" };
 
 	/** The singleton. */
 	private static DatabaseBackupDao instance;

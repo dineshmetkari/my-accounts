@@ -28,7 +28,9 @@ import java.util.List;
 import org.amphiprion.myaccount.database.AccountDao;
 import org.amphiprion.myaccount.database.DatabaseBackupDao;
 import org.amphiprion.myaccount.database.DatabaseHelper;
+import org.amphiprion.myaccount.database.RecurentOperationDao;
 import org.amphiprion.myaccount.database.entity.Account;
+import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.util.CurrencyUtil;
 import org.amphiprion.myaccount.view.AccountSummaryView;
 import org.amphiprion.myaccounts.R;
@@ -42,10 +44,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,10 +67,21 @@ public class AccountList extends Activity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.account_list);
+
 		buildAccountList();
 	}
 
+	private void checkRecurentOperation() {
+		List<Operation> recOps = RecurentOperationDao.getInstance(this).getRecurentOperations();
+		for (Operation recOp : recOps) {
+			RecurentOperationDao.getInstance(this).createMissingRecurentInstance(recOp);
+		}
+
+	}
+
 	private void buildAccountList() {
+		checkRecurentOperation();
+
 		accounts = new ArrayList<Account>();
 
 		LinearLayout ln = (LinearLayout) findViewById(R.id.account_list);
@@ -122,7 +135,7 @@ public class AccountList extends Activity {
 			if (tmpCurrency.length() > 3) {
 				tmpCurrency = tmpCurrency.substring(3);
 			}
-			lblTotalBalance.setText("" + (Math.round(total * 100.0) / 100.0));
+			lblTotalBalance.setText("" + Math.round(total * 100.0) / 100.0);
 			lblTotalCurrency.setText(tmpCurrency);
 		} else {
 			lblTotalBalance.setText(" - ");
@@ -211,8 +224,7 @@ public class AccountList extends Activity {
 			// i.putExtra("ACCOUNT", account);
 			startActivityForResult(i, ApplicationConstants.ACTIVITY_RETURN_CREATE_ACCOUNT);
 		} else if (item.getItemId() == ApplicationConstants.MENU_ID_BACKUP_DB) {
-			String path = Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/"
-					+ ApplicationConstants.BACKUP_DRIRECTORY + "/";
+			String path = Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/" + ApplicationConstants.BACKUP_DRIRECTORY + "/";
 			path += new SimpleDateFormat("yyyyMMdd-hh-mm-ss").format(new Date());
 			path += "-dbv" + DatabaseHelper.DATABASE_VERSION + ".xml";
 			boolean ok = DatabaseBackupDao.getInstance(this).backupDatabase(path);
@@ -224,8 +236,7 @@ public class AccountList extends Activity {
 		} else if (item.getItemId() == ApplicationConstants.MENU_ID_RESTORE_DB) {
 			Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 			intent.addCategory(Intent.CATEGORY_OPENABLE);
-			File file = new File(Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/"
-					+ ApplicationConstants.BACKUP_DRIRECTORY);
+			File file = new File(Environment.getExternalStorageDirectory() + "/" + ApplicationConstants.NAME + "/" + ApplicationConstants.BACKUP_DRIRECTORY);
 			intent.setDataAndType(Uri.parse(file.toString()), "text/*");
 
 			try {
@@ -241,19 +252,19 @@ public class AccountList extends Activity {
 	}
 
 	public void askToDownloadFileManager() {
-		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.install_file_chooser_message)
-				.create();
+		AlertDialog alertDialog = new AlertDialog.Builder(this).setMessage(R.string.install_file_chooser_message).create();
 		alertDialog.setTitle(R.string.install_file_chooser_title);
 		alertDialog.setIcon(android.R.drawable.ic_menu_info_details);
 		alertDialog.setButton(getResources().getText(R.string.ok), new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int which) {
-				Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri
-						.parse("market://details?id=lysesoft.andexplorer"));
+				Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=lysesoft.andexplorer"));
 				startActivity(marketIntent);
 				return;
 			}
 		});
 		alertDialog.setButton2(getResources().getText(R.string.cancel), new DialogInterface.OnClickListener() {
+			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				// do nothing
 			}
