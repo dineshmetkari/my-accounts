@@ -72,9 +72,15 @@ public class RecurentOperationDao extends AbstractDao {
 	 * @return the operation list
 	 */
 	public List<Operation> getRecurentOperations() {
-		String sql = "SELECT o." + Operation.DbField.ID + ", o." + Operation.DbField.AMOUNT + ", o." + Operation.DbField.DESCRIPTION + ", o." + Operation.DbField.DATE + ", o."
-				+ Operation.DbField.FK_CATEGORY + ", c." + Category.DbField.NAME + ", c." + Category.DbField.IMAGE_NAME + ", o." + Operation.DbField.FK_ACCOUNT
-				+ " from RECURENT_OPE o left outer join CATEGORY c on o." + Operation.DbField.FK_CATEGORY + "=c." + Category.DbField.ID;
+		String sql = "SELECT o." + Operation.DbField.ID + ", o."
+				+ Operation.DbField.AMOUNT + ", o."
+				+ Operation.DbField.DESCRIPTION + ", o."
+				+ Operation.DbField.DATE + ", o."
+				+ Operation.DbField.FK_CATEGORY + ", c."
+				+ Category.DbField.NAME + ", c." + Category.DbField.IMAGE_NAME
+				+ ", o." + Operation.DbField.FK_ACCOUNT
+				+ " from RECURENT_OPE o left outer join CATEGORY c on o."
+				+ Operation.DbField.FK_CATEGORY + "=c." + Category.DbField.ID;
 		Cursor cursor = getDatabase().rawQuery(sql, new String[] {});
 		ArrayList<Operation> result = new ArrayList<Operation>();
 		if (cursor.moveToFirst()) {
@@ -98,12 +104,48 @@ public class RecurentOperationDao extends AbstractDao {
 		return result;
 	}
 
+	public Operation getRecurentOperation(String id) {
+		String sql = "SELECT o." + Operation.DbField.ID + ", o."
+				+ Operation.DbField.AMOUNT + ", o."
+				+ Operation.DbField.DESCRIPTION + ", o."
+				+ Operation.DbField.DATE + ", o."
+				+ Operation.DbField.FK_CATEGORY + ", c."
+				+ Category.DbField.NAME + ", c." + Category.DbField.IMAGE_NAME
+				+ ", o." + Operation.DbField.FK_ACCOUNT
+				+ " from RECURENT_OPE o left outer join CATEGORY c on o."
+				+ Operation.DbField.FK_CATEGORY + "=c." + Category.DbField.ID
+				+ " WHERE o." + Operation.DbField.ID + "=?";
+		Cursor cursor = getDatabase().rawQuery(sql, new String[] { id });
+
+		Operation a = null;
+		if (cursor.moveToFirst()) {
+			do {
+				a = new Operation(cursor.getString(0));
+				a.setAccountId(cursor.getString(7));
+				a.setAmount(Double.parseDouble(cursor.getString(1)));
+				a.setDescription(cursor.getString(2));
+				a.setDate(DatabaseHelper.stringToDate(cursor.getString(3)));
+				String cId = cursor.getString(4);
+				if (cId != null) {
+					Category c = new Category(cId);
+					c.setName(cursor.getString(5));
+					c.setImage(cursor.getString(6));
+					a.setCategory(c);
+				}
+
+			} while (cursor.moveToNext());
+		}
+		cursor.close();
+		return a;
+	}
+
 	public void createMissingRecurentInstance(Operation recurentOperation) {
 		// Log.d(ApplicationConstants.PACKAGE, "Test creation recurent: " +
 		// recurentOperation.getDescription());
 		getDatabase().beginTransaction();
 		try {
-			Account account = AccountDao.getInstance(context).getAccount(recurentOperation.getAccountId());
+			Account account = AccountDao.getInstance(context).getAccount(
+					recurentOperation.getAccountId());
 
 			Date now = new Date();
 			Date date = new Date(recurentOperation.getDate().getTime());
@@ -133,7 +175,8 @@ public class RecurentOperationDao extends AbstractDao {
 				op.setDescription(recurentOperation.getDescription());
 				op.setFkRecurent(recurentOperation.getId());
 
-				double newBalance = Math.round((account.getBalance() + op.getAmount()) * 100.0) / 100.0;
+				double newBalance = Math.round((account.getBalance() + op
+						.getAmount()) * 100.0) / 100.0;
 				account.setBalance(newBalance);
 				OperationDao.getInstance(context).create(op, newBalance, false);
 
@@ -153,10 +196,32 @@ public class RecurentOperationDao extends AbstractDao {
 	 *            the new operation
 	 */
 	public void create(Operation operation) {
-		String sql = "insert into RECURENT_OPE (" + Operation.DbField.ID + "," + Operation.DbField.AMOUNT + "," + Operation.DbField.DATE + "," + Operation.DbField.DESCRIPTION
-				+ "," + Operation.DbField.FK_ACCOUNT + "," + Operation.DbField.FK_CATEGORY + ") values ('" + encodeString(operation.getId()) + "'," + operation.getAmount() + ",'"
-				+ DatabaseHelper.dateToString(operation.getDate()) + "','" + encodeString(operation.getDescription()) + "','" + encodeString(operation.getAccountId()) + "',"
-				+ (operation.getCategory() == null ? "null" : "'" + encodeString(operation.getCategory().getId()) + "'") + ")";
+		String sql = "insert into RECURENT_OPE ("
+				+ Operation.DbField.ID
+				+ ","
+				+ Operation.DbField.AMOUNT
+				+ ","
+				+ Operation.DbField.DATE
+				+ ","
+				+ Operation.DbField.DESCRIPTION
+				+ ","
+				+ Operation.DbField.FK_ACCOUNT
+				+ ","
+				+ Operation.DbField.FK_CATEGORY
+				+ ") values ('"
+				+ encodeString(operation.getId())
+				+ "',"
+				+ operation.getAmount()
+				+ ",'"
+				+ DatabaseHelper.dateToString(operation.getDate())
+				+ "','"
+				+ encodeString(operation.getDescription())
+				+ "','"
+				+ encodeString(operation.getAccountId())
+				+ "',"
+				+ (operation.getCategory() == null ? "null" : "'"
+						+ encodeString(operation.getCategory().getId()) + "'")
+				+ ")";
 
 		execSQL(sql);
 	}
@@ -207,15 +272,21 @@ public class RecurentOperationDao extends AbstractDao {
 	 */
 	public void update(Operation operation) {
 
-		String sql = "update RECURENT_OPE set " + Operation.DbField.AMOUNT + "=" + operation.getAmount() + "," + Operation.DbField.DATE + "='"
-				+ DatabaseHelper.dateToString(operation.getDate()) + "'," + Operation.DbField.DESCRIPTION + "='" + encodeString(operation.getDescription()) + "',"
-				+ Operation.DbField.FK_ACCOUNT + "='" + encodeString(operation.getAccountId()) + "'";
+		String sql = "update RECURENT_OPE set " + Operation.DbField.AMOUNT
+				+ "=" + operation.getAmount() + "," + Operation.DbField.DATE
+				+ "='" + DatabaseHelper.dateToString(operation.getDate())
+				+ "'," + Operation.DbField.DESCRIPTION + "='"
+				+ encodeString(operation.getDescription()) + "',"
+				+ Operation.DbField.FK_ACCOUNT + "='"
+				+ encodeString(operation.getAccountId()) + "'";
 		if (operation.getCategory() != null) {
-			sql += "," + Operation.DbField.FK_CATEGORY + "='" + encodeString(operation.getCategory().getId()) + "'";
+			sql += "," + Operation.DbField.FK_CATEGORY + "='"
+					+ encodeString(operation.getCategory().getId()) + "'";
 		} else {
 			sql += "," + Operation.DbField.FK_CATEGORY + "=null";
 		}
-		sql += " WHERE " + Operation.DbField.ID + "='" + encodeString(operation.getId()) + "'";
+		sql += " WHERE " + Operation.DbField.ID + "='"
+				+ encodeString(operation.getId()) + "'";
 
 		execSQL(sql);
 
@@ -230,11 +301,14 @@ public class RecurentOperationDao extends AbstractDao {
 	public void delete(Operation operation) {
 		getDatabase().beginTransaction();
 		try {
-			String sql = "DELETE FROM RECURENT_OPE WHERE " + Operation.DbField.ID + "='" + encodeString(operation.getId()) + "'";
+			String sql = "DELETE FROM RECURENT_OPE WHERE "
+					+ Operation.DbField.ID + "='"
+					+ encodeString(operation.getId()) + "'";
 			execSQL(sql);
 
-			sql = "UPDATE OPERATION set " + Operation.DbField.FK_RECURENT + "=null" + " WHERE " + Operation.DbField.FK_RECURENT + "='" + encodeString(operation.getFkRecurent())
-					+ "'";
+			sql = "UPDATE OPERATION set " + Operation.DbField.FK_RECURENT
+					+ "=null" + " WHERE " + Operation.DbField.FK_RECURENT
+					+ "='" + encodeString(operation.getFkRecurent()) + "'";
 			execSQL(sql);
 
 			getDatabase().setTransactionSuccessful();

@@ -53,6 +53,8 @@ public interface ApplicationConstants {
 	public static final int MENU_ID_DELETE_BUDGET = 20;
 	public static final int MENU_ID_CONVERT_RECURENT_OPERATION = 21;
 	public static final int MENU_ID_STOP_RECURENT_OPERATION = 22;
+	public static final int MENU_ID_EDIT_OP_MONTHLY = 23;
+	public static final int MENU_ID_EDIT_OPERATION_AND_MONTHLY = 24;
 
 	public static final int ACTIVITY_RETURN_CREATE_ACCOUNT = 1;
 	public static final int ACTIVITY_RETURN_EDIT_ACCOUNT = 2;

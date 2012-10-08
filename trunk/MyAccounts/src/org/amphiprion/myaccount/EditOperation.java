@@ -47,6 +47,7 @@ import android.widget.TextView;
  */
 public class EditOperation extends Activity {
 	private Operation operation;
+	private int menuId;
 
 	/**
 	 * {@inheritDoc}
@@ -61,8 +62,12 @@ public class EditOperation extends Activity {
 
 		Intent i = getIntent();
 		operation = (Operation) i.getSerializableExtra("OPERATION");
+		menuId = i.getIntExtra("MENU_ID",
+				ApplicationConstants.MENU_ID_EDIT_OPERATION);
 
 		final DatePickerSpinner cbDate = (DatePickerSpinner) findViewById(R.id.cbDateOperation);
+		cbDate.setEnabled(menuId != ApplicationConstants.MENU_ID_EDIT_OP_MONTHLY);
+
 		final Spinner cbCategory = (Spinner) findViewById(R.id.cbCategory);
 		final TextView txtName = (TextView) findViewById(R.id.txtOperationName);
 		final TextView txtAmout = (TextView) findViewById(R.id.txtAmount);
@@ -105,6 +110,8 @@ public class EditOperation extends Activity {
 
 				Intent i = new Intent();
 				i.putExtra("OPERATION", operation);
+				i.putExtra("MENU_ID", menuId);
+
 				setResult(RESULT_OK, i);
 				finish();
 			}

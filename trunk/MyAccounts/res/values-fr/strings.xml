@@ -36,6 +36,8 @@
 	<!-- Operations -->
 	<string name="add_operation">Ajouter une opération </string>
 	<string name="edit_operation_title">Editer l\'opération </string>
+	<string name="edit_monthly_operation_title">Editer le template mensuel</string>
+	<string name="edit_monthly_and_operation_title">Editer l\'opération et le template </string>
 	<string name="delete_operation_title">Supprimer l\'opération</string>
 	<string name="convert_recupent_operation_title">Convertir comme mesuel</string>
 	<string name="stop_recupent_operation_title">Arrêter la mensualité</string>
