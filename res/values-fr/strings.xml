@@ -37,8 +37,6 @@
 	<string name="add_operation">Ajouter une opération </string>
 	<string name="edit_operation_title">Editer l\'opération </string>
 	<string name="delete_operation_title">Supprimer l\'opération</string>
-	<string name="convert_recupent_operation_title">Convertir comme mesuel</string>
-	<string name="stop_recupent_operation_title">Arrêter la mensualité</string>
 	<string name="operations_title">Opérations : </string>
 	<string name="import_operation">Importer un fichier</string>
 	<string name="period_change">Changer la période</string>

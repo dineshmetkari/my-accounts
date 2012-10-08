@@ -61,7 +61,8 @@ public class OperationSummaryView extends LinearLayout {
 		this.operation = operation;
 		this.currency = currency;
 
-		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		LayoutParams lp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		setLayoutParams(lp);
 		setBackgroundDrawable(context.getResources().getDrawable(R.drawable.list_item_background_states));
 
@@ -87,13 +88,15 @@ public class OperationSummaryView extends LinearLayout {
 	 */
 	private View createIcon() {
 		LinearLayout leftLayout = new LinearLayout(getContext());
-		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		leftLayout.setOrientation(VERTICAL);
 		leftLayout.setLayoutParams(aclp);
 
 		if (operation.getCategory() != null) {
 			ImageView img = new ImageView(getContext());
-			LayoutParams imglp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+			LayoutParams imglp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+					android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 			imglp.gravity = Gravity.CENTER_VERTICAL;
 			imglp.rightMargin = 5;
 			imglp.topMargin = 5;
@@ -103,7 +106,10 @@ public class OperationSummaryView extends LinearLayout {
 			String image = operation.getCategory().getImage();
 			if (image != null) {
 				if (image.startsWith("#")) {
-					img.setBackgroundDrawable(getContext().getResources().getDrawable(getResources().getIdentifier(image.substring(1), "drawable", ApplicationConstants.PACKAGE)));
+					img
+							.setBackgroundDrawable(getContext().getResources().getDrawable(
+									getResources().getIdentifier(image.substring(1), "drawable",
+											ApplicationConstants.PACKAGE)));
 				}
 			} else {
 				img.setImageResource(R.drawable.none);
@@ -129,13 +135,15 @@ public class OperationSummaryView extends LinearLayout {
 	 */
 	private View createOperationLayout() {
 		LinearLayout accountLayout = new LinearLayout(getContext());
-		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 3);
+		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT, 3);
 		accountLayout.setOrientation(VERTICAL);
 		accountLayout.setLayoutParams(aclp);
 
 		if (operation.getCategory() != null) {
 			TextView cat = new TextView(getContext());
-			LayoutParams clp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+			LayoutParams clp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
+					android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 
 			cat.setLayoutParams(clp);
 			cat.setText("" + operation.getCategory());
@@ -145,7 +153,8 @@ public class OperationSummaryView extends LinearLayout {
 			accountLayout.addView(cat);
 		}
 		TextView t = new TextView(getContext());
-		LayoutParams tlp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		LayoutParams tlp = new LayoutParams(android.view.ViewGroup.LayoutParams.FILL_PARENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 
 		t.setLayoutParams(tlp);
 		t.setText(operation.getDescription());
@@ -161,13 +170,9 @@ public class OperationSummaryView extends LinearLayout {
 	 * @return the view
 	 */
 	private View createBalance() {
-		LinearLayout leftLayout = new LinearLayout(getContext());
-		LayoutParams aclp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-		leftLayout.setOrientation(VERTICAL);
-		leftLayout.setLayoutParams(aclp);
-
 		TextView balance = new TextView(getContext());
-		LayoutParams blp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		LayoutParams blp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		balance.setGravity(Gravity.RIGHT);
 		balance.setLayoutParams(blp);
 		balance.setText("" + operation.getAmount());
@@ -178,22 +183,7 @@ public class OperationSummaryView extends LinearLayout {
 		} else {
 			balance.setTextColor(getContext().getResources().getColor(R.color.positive));
 		}
-		leftLayout.addView(balance);
-
-		if (operation.getFkRecurent() != null) {
-			ImageView img = new ImageView(getContext());
-			LayoutParams imglp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
-			imglp.gravity = Gravity.CENTER_VERTICAL;
-			imglp.rightMargin = 5;
-			imglp.topMargin = 5;
-			imglp.gravity = Gravity.CENTER;
-			img.setLayoutParams(imglp);
-
-			img.setBackgroundDrawable(getContext().getResources().getDrawable(R.drawable.monthly));
-			leftLayout.addView(img);
-		}
-
-		return leftLayout;
+		return balance;
 	}
 
 	/**
@@ -203,7 +193,8 @@ public class OperationSummaryView extends LinearLayout {
 	 */
 	private View createCurrency() {
 		TextView t = new TextView(getContext());
-		LayoutParams blp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+		LayoutParams blp = new LayoutParams(android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
+				android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
 		blp.leftMargin = 5;
 		t.setLayoutParams(blp);
 

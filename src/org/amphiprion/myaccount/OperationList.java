@@ -23,9 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.amphiprion.myaccount.adapter.FileDriverAdapter;
-import org.amphiprion.myaccount.database.AccountDao;
 import org.amphiprion.myaccount.database.OperationDao;
-import org.amphiprion.myaccount.database.RecurentOperationDao;
 import org.amphiprion.myaccount.database.entity.Account;
 import org.amphiprion.myaccount.database.entity.Operation;
 import org.amphiprion.myaccount.driver.file.FileDriverManager;
@@ -185,11 +183,6 @@ public class OperationList extends Activity {
 			current = ((OperationSummaryView) v).getOperation();
 			menu.add(1, ApplicationConstants.MENU_ID_EDIT_OPERATION, 0, R.string.edit_operation_title);
 			menu.add(1, ApplicationConstants.MENU_ID_DELETE_OPERATION, 1, R.string.delete_operation_title);
-			if (current.getFkRecurent() == null) {
-				menu.add(2, ApplicationConstants.MENU_ID_CONVERT_RECURENT_OPERATION, 2, R.string.convert_recupent_operation_title);
-			} else {
-				menu.add(2, ApplicationConstants.MENU_ID_STOP_RECURENT_OPERATION, 2, R.string.stop_recupent_operation_title);
-			}
 		}
 	}
 
@@ -206,15 +199,6 @@ public class OperationList extends Activity {
 			double newBalance = Math.round((account.getBalance() - current.getAmount()) * 100.0) / 100.0;
 			OperationDao.getInstance(this).delete(current, newBalance);
 			account.setBalance(newBalance);
-			buildOperationList(account);
-		} else if (item.getItemId() == ApplicationConstants.MENU_ID_CONVERT_RECURENT_OPERATION) {
-			current.setFkRecurent("MUST_CREATE");
-			OperationDao.getInstance(this).update(current, account.getBalance());
-			RecurentOperationDao.getInstance(this).createMissingRecurentInstance(current);
-			account = AccountDao.getInstance(this).getAccount(account.getId());
-			buildOperationList(account);
-		} else if (item.getItemId() == ApplicationConstants.MENU_ID_STOP_RECURENT_OPERATION) {
-			RecurentOperationDao.getInstance(this).delete(current);
 			buildOperationList(account);
 		}
 		return true;

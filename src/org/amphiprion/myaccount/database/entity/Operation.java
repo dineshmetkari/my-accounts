@@ -36,7 +36,7 @@ public class Operation implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public enum DbField {
-		ID, AMOUNT, DATE, DESCRIPTION, FK_CATEGORY, FK_ACCOUNT, FK_RECURENT
+		ID, AMOUNT, DATE, DESCRIPTION, FK_CATEGORY, FK_ACCOUNT
 	}
 
 	/** The uuid. */
@@ -49,9 +49,6 @@ public class Operation implements Serializable {
 	private String description;
 	/** The category. */
 	private Category category;
-
-	/** the recurent operation linked to it */
-	private String fkRecurent;
 
 	/** The owner account uuid. */
 	private String accountId;
@@ -163,19 +160,5 @@ public class Operation implements Serializable {
 	@Override
 	public String toString() {
 		return amount + " - " + date + " - " + description;
-	}
-
-	/**
-	 * @param fkRecurent the fkRecurent to set
-	 */
-	public void setFkRecurent(String fkRecurent) {
-		this.fkRecurent = fkRecurent;
-	}
-
-	/**
-	 * @return the fkRecurent
-	 */
-	public String getFkRecurent() {
-		return fkRecurent;
 	}
 }
