@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent" android:background="#FFFFFF">
+	<LinearLayout android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_marginLeft="3px" android:layout_marginRight="3px"><LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent"><LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="vertical"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/icon" android:textColor="#000000"></TextView>
+<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center" android:id="@+id/btImageCategory"></ImageButton>
+</LinearLayout>
+<LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:layout_weight="1" android:layout_width="fill_parent" android:layout_marginLeft="5px"><TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#000000" android:text="@string/category_name" /><EditText android:id="@+id/txtCategoryName" android:layout_width="fill_parent" android:layout_height="wrap_content"></EditText></LinearLayout>
+</LinearLayout>
+			
+			
+			
+			
+<TextView android:layout_width="fill_parent" android:layout_height="wrap_content" android:textColor="#000000" android:text="@string/category_parent" />
+<Spinner android:id="@+id/cbParentCategory" android:layout_height="wrap_content" android:layout_width="fill_parent"></Spinner>
+
+
+
+
+</LinearLayout><TextView android:layout_height="wrap_content" android:text="@string/category_rules" android:background="#333333" android:layout_width="fill_parent" android:gravity="center"></TextView><ScrollView android:layout_weight="1" android:layout_width="fill_parent"
+		android:layout_height="wrap_content" android:background="#FFFFFF" android:layout_marginLeft="3px" android:layout_marginRight="3px">
+		
+
+
+
+<LinearLayout android:layout_height="wrap_content" android:orientation="vertical" android:id="@+id/rule_list" android:layout_width="fill_parent"></LinearLayout>
+</ScrollView><LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
+<Button android:text="@string/save" android:id="@+id/btSave" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
+<Button android:text="@string/cancel" android:id="@+id/btCancel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1"></Button>
+</LinearLayout>
+</LinearLayout>
