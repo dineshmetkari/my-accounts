@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="default_currency">EUR</string>
+	<string name="default_date_format">dd MMM yyyy</string>
+	<string name="default_operation_date_format">dd/MM</string>
+</resources>
