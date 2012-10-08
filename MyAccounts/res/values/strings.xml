@@ -35,6 +35,8 @@
 	<!-- Operations -->
 	<string name="add_operation">Add Operation</string>
 	<string name="edit_operation_title">Edit Operation</string>
+	<string name="edit_monthly_operation_title">Edit Monthly Template</string>
+	<string name="edit_monthly_and_operation_title">Edit Template and Operation</string>
 	<string name="delete_operation_title">Delete Operation</string>
 	<string name="convert_recupent_operation_title">Convert to monthly</string>
 	<string name="stop_recupent_operation_title">Stop monthly</string>
