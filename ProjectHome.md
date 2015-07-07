@@ -1,0 +1,1 @@
+Allows to collect, categorize and display evolution of bank accounts.
